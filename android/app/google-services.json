@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "6261305612",
+    "project_id": "devhub-d1367",
+    "storage_bucket": "devhub-d1367.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6261305612:android:e91f4847be1667c5ac9929",
+        "android_client_info": {
+          "package_name": "com.example.dev_hub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrF2KjLDetuaqiDe7AjMSGUegMnGngAxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
