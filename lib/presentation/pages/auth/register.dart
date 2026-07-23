@@ -1,152 +1,254 @@
-import 'package:dev_hub/core/constants/app_colors.dart';
-import 'package:dev_hub/domain/repository/auth/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/app_text_styles.dart';
 import '../../bloc/auth/auth_bloc.dart';
+import '../../widgets/app_logo_header.dart';
+import '../../widgets/primary_button.dart';
+import '../workspace/workspace.dart';
 
-class AuthScreen extends StatelessWidget {
+class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
+
+  @override
+  State<AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _bgAnimationController;
+  late Animation<double> _pulseAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _bgAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat(reverse: true);
+
+    _pulseAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
+      CurvedAnimation(
+        parent: _bgAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _bgAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                        width: 200,
-                        height: 180,
+      backgroundColor: AppPalette.background,
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Successfully authenticated!'),
+                backgroundColor: AppPalette.success,
+              ),
+            );
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const WorkspacePage(),
+              ),
+            );
+          } else if (state is AuthFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: AppPalette.error,
+              ),
+            );
+          }
+        },
+        child: Stack(
+          children: [
+            // Dynamic subtle animated background elements
+            _BackgroundDecoration(pulseAnimation: _pulseAnimation),
+
+            // Main Content Area
+            SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.marginMobile,
+                    vertical: AppSpacing.lg,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const AppLogoHeader(size: 84),
+                      const SizedBox(height: AppSpacing.lg),
+
+                      Text(
+                        'Welcome to DevHub',
+                        style: AppTextStyles.heading.copyWith(
+                          color: AppPalette.onSurface,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+
+                      Text(
+                        'Manage GitHub projects, communicate with your team, and track development progress from one place.',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppPalette.onSurfaceVariant,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+
+                      // Feature Hero Graphic Card with 18px radius
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
-                          color: AppPalette.gradientColor,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(300),
+                          color: AppPalette.surfaceContainerLowest,
+                          borderRadius: AppRadius.primaryBorderRadius,
+                          border: Border.all(color: AppPalette.border),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(AppRadius.md),
+                          child: Image.asset(
+                            'assets/background_images/sign_in_bg_image.png',
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(
+                              Icons.developer_mode_rounded,
+                              size: 120,
+                              color: AppPalette.primaryContainer,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Spacer(),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      height: 200,
-                      decoration: BoxDecoration(gradient: AppPalette.gradient),
-                    ),
-                  ],
+                      const SizedBox(height: AppSpacing.xxl),
+
+                      // Authentication Action Button
+                      BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) {
+                          final isLoading = state is AuthLoading;
+                          return PrimaryButton(
+                            text: 'Continue with GitHub',
+                            isLoading: isLoading,
+                            onPressed: () {
+                              context.read<AuthBloc>().add(AuthSignUp());
+                            },
+                            icon: Image.asset(
+                              'assets/app_icon/github_logo.png',
+                              width: 22,
+                              height: 22,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(
+                                Icons.code,
+                                size: 22,
+                                color: AppPalette.onPrimary,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+
+                      const _TermsAndPrivacyText(),
+                    ],
+                  ),
                 ),
               ),
-              // Spacer(),
-            ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Private background decoration component for clean separation of concerns.
+class _BackgroundDecoration extends StatelessWidget {
+  final Animation<double> pulseAnimation;
+
+  const _BackgroundDecoration({required this.pulseAnimation});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // Top-right subtle glowing orb
+        Positioned(
+          top: -60,
+          right: -60,
+          child: AnimatedBuilder(
+            animation: pulseAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: pulseAnimation.value,
+                child: Container(
+                  width: 260,
+                  height: 260,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppPalette.gradientColor.withAlpha(120),
+                        AppPalette.gradientColor.withAlpha(0),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppPalette.neutral.withAlpha(100),
-                          blurRadius: 15,
-                          offset: Offset(0, 12),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadiusGeometry.circular(20),
-                      child: Image.asset(
-                        "assets/app_icon/app_logo.png",
-                        width: 80,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 28),
-                  Text(
-                    'Welcome to DevHub',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppPalette.headingTextColor,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    textAlign: TextAlign.center,
-                    'Manage GitHub projects,\ncommunicate with your team, \nand track development progress from \none place.',
-                    style: subTextStyle(),
-                  ),
-                  SizedBox(height: 24),
-                  Image.asset('assets/background_images/sign_in_bg_image.png'),
-                  SizedBox(height: 32),
-                  ElevatedButton(
-                    onPressed: () async {
-                      context.read<AuthBloc>().add(AuthSignUp());
-                      final result = context.read<AuthBloc>().state;
-                      if(result is AuthSuccess){
-                        final uid = result.userCredential.user?.uid;
-                        final name = result.userCredential.user?.displayName;
-                        final email = result.userCredential.user!.email;
-                        final photoURL = result.userCredential.user!.photoURL;
-                        final refreshToken = result.userCredential.user!.refreshToken;
-                        print("Here is the user id: $uid\nHere is the username: $name\n$email\n$photoURL\n$refreshToken");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppPalette.primary,
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 10,
-                      children: [
-                        Image.asset(
-                          "assets/app_icon/github_logo.png",
-                          width: 24,
-                          height: 24,
-                        ),
-                        Text(
-                          'Continue With GitHub',
-                          style: subTextStyle(AppPalette.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 28),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text: "By continuing you agree to our \n",
-                      style: TextStyle(fontSize: 13, color: AppPalette.neutral),
-                      children: [
-                        TextSpan(
-                          text: "Terms and Privacy Policy.",
-                          style: TextStyle(
-                            color: AppPalette.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+        ),
+
+        // Bottom-left subtle surface container wave shape
+        Positioned(
+          bottom: -100,
+          left: -80,
+          child: Container(
+            width: 320,
+            height: 320,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppPalette.surfaceContainerLow.withAlpha(180),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Private terms & privacy text component.
+class _TermsAndPrivacyText extends StatelessWidget {
+  const _TermsAndPrivacyText();
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        text: 'By continuing you agree to our\n',
+        style: AppTextStyles.caption.copyWith(
+          color: AppPalette.onSurfaceVariant,
+        ),
+        children: const [
+          TextSpan(
+            text: 'Terms and Privacy Policy.',
+            style: TextStyle(
+              color: AppPalette.primaryContainer,
+              fontWeight: FontWeight.w600,
+              decoration: TextDecoration.underline,
             ),
           ),
         ],
       ),
     );
   }
-
-  TextStyle subTextStyle([Color color = AppPalette.mutedTextColor]) =>
-      TextStyle(fontSize: 16, color: color, fontWeight: FontWeight.w500);
 }

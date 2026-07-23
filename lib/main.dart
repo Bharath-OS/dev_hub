@@ -5,7 +5,7 @@ import 'package:dev_hub/domain/usecases/auth/auth_usecase.dart';
 import 'package:dev_hub/firebase_options.dart';
 import 'package:dev_hub/presentation/bloc/auth/auth_bloc.dart';
 import 'package:dev_hub/presentation/pages/auth/register.dart';
-import 'package:dev_hub/presentation/pages/splash/splash.dart';
+import 'package:dev_hub/presentation/pages/auth/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
