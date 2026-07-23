@@ -13,7 +13,7 @@ class AuthRepositoryImpl implements AuthRepository{
   @override
   Future<Either<Failures, UserCredential>> githubAuthentication() async{
     try{
-      final userCredential = await remoteDataSource.githubAuthentication();
+      final userCredential = await remoteDataSource.authenticate();
       return right(userCredential);
     }catch(e){
         return left(Failures(e.toString()));

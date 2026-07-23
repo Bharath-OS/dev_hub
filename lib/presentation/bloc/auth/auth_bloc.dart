@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/errors/failures.dart';
 import '../../../domain/usecases/auth/auth_usecase.dart';
 part 'auth_event.dart';

@@ -5,15 +5,13 @@ import 'package:fpdart/fpdart.dart';
 import '../../../core/errors/failures.dart';
 
 abstract interface class AuthRemoteDataSource{
-  Future<UserCredential> githubAuthentication();
+  Future<UserCredential> authenticate();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource{
   @override
-  Future<UserCredential> githubAuthentication() async {
-    // TODO: implement githubAuthentication
+  Future<UserCredential> authenticate() async {
     final githubProvider = GithubAuthProvider();
     return await FirebaseAuth.instance.signInWithProvider(githubProvider);
   }
-
 }
