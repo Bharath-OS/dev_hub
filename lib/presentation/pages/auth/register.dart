@@ -107,7 +107,6 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                       ),
                       const SizedBox(height: AppSpacing.xl),
 
-                      // Feature Hero Graphic Card with 18px radius
                       Container(
                         padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
@@ -170,7 +169,6 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   }
 }
 
-/// Private background decoration component for clean separation of concerns.
 class _BackgroundDecoration extends StatelessWidget {
   final Animation<double> pulseAnimation;
 
@@ -180,26 +178,20 @@ class _BackgroundDecoration extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Top-right subtle glowing orb
         Positioned(
-          top: -60,
-          right: -60,
+          top: -150,
+          right: -150,
           child: AnimatedBuilder(
             animation: pulseAnimation,
             builder: (context, child) {
               return Transform.scale(
                 scale: pulseAnimation.value,
                 child: Container(
-                  width: 260,
-                  height: 260,
+                  width: 400,
+                  height: 400,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        AppPalette.gradientColor.withAlpha(120),
-                        AppPalette.gradientColor.withAlpha(0),
-                      ],
-                    ),
+                    color: AppPalette.gradientColor
                   ),
                 ),
               );
@@ -209,14 +201,14 @@ class _BackgroundDecoration extends StatelessWidget {
 
         // Bottom-left subtle surface container wave shape
         Positioned(
-          bottom: -100,
+          bottom: -150,
           left: -80,
           child: Container(
-            width: 320,
+            width: 200,
             height: 320,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppPalette.surfaceContainerLow.withAlpha(180),
+              color: AppPalette.gradientColor,
             ),
           ),
         ),

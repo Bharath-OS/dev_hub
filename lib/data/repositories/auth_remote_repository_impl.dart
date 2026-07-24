@@ -1,7 +1,7 @@
 import 'package:dev_hub/core/errors/failures.dart';
 import 'package:dev_hub/data/datasources/remote/auth_data_source.dart';
+import 'package:dev_hub/domain/entities/user_entity.dart';
 import 'package:dev_hub/domain/repository/auth/auth_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 
 class AuthRepositoryImpl implements AuthRepository{
@@ -11,10 +11,10 @@ class AuthRepositoryImpl implements AuthRepository{
   AuthRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<Either<Failures, UserCredential>> githubAuthentication() async{
+  Future<Either<Failures, UserEntity>> githubAuthentication() async{
     try{
-      final userCredential = await remoteDataSource.authenticate();
-      return right(userCredential);
+      final userModel = await remoteDataSource.authenticate();
+      return right(userModel);
     }catch(e){
         return left(Failures(e.toString()));
     }

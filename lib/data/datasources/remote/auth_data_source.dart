@@ -3,15 +3,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../../core/errors/failures.dart';
+import '../../models/user_model.dart';
 
 abstract interface class AuthRemoteDataSource{
-  Future<UserCredential> authenticate();
+  Future<UserModel> authenticate();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource{
   @override
-  Future<UserCredential> authenticate() async {
+  Future<UserModel> authenticate() async {
     final githubProvider = GithubAuthProvider();
-    return await FirebaseAuth.instance.signInWithProvider(githubProvider);
+    final credential = await FirebaseAuth.instance.signInWithProvider(githubProvider);
+    if(credential.user == null){
+      throw Exception("Authentication failed");
+    }
+    return UserModel.fromRemoteSource(credential);
   }
 }
