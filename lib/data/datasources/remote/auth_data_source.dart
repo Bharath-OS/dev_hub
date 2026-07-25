@@ -1,8 +1,6 @@
 import 'package:dev_hub/domain/repository/auth/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
-
-import '../../../core/errors/failures.dart';
 import '../../models/user_model.dart';
 
 abstract interface class AuthRemoteDataSource{

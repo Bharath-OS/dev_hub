@@ -1,14 +1,63 @@
 class UserEntity {
-  final String uid;
-  final String name;
-  final String email;
-  final String? profilePicUrl;
-  final String accessToken;
+  final String id; // Firebase Auth UID
+  final String githubId; // GitHub numeric ID
+  final String githubUsername; // GitHub login handle
+  final String displayName; // GitHub display name
+  final String email; // GitHub primary email
+  final DateTime createdAt; // account creation time
+  final DateTime lastSeen; // last active time
+  final String? avatarUrl; // GitHub profile picture
+  final List<GitHubOrgInfo>? organizations; // orgs with admin/owner access
+  final String? currentOrganizationId; // selected org ID
+  final String? currentOrganizationLogin; // selected org login
+  final SubscriptionInfo? subscription; // subscription state
+  final String? fcmToken; // device push token
+
   UserEntity({
-    required this.uid,
-    required this.name,
+    required this.id,
+    required this.githubId,
+    required this.githubUsername,
+    required this.displayName,
+    required this.avatarUrl,
     required this.email,
-    this.profilePicUrl,
-    required this.accessToken,
+    required this.organizations,
+    this.currentOrganizationId,
+    this.currentOrganizationLogin,
+    required this.subscription,
+    this.fcmToken,
+    required this.createdAt,
+    required this.lastSeen,
+  });
+}
+
+class GitHubOrgInfo {
+  final String id;
+  final String login;
+  final String avatarUrl;
+  final String role; // owner/admin/member
+
+  GitHubOrgInfo({
+    required this.id,
+    required this.login,
+    required this.avatarUrl,
+    required this.role,
+  });
+}
+
+class SubscriptionInfo {
+  final String plan; // free/pro
+  final String? razorpaySubscriptionId;
+  final String? razorpayCustomerId;
+  final String status; // active/cancelled/expired
+  final DateTime? renewsAt;
+  final DateTime? cancelledAt;
+
+  SubscriptionInfo({
+    required this.plan,
+    this.razorpaySubscriptionId,
+    this.razorpayCustomerId,
+    required this.status,
+    this.renewsAt,
+    this.cancelledAt,
   });
 }
