@@ -14,6 +14,7 @@ class WorkspaceCard extends StatelessWidget {
   final String badgeText;
   final int badgeCount;
   final VoidCallback? onOptionsTap;
+  final VoidCallback? onTap;
 
   const WorkspaceCard({
     super.key,
@@ -27,11 +28,14 @@ class WorkspaceCard extends StatelessWidget {
     this.badgeText = 'MVP Release',
     this.badgeCount = 3,
     this.onOptionsTap,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       decoration: BoxDecoration(
         color: AppPalette.white,
         borderRadius: AppRadius.primaryBorderRadius,
@@ -265,6 +269,7 @@ class WorkspaceCard extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 

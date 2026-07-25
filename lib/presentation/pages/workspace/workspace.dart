@@ -7,6 +7,7 @@ import 'widgets/workspace_search_bar.dart';
 import 'widgets/workspace_filter_chips.dart';
 import 'widgets/workspace_card.dart';
 import 'widgets/create_workspace_bottom_sheet.dart';
+import 'workspace_detail_screen.dart';
 
 class WorkspacePage extends StatefulWidget {
   const WorkspacePage({super.key});
@@ -33,17 +34,26 @@ class _WorkspacePageState extends State<WorkspacePage> {
         onMenuPressed: () {},
         onSearchPressed: () {},
       ),
-      body: const SafeArea(
+      body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              WorkspaceSearchBar(),
-              SizedBox(height: 12),
-              WorkspaceFilterChips(),
-              SizedBox(height: 16),
-              WorkspaceCard(),
+              const WorkspaceSearchBar(),
+              const SizedBox(height: 12),
+              const WorkspaceFilterChips(),
+              const SizedBox(height: 16),
+              WorkspaceCard(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const WorkspaceDetailScreen(),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
