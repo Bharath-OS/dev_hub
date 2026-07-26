@@ -57,7 +57,6 @@ class DefaultFirebaseOptions {
     projectId: 'devhub-d1367',
     storageBucket: 'devhub-d1367.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB2QJVhwkkBHHQJ-XMm5pXRbU_1ZXYRIQs',
     appId: '1:6261305612:ios:d1cf26cf53059473ac9929',
@@ -66,7 +65,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'devhub-d1367.firebasestorage.app',
     iosBundleId: 'com.example.devHub',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyB2QJVhwkkBHHQJ-XMm5pXRbU_1ZXYRIQs',
     appId: '1:6261305612:ios:d1cf26cf53059473ac9929',

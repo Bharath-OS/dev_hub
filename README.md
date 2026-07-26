@@ -55,7 +55,7 @@ Every development team runs on at least three separate tools. A chat app (Slack)
   - PR approved → task flagged as approved
   - PR merged → task moves to **Done**, GitHub Issue closes automatically
   - PR closed without merge → task returns to **In Progress**
-- **PR event cards** : Auto-posted in team chat when a PR is opened or merged
+- **PR event cards** :   Auto-posted in team chat when a PR is opened or merged
 - **In-app PR approve :** Team leads can approve a PR directly from the task detail screen via GitHub API
 - **My Tasks :** Unified view of all tasks assigned to the current user across every workspace
 
