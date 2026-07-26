@@ -10,6 +10,7 @@ class AppRadius {
   static const double lg = 24.0;
   static const double full = 9999.0;
 
+// BorderRadius shorthands
   static const BorderRadius smBorderRadius = BorderRadius.all(Radius.circular(sm));
   static const BorderRadius mdBorderRadius = BorderRadius.all(Radius.circular(md));
   static const BorderRadius primaryBorderRadius = BorderRadius.all(Radius.circular(primary));
@@ -17,6 +18,7 @@ class AppRadius {
   static const BorderRadius fullBorderRadius = BorderRadius.all(Radius.circular(full));
 }
 
+/// Spacing constants used throughout the app.
 class AppSpacing {
   AppSpacing._();
 

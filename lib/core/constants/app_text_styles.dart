@@ -81,4 +81,14 @@ class AppTextStyles {
     height: 20 / 15,
     color: AppPalette.onPrimary,
   );
+
+  /// Overline style: 10px bold, letter spacing 0.8px
+  static const TextStyle overline = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 10,
+    fontWeight: FontWeight.w700,
+    height: 14 / 10,
+    letterSpacing: 0.8,
+    color: AppPalette.outline,
+  );
 }
