@@ -11,14 +11,16 @@ class UserModel extends UserEntity {
     required super.createdAt,
     required super.lastSeen,
     super.avatarUrl,
-    super.organizations,
+    super.allOrganizations,
+    super.ownOrganizations,
     super.currentOrganizationId,
     super.currentOrganizationLogin,
     super.subscription,
     super.fcmToken,
   });
 
-  factory UserModel.fromRemoteSource(UserCredential credential) {
+  factory UserModel.fromRemoteSource(
+      {required UserCredential credential}) {
     return UserModel(
       id: credential.user!.uid,
       githubId: credential.additionalUserInfo!.profile!['id'],
@@ -39,7 +41,8 @@ class UserModel extends UserEntity {
     String? email,
     DateTime? lastSeen,
     String? avatarUrl,
-    List<GitHubOrgInfo>? organizations,
+    List<GitHubOrgInfo>? allOrganizations,
+    List<GitHubOrgInfo>? ownOrganizations,
     String? currentOrganizationId,
     String? currentOrganizationLogin,
     SubscriptionInfo? subscription,
@@ -54,7 +57,8 @@ class UserModel extends UserEntity {
       createdAt: createdAt,
       lastSeen: lastSeen ?? super.lastSeen,
       avatarUrl: avatarUrl ?? super.avatarUrl,
-      organizations: organizations ?? super.organizations,
+      allOrganizations: allOrganizations ?? super.allOrganizations,
+      ownOrganizations: ownOrganizations ?? super.ownOrganizations,
       currentOrganizationId: currentOrganizationId ?? super.currentOrganizationId,
       currentOrganizationLogin: currentOrganizationLogin ?? super.currentOrganizationLogin,
       subscription: subscription ?? super.subscription,

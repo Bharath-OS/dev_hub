@@ -7,7 +7,8 @@ class UserEntity {
   final DateTime createdAt; // account creation time
   final DateTime lastSeen; // last active time
   final String? avatarUrl; // GitHub profile picture
-  final List<GitHubOrgInfo>? organizations; // orgs with admin/owner access
+  final List<GitHubOrgInfo>? allOrganizations; // orgs with admin/owner access
+  final List<GitHubOrgInfo>? ownOrganizations;
   final String? currentOrganizationId; // selected org ID
   final String? currentOrganizationLogin; // selected org login
   final SubscriptionInfo? subscription; // subscription state
@@ -20,7 +21,8 @@ class UserEntity {
     required this.displayName,
     required this.avatarUrl,
     required this.email,
-    required this.organizations,
+    this.allOrganizations,
+    this.ownOrganizations,
     this.currentOrganizationId,
     this.currentOrganizationLogin,
     required this.subscription,
@@ -34,13 +36,15 @@ class GitHubOrgInfo {
   final String id;
   final String login;
   final String avatarUrl;
-  final String role; // owner/admin/member
+  final String? role; // owner/admin/member
+  final String? state;
 
   GitHubOrgInfo({
     required this.id,
     required this.login,
     required this.avatarUrl,
-    required this.role,
+    this.role,
+    this.state,
   });
 }
 

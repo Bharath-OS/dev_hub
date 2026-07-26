@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 class ApiServices {
@@ -9,14 +11,14 @@ class ApiServices {
     _configureDio();
   }
 
-  Future<Map<String, dynamic>> get({
+  Future<dynamic> get({
     required String endpoint,
     Map<String, String> params = const {},
   }) async {
     try {
       final response = await _dio.get(endpoint, queryParameters: params);
       if (response.statusCode == 200) {
-        return response.data as Map<String, dynamic>;
+        return jsonDecode(response.data);
       }
       throw Exception(response.statusMessage);
     } catch (e) {
