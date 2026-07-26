@@ -7,6 +7,8 @@ import '../../bloc/auth/auth_bloc.dart';
 import '../../widgets/app_logo_header.dart';
 import '../../widgets/primary_button.dart';
 import '../workspace/workspace.dart';
+import 'member_only_screen.dart';
+import 'no_organization_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -48,15 +50,36 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
+            context.read<AuthBloc>().add(AuthOrgVerification(state.user));
+          } else if (state is AuthOrgAdminSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Successfully authenticated!'),
+                content: Text('Organization verified successfully!'),
                 backgroundColor: AppPalette.success,
               ),
             );
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => const WorkspacePage(),
+              ),
+            );
+          } else if (state is AuthNoOrganization) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => NoOrganizationScreen(user: state.user),
+              ),
+            );
+          } else if (state is AuthMemberOnly) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => MemberOnlyScreen(user: state.user),
+              ),
+            );
+          } else if (state is AuthOrgError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: AppPalette.error,
               ),
             );
           } else if (state is AuthFailure) {
