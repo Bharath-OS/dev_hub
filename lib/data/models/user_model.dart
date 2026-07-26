@@ -17,6 +17,7 @@ class UserModel extends UserEntity {
     super.currentOrganizationLogin,
     super.subscription,
     super.fcmToken,
+    super.githubAccessToken,
   });
 
   factory UserModel.fromRemoteSource(
@@ -28,6 +29,7 @@ class UserModel extends UserEntity {
       displayName: credential.additionalUserInfo!.username!,
       avatarUrl: credential.user!.photoURL!,
       email: credential.user!.email!,
+      githubAccessToken: credential.credential?.accessToken,
       createdAt: DateTime.now(),
       lastSeen: DateTime.now(),
     );
@@ -47,6 +49,7 @@ class UserModel extends UserEntity {
     String? currentOrganizationLogin,
     SubscriptionInfo? subscription,
     String? fcmToken,
+    String? githubAccessToken,
   }) {
     return UserModel(
       id: id ?? super.id,
@@ -62,7 +65,8 @@ class UserModel extends UserEntity {
       currentOrganizationId: currentOrganizationId ?? super.currentOrganizationId,
       currentOrganizationLogin: currentOrganizationLogin ?? super.currentOrganizationLogin,
       subscription: subscription ?? super.subscription,
-      fcmToken: fcmToken ?? super.fcmToken
+      fcmToken: fcmToken ?? super.fcmToken,
+      githubAccessToken: githubAccessToken ?? super.githubAccessToken,
     );
   }
 }

@@ -13,6 +13,7 @@ class UserEntity {
   final String? currentOrganizationLogin; // selected org login
   final SubscriptionInfo? subscription; // subscription state
   final String? fcmToken; // device push token
+  final String? githubAccessToken; // GitHub OAuth access token
 
   UserEntity({
     required this.id,
@@ -27,6 +28,7 @@ class UserEntity {
     this.currentOrganizationLogin,
     required this.subscription,
     this.fcmToken,
+    this.githubAccessToken,
     required this.createdAt,
     required this.lastSeen,
   });
