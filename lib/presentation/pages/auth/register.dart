@@ -156,7 +156,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                       // Authentication Action Button
                       BlocBuilder<AuthBloc, AuthState>(
                         builder: (context, state) {
-                          final isLoading = state is AuthLoading;
+                          final isLoading = state is AuthLoading || state is AuthOrgVerifying;
                           return PrimaryButton(
                             text: 'Continue with GitHub',
                             isLoading: isLoading,
