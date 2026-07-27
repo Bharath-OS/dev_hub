@@ -18,7 +18,10 @@ class ApiServices {
     try {
       final response = await _dio.get(endpoint, queryParameters: params);
       if (response.statusCode == 200) {
-        return jsonDecode(response.data);
+        if (response.data is String) {
+          return jsonDecode(response.data);
+        }
+        return response.data;
       }
       throw Exception(response.statusMessage);
     } catch (e) {
