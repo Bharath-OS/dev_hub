@@ -22,18 +22,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<AuthOrgVerification>((event, emit) async {
       emit(AuthOrgVerifying(event.user));
+      print("[AuthBloc] AuthOrgVerification started for ${event.user.githubUsername}");
       final result = await _fetchUserOrgsUseCase.call(event.user);
       result.fold(
-        (failure) => emit(AuthOrgError(failure.message, event.user)),
+        (failure) {
+          print("[AuthBloc] AuthOrgVerification FAILED: ${failure.message}");
+          emit(AuthOrgError(failure.message, event.user));
+        },
         (user) {
           final allOrgs = user.allOrganizations;
           final ownOrgs = user.ownOrganizations;
+          print("[AuthBloc] allOrgs: ${allOrgs?.length ?? 0}, ownOrgs: ${ownOrgs?.length ?? 0}");
 
           if (allOrgs == null || allOrgs.isEmpty) {
+            print("[AuthBloc] Emitting AuthNoOrganization");
             emit(AuthNoOrganization(user));
           } else if (ownOrgs != null && ownOrgs.isNotEmpty) {
+            print("[AuthBloc] Emitting AuthOrgAdminSuccess");
             emit(AuthOrgAdminSuccess(user));
           } else {
+            print("[AuthBloc] Emitting AuthMemberOnly");
             emit(AuthMemberOnly(user));
           }
         },

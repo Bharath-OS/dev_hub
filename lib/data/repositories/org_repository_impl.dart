@@ -11,6 +11,9 @@ class OrgRepositoryImpl implements OrgRepository {
   Future<Either<Failures, UserEntity>> fetchOrganizations(UserEntity user) async {
     try {
       final token = user.githubAccessToken;
+      print("[OrgRepository] Token present: ${token != null && token.isNotEmpty}");
+      print("[OrgRepository] GitHub username: ${user.githubUsername}");
+
       if (token == null || token.isEmpty) {
         return left(const Failures('GitHub access token not found'));
       }
@@ -23,15 +26,23 @@ class OrgRepositoryImpl implements OrgRepository {
       );
 
       final orgs = await githubApiDataSource.getOrganizations(user.githubUsername);
+      print("[OrgRepository] Fetched ${orgs.length} orgs");
+      for (final org in orgs) {
+        print("[OrgRepository] Org: ${org.login}, role: ${org.role}, state: ${org.state}");
+      }
+
       final ownOrgs = orgs
           .where((org) => org.role == 'admin' || org.role == 'owner')
           .toList();
+      print("[OrgRepository] Admin/owner orgs: ${ownOrgs.length}");
 
       return right(user.copyWith(
         allOrganizations: orgs,
         ownOrganizations: ownOrgs,
       ));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print("[OrgRepository] ERROR: $e");
+      print("[OrgRepository] STACK TRACE: $stackTrace");
       return left(Failures(e.toString()));
     }
   }

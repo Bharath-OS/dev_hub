@@ -9,12 +9,26 @@ class GithubApiDataSource {
 
   Future<List<GitHubOrgInfo>> getOrganizations(String githubUsername) async {
     final organizationEndpoint = "/user/orgs";
+    print("[GithubApiDataSource] Fetching orgs from $organizationEndpoint");
     final response =
-        await _services.get(endpoint: organizationEndpoint) as List<dynamic>;
-    if (response.isNotEmpty) {
+        await _services.get(endpoint: organizationEndpoint);
+    print("[GithubApiDataSource] Raw response type: ${response.runtimeType}");
+    print("[GithubApiDataSource] Raw response: $response");
+
+    final List<dynamic> orgList = response is List ? response : [];
+    print("[GithubApiDataSource] Parsed org count: ${orgList.length}");
+
+    if (orgList.isNotEmpty) {
       final List<GitHubOrgInfo> orgs = [];
-      for (final org in response) {
-        final orgUserRole = await getUserRoleInOrg(org['login'], githubUsername);
+      for (final org in orgList) {
+        print("[GithubApiDataSource] Processing org: $org");
+        print("[GithubApiDataSource] org['id'] type: ${org['id'].runtimeType}, value: ${org['id']}");
+        print("[GithubApiDataSource] org['login'] type: ${org['login'].runtimeType}, value: ${org['login']}");
+        print("[GithubApiDataSource] org['avatar_url'] type: ${org['avatar_url'].runtimeType}, value: ${org['avatar_url']}");
+
+        final orgUserRole = await getUserRoleInOrg(org['login'].toString(), githubUsername);
+        print("[GithubApiDataSource] Role for ${org['login']}: $orgUserRole");
+
         orgs.add(
           GitHubOrgInfo(
             id: org['id'].toString(),
@@ -25,6 +39,7 @@ class GithubApiDataSource {
           ),
         );
       }
+      print("[GithubApiDataSource] Returning ${orgs.length} orgs");
       return orgs;
     }
     return [];
@@ -35,10 +50,16 @@ class GithubApiDataSource {
     String githubUsername,
   ) async {
     final membershipEndpoint = "/orgs/$orgName/memberships/$githubUsername";
+    print("[GithubApiDataSource] Fetching role from $membershipEndpoint");
     final response =
-        await _services.get(endpoint: membershipEndpoint)
-            as Map<String, dynamic>;
-    return {'role': response['role'], 'state': response['state']};
+        await _services.get(endpoint: membershipEndpoint);
+    print("[GithubApiDataSource] Role response: $response");
+
+    final Map<String, dynamic> roleMap = response is Map ? Map.from(response) : {};
+    return {
+      'role': roleMap['role']?.toString() ?? '',
+      'state': roleMap['state']?.toString() ?? '',
+    };
   }
 
 
