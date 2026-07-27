@@ -32,6 +32,42 @@ class UserEntity {
     required this.createdAt,
     required this.lastSeen,
   });
+
+  UserEntity copyWith({
+    String? id,
+    String? githubId,
+    String? githubUsername,
+    String? displayName,
+    String? email,
+    DateTime? createdAt,
+    DateTime? lastSeen,
+    String? avatarUrl,
+    List<GitHubOrgInfo>? allOrganizations,
+    List<GitHubOrgInfo>? ownOrganizations,
+    String? currentOrganizationId,
+    String? currentOrganizationLogin,
+    SubscriptionInfo? subscription,
+    String? fcmToken,
+    String? githubAccessToken,
+  }) {
+    return UserEntity(
+      id: id ?? this.id,
+      githubId: githubId ?? this.githubId,
+      githubUsername: githubUsername ?? this.githubUsername,
+      displayName: displayName ?? this.displayName,
+      email: email ?? this.email,
+      createdAt: createdAt ?? this.createdAt,
+      lastSeen: lastSeen ?? this.lastSeen,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      allOrganizations: allOrganizations ?? this.allOrganizations,
+      ownOrganizations: ownOrganizations ?? this.ownOrganizations,
+      currentOrganizationId: currentOrganizationId ?? this.currentOrganizationId,
+      currentOrganizationLogin: currentOrganizationLogin ?? this.currentOrganizationLogin,
+      subscription: subscription ?? this.subscription,
+      fcmToken: fcmToken ?? this.fcmToken,
+      githubAccessToken: githubAccessToken ?? this.githubAccessToken,
+    );
+  }
 }
 
 class GitHubOrgInfo {
