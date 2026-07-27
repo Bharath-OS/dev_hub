@@ -13,22 +13,21 @@ class GithubApiDataSource {
         await _services.get(endpoint: organizationEndpoint) as List<dynamic>;
     if (response.isNotEmpty) {
       final List<GitHubOrgInfo> orgs = [];
-      response.forEach(
-        (org)
-        async {
-          final orgUserRole = await getUserRoleInOrg(org['login'], githubUsername);
-          orgs.add(
+      for (final org in response) {
+        final orgUserRole = await getUserRoleInOrg(org['login'], githubUsername);
+        orgs.add(
           GitHubOrgInfo(
-              id: org['id'],
-              login: org['login'],
-              avatarUrl: org['avatar_url'],
-              role: orgUserRole['role']!,
-        ),
-      );
-    }
-      );
+            id: org['id'].toString(),
+            login: org['login'].toString(),
+            avatarUrl: org['avatar_url'].toString(),
+            role: orgUserRole['role'],
+            state: orgUserRole['state'],
+          ),
+        );
+      }
       return orgs;
-    } return [];
+    }
+    return [];
   }
 
   Future<Map<String, String>> getUserRoleInOrg(
