@@ -24,7 +24,7 @@ class UserModel extends UserEntity {
       {required UserCredential credential}) {
     return UserModel(
       id: credential.user!.uid,
-      githubId: credential.additionalUserInfo!.profile!['id'],
+      githubId: credential.additionalUserInfo!.profile!['id'].toString(),
       githubUsername: credential.additionalUserInfo!.username!,
       displayName: credential.additionalUserInfo!.username!,
       avatarUrl: credential.user!.photoURL!,
@@ -34,7 +34,7 @@ class UserModel extends UserEntity {
       lastSeen: DateTime.now(),
     );
   }
-
+  @override
   UserModel copyWith({
     String? id,
     String? githubId,
