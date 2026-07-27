@@ -38,7 +38,7 @@ class MemberOnlyScreen extends StatelessWidget {
           } else if (state is AuthMemberOnly) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Still no admin access. Please ask an org owner to upgrade your role.'),
+                content: Text('No workspace invitation found yet. Please ask an admin to add you to a team.'),
                 backgroundColor: AppPalette.info,
               ),
             );
@@ -77,7 +77,7 @@ class MemberOnlyScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xl),
 
                   Text(
-                    'Admin Access Required',
+                    'No Workspace Invitation',
                     style: AppTextStyles.heading.copyWith(
                       color: AppPalette.onSurface,
                     ),
@@ -86,9 +86,8 @@ class MemberOnlyScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.md),
 
                   Text(
-                    'You\'re a member of $orgNames, but you don\'t have admin or owner access in any of them. '
-                    'DevHub requires admin privileges to manage workspaces. '
-                    'Please ask an organization owner to grant you an admin or owner role, then check again.',
+                    'You\'re a member of $orgNames, but you haven\'t been invited to any workspaces yet. '
+                    'Ask an organization admin to add you to a team or send you a workspace invitation, then check again.',
                     style: AppTextStyles.body.copyWith(
                       color: AppPalette.onSurfaceVariant,
                     ),
