@@ -1,6 +1,6 @@
 class UserEntity {
   final String id; // Firebase Auth UID
-  final String githubId; // GitHub numeric ID
+  final int githubId; // GitHub numeric ID
   final String githubUsername; // GitHub login handle
   final String displayName; // GitHub display name
   final String email; // GitHub primary email
@@ -35,11 +35,10 @@ class UserEntity {
 
   UserEntity copyWith({
     String? id,
-    String? githubId,
+    int? githubId,
     String? githubUsername,
     String? displayName,
     String? email,
-    DateTime? createdAt,
     DateTime? lastSeen,
     String? avatarUrl,
     List<GitHubOrgInfo>? allOrganizations,
@@ -56,8 +55,8 @@ class UserEntity {
       githubUsername: githubUsername ?? this.githubUsername,
       displayName: displayName ?? this.displayName,
       email: email ?? this.email,
-      createdAt: createdAt ?? this.createdAt,
       lastSeen: lastSeen ?? this.lastSeen,
+      createdAt: this.createdAt,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       allOrganizations: allOrganizations ?? this.allOrganizations,
       ownOrganizations: ownOrganizations ?? this.ownOrganizations,
@@ -84,6 +83,26 @@ class GitHubOrgInfo {
     this.role,
     this.state,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'login': login,
+      'avatarUrl': avatarUrl,
+      'role': role,
+      'state': state,
+    };
+  }
+
+  factory GitHubOrgInfo.fromMap(Map<String, dynamic> map) {
+    return GitHubOrgInfo(
+      id: map['id'] as String,
+      login: map['login'] as String,
+      avatarUrl: map['avatarUrl'] as String,
+      role: map['role'] as String?,
+      state: map['state'] as String?,
+    );
+  }
 }
 
 class SubscriptionInfo {
@@ -102,4 +121,30 @@ class SubscriptionInfo {
     this.renewsAt,
     this.cancelledAt,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'plan': plan,
+      'razorpaySubscriptionId': razorpaySubscriptionId,
+      'razorpayCustomerId': razorpayCustomerId,
+      'status': status,
+      'renewsAt': renewsAt?.toIso8601String(),
+      'cancelledAt': cancelledAt?.toIso8601String(),
+    };
+  }
+
+  factory SubscriptionInfo.fromMap(Map<String, dynamic> map) {
+    return SubscriptionInfo(
+      plan: map['plan'] as String,
+      razorpaySubscriptionId: map['razorpaySubscriptionId'] as String?,
+      razorpayCustomerId: map['razorpayCustomerId'] as String?,
+      status: map['status'] as String,
+      renewsAt: map['renewsAt'] != null
+          ? DateTime.parse(map['renewsAt'] as String)
+          : null,
+      cancelledAt: map['cancelledAt'] != null
+          ? DateTime.parse(map['cancelledAt'] as String)
+          : null,
+    );
+  }
 }

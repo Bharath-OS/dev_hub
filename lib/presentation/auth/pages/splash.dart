@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../bloc/auth/auth_bloc.dart';
-import '../workspace/workspace.dart';
+import '../../workspace/pages/workspace.dart';
 import 'member_only_screen.dart';
 import 'no_organization_screen.dart';
 import 'register.dart';
@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.bgColor,
+      backgroundColor: AppPalette.primaryContainer,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {

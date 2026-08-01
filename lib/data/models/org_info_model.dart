@@ -1,4 +1,4 @@
-import 'package:dev_hub/domain/entities/user_entity.dart';
+import '../../presentation/auth/domain/entities/user_entity.dart';
 
 class GitHubOrgInfoModel extends GitHubOrgInfo{
   GitHubOrgInfoModel({required super.id, required super.login, required super.avatarUrl, super.role , super.state});

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_constants.dart';
-import '../../../core/constants/app_text_styles.dart';
-import '../../../domain/entities/user_entity.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_text_styles.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../widgets/primary_button.dart';
-import '../workspace/workspace.dart';
+import '../../workspace/pages/workspace.dart';
+import '../domain/entities/user_entity.dart';
 import 'no_organization_screen.dart';
 
 class MemberOnlyScreen extends StatelessWidget {

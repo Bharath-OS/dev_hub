@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_constants.dart';
-import '../../../core/constants/app_text_styles.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/app_text_styles.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../widgets/app_logo_header.dart';
 import '../../widgets/primary_button.dart';
-import '../workspace/workspace.dart';
+import '../../workspace/pages/workspace.dart';
 import 'member_only_screen.dart';
 import 'no_organization_screen.dart';
 

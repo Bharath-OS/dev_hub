@@ -1,28 +1,29 @@
 import 'package:dev_hub/core/errors/failures.dart';
 import 'package:dev_hub/data/datasources/remote/dio_impl.dart';
 import 'package:dev_hub/data/datasources/remote/github_api_data_source.dart';
-import 'package:dev_hub/domain/entities/user_entity.dart';
-import 'package:dev_hub/domain/repository/org/org_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
+import '../../domain/entities/user_entity.dart';
+import '../../domain/repository/org_repository.dart';
+
 class OrgRepositoryImpl implements OrgRepository {
   @override
-  Future<Either<Failures, UserEntity>> fetchOrganizations(UserEntity user) async {
+  Future<Either<Failure, UserEntity>> fetchOrganizations(UserEntity user) async {
     try {
       final token = user.githubAccessToken;
       print("[OrgRepository] Token present: ${token != null && token.isNotEmpty}");
       print("[OrgRepository] GitHub username: ${user.githubUsername}");
 
       if (token == null || token.isEmpty) {
-        return left(const Failures('GitHub access token not found'));
+        return left(Failure('GitHub access token not found'));
       }
 
       final dio = Dio();
       final apiServices = ApiServices(dio, token);
       final githubApiDataSource = GithubApiDataSource(
         userToken: token,
-        _services: apiServices,
+        services: apiServices,
       );
 
       final orgs = await githubApiDataSource.getOrganizations(user.githubUsername);
@@ -43,7 +44,7 @@ class OrgRepositoryImpl implements OrgRepository {
     } catch (e, stackTrace) {
       print("[OrgRepository] ERROR: $e");
       print("[OrgRepository] STACK TRACE: $stackTrace");
-      return left(Failures(e.toString()));
+      return left(Failure(e.toString()));
     }
   }
 }

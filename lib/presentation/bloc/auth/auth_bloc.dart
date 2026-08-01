@@ -1,8 +1,8 @@
-import 'package:dev_hub/domain/entities/user_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/usecases/auth/auth_usecase.dart';
-import '../../../domain/usecases/org/fetch_user_orgs_usecase.dart';
+import '../../auth/domain/entities/user_entity.dart';
+import '../../auth/domain/usecases/auth/auth_usecase.dart';
+import '../../auth/domain/usecases/org/fetch_user_orgs_usecase.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 

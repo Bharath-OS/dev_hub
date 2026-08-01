@@ -1,5 +1,5 @@
-import 'package:dev_hub/domain/entities/user_entity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
   UserModel({
@@ -24,7 +24,7 @@ class UserModel extends UserEntity {
       {required UserCredential credential}) {
     return UserModel(
       id: credential.user!.uid,
-      githubId: credential.additionalUserInfo!.profile!['id'].toString(),
+      githubId: credential.additionalUserInfo!.profile!['id'],
       githubUsername: credential.additionalUserInfo!.username!,
       displayName: credential.additionalUserInfo!.username!,
       avatarUrl: credential.user!.photoURL!,
@@ -37,7 +37,7 @@ class UserModel extends UserEntity {
   @override
   UserModel copyWith({
     String? id,
-    String? githubId,
+    int? githubId,
     String? githubUsername,
     String? displayName,
     String? email,
@@ -67,6 +67,52 @@ class UserModel extends UserEntity {
       subscription: subscription ?? super.subscription,
       fcmToken: fcmToken ?? super.fcmToken,
       githubAccessToken: githubAccessToken ?? super.githubAccessToken,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'githubId': githubId,
+      'githubUsername': githubUsername,
+      'displayName': displayName,
+      'email': email,
+      'createdAt': createdAt.toIso8601String(),
+      'lastSeen': lastSeen.toIso8601String(),
+      'avatarUrl': avatarUrl,
+      'allOrganizations': allOrganizations?.map((org) => org.toMap()).toList(),
+      'ownOrganizations': ownOrganizations?.map((org) => org.toMap()).toList(),
+      'currentOrganizationId': currentOrganizationId,
+      'currentOrganizationLogin': currentOrganizationLogin,
+      'subscription': subscription?.toMap(),
+      'fcmToken': fcmToken,
+      'githubAccessToken': githubAccessToken,
+    };
+  }
+
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      id: map['id'] as String,
+      githubId: map['githubId'] as int,
+      githubUsername: map['githubUsername'] as String,
+      displayName: map['displayName'] as String,
+      email: map['email'] as String,
+      createdAt: DateTime.parse(map['createdAt'] as String),
+      lastSeen: DateTime.parse(map['lastSeen'] as String),
+      avatarUrl: map['avatarUrl'] as String?,
+      allOrganizations: (map['allOrganizations'] as List<dynamic>?)
+          ?.map((org) => GitHubOrgInfo.fromMap(org as Map<String, dynamic>))
+          .toList(),
+      ownOrganizations: (map['ownOrganizations'] as List<dynamic>?)
+          ?.map((org) => GitHubOrgInfo.fromMap(org as Map<String, dynamic>))
+          .toList(),
+      currentOrganizationId: map['currentOrganizationId'] as String?,
+      currentOrganizationLogin: map['currentOrganizationLogin'] as String?,
+      subscription: map['subscription'] != null
+          ? SubscriptionInfo.fromMap(map['subscription'] as Map<String, dynamic>)
+          : null,
+      fcmToken: map['fcmToken'] as String?,
+      githubAccessToken: map['githubAccessToken'] as String?,
     );
   }
 }
