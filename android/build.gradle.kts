@@ -4,7 +4,7 @@ allprojects {
         mavenCentral()
     }
 }
-
+extra["kotlin_version"] = "2.3.0"
 val newBuildDir: Directory =
     rootProject.layout.buildDirectory
         .dir("../../build")
