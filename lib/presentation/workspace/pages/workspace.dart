@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_bottom_sheet.dart';
 import '../../widgets/custom_nav_bar.dart';
-import 'widgets/workspace_search_bar.dart';
-import 'widgets/workspace_filter_chips.dart';
-import 'widgets/workspace_card.dart';
-import 'widgets/create_workspace_bottom_sheet.dart';
+import '../widgets/workspace_search_bar.dart';
+import '../widgets/workspace_filter_chips.dart';
+import '../widgets/workspace_card.dart';
+import '../widgets/create_workspace_bottom_sheet.dart';
 import 'workspace_detail_screen.dart';
 
 class WorkspacePage extends StatefulWidget {
