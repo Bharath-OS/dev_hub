@@ -1,5 +1,5 @@
-class Failures {
+class Failure{
   final String message;
 
-  Failures([this.message = "Unexpected error occured"]);
+  Failure([this.message = "Unexpected error occured"]);
 }
