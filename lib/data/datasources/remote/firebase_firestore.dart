@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_hub/data/datasources/database_contract.dart';
 import '../../../core/errors/failures.dart';
+import '../../../core/params/firestore_params.dart';
 
 class FirestoreService implements Database<FirestoreParams, dynamic> {
   late final FirebaseFirestore _firestore;
@@ -56,10 +57,3 @@ class FirestoreService implements Database<FirestoreParams, dynamic> {
   }
 }
 
-class FirestoreParams {
-  final String collectionPath;
-  final String? id;
-  final Map<String, dynamic>? data;
-
-  FirestoreParams({required this.collectionPath, required this.id, this.data});
-}

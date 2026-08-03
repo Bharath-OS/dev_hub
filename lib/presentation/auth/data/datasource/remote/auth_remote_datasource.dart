@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dev_hub/data/datasources/remote/firebase_firestore.dart';
 import '../../../../../../data/datasources/database_contract.dart';
+import '../../../../../core/params/firestore_params.dart';
 import '../../models/user_model.dart';
 
 class AuthRemoteDatabaseImpl {

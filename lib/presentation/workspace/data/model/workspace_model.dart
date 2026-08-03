@@ -1,4 +1,4 @@
-import 'package:dev_hub/presentation/pages/workspace/domain/entity/workspace_entity.dart';
+import '../../domain/entity/workspace_entity.dart';
 
 class WorkspaceModel extends WorkspaceEntity {
   WorkspaceModel({

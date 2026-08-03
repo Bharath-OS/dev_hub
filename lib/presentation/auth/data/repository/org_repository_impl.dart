@@ -1,7 +1,5 @@
 import 'package:dev_hub/core/errors/failures.dart';
-import 'package:dev_hub/data/datasources/remote/dio_impl.dart';
 import 'package:dev_hub/data/datasources/remote/github_api_data_source.dart';
-import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../domain/entities/user_entity.dart';

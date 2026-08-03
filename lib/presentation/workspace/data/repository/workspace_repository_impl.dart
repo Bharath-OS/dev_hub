@@ -1,8 +1,8 @@
 import 'package:dev_hub/core/errors/failures.dart';
-import 'package:dev_hub/presentation/pages/workspace/data/Datasource/workspace_datasource.dart';
-import 'package:dev_hub/presentation/pages/workspace/domain/entity/workspace_entity.dart';
-import 'package:dev_hub/presentation/pages/workspace/domain/repository/workspace_repo.dart';
 import 'package:fpdart/fpdart.dart';
+import '../../domain/entity/workspace_entity.dart';
+import '../../domain/repository/workspace_repo.dart';
+import '../Datasource/workspace_datasource.dart';
 
 class WorkspaceRepositoryImpl implements WorkspaceRepository{
   final WorkspaceDataSource _dataSource;
