@@ -1,58 +1,88 @@
+import 'package:dev_hub/core/params/api_params.dart';
+import 'package:fpdart/fpdart.dart';
+import '../../../core/errors/failures.dart';
 import '../../../presentation/auth/domain/entities/user_entity.dart';
-import 'dio_impl.dart';
+import 'api_client.dart';
 
 class GithubApiDataSource {
-  final ApiServices services;
+  final ApiClient _client;
 
-  GithubApiDataSource({required this.services});
+  GithubApiDataSource({required ApiClient client}) : _client = client;
 
-  Future<List<GitHubOrgInfo>> getOrganizations(String githubUsername) async {
+  Future<Either<Failure, List<GitHubOrgInfo>>> getOrganizations({
+    required String githubUsername,
+    required String accessToken,
+  }) async {
     final organizationEndpoint = "/user/orgs";
-    final response =
-        await services.get(endpoint: organizationEndpoint);
+    final params = ApiParams(
+      accessToken: accessToken,
+      endpoint: organizationEndpoint,
+    );
+    final result = await _client.get(params);
 
-    final List<dynamic> orgList = response is List ? response : [];
+    return result.fold(
+      (failure) => left(failure),
+      (response) async {
+        final List<dynamic> orgList = response is List ? response : [];
+        if (orgList.isEmpty) return right([]);
 
-    if (orgList.isNotEmpty) {
-      final List<GitHubOrgInfo> orgs = [];
-      for (final org in orgList) {
+        final List<GitHubOrgInfo> orgs = [];
+        for (final org in orgList) {
+          final orgName = org['login'].toString();
+          final roleResult = await getUserRoleInOrg(
+            orgName: orgName,
+            githubUsername: githubUsername,
+            accessToken: accessToken,
+          );
 
-        final orgUserRole = await getUserRoleInOrg(org['login'].toString(), githubUsername);
-
-        orgs.add(
-          GitHubOrgInfo(
-            id: org['id'].toString(),
-            login: org['login'].toString(),
-            avatarUrl: org['avatar_url'].toString(),
-            role: orgUserRole['role'],
-            state: orgUserRole['state'],
-          ),
-        );
-      }
-      return orgs;
-    }
-    return [];
+          roleResult.fold(
+            (_) => null, // Ignore failure for individual org role fetch or handle it
+            (roleMap) {
+              orgs.add(
+                GitHubOrgInfo(
+                  id: org['id'].toString(),
+                  login: orgName,
+                  avatarUrl: org['avatar_url'].toString(),
+                  role: roleMap['role'],
+                  state: roleMap['state'],
+                ),
+              );
+            },
+          );
+        }
+        return right(orgs);
+      },
+    );
   }
 
-  Future<Map<String, String>> getUserRoleInOrg(
-    String orgName,
-    String githubUsername,
-  ) async {
+  Future<Either<Failure, Map<String, String>>> getUserRoleInOrg({
+    required String orgName,
+    required String githubUsername,
+    required String accessToken,
+  }) async {
     final membershipEndpoint = "/orgs/$orgName/memberships/$githubUsername";
-    print("[GithubApiDataSource] Fetching role from $membershipEndpoint");
-    final response =
-        await services.get(endpoint: membershipEndpoint);
-    print("[GithubApiDataSource] Role response: $response");
+    final result = await _client.get(
+      ApiParams(accessToken: accessToken, endpoint: membershipEndpoint),
+    );
 
-    final Map<String, dynamic> roleMap = response is Map ? Map.from(response) : {};
-    return {
-      'role': roleMap['role']?.toString() ?? '',
-      'state': roleMap['state']?.toString() ?? '',
-    };
+    return result.fold(
+      (failure) => left(failure),
+      (response) {
+        final Map<String, dynamic> roleMap =
+            response is Map ? Map.from(response) : {};
+        return right({
+          'role': roleMap['role']?.toString() ?? '',
+          'state': roleMap['state']?.toString() ?? '',
+        });
+      },
+    );
   }
 
-  Future<void> inviteMember({required String memberName}) async{
-
+  Future<Either<Failure, void>> inviteMember({
+    required String memberName,
+    required String accessToken,
+  }) async {
+    // Implementation for invitation
+    return left(Failure("Not implemented yet"));
   }
-
 }
