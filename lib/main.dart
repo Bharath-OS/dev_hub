@@ -20,27 +20,38 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'data/datasources/remote/firebase_firestore.dart';
 
 void main() async {
   final storage = FlutterSecureStorage(
     // aOptions: AndroidOptions.biometric(enforceBiometrics: true)
   );
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  final dio = Dio();
+  final localDatabase = SecureStorageImpl(storage);
+  final githubApiDataSource = GithubApiDataSource(
+    client: DioClient(
+      dio: dio,
+      baseURL: "https://api.github.com/",
+      db: localDatabase,
+    ),
+  );
+
   final authUseCase = AuthUseCase(
     AuthRepositoryImpl(
       remoteDB: AuthRemoteDatabaseImpl(
         FirestoreService(FirebaseFirestore.instance),
       ),
       authenticate: AuthenticationImpl(FirebaseAuth.instance),
-      localDB: AuthLocalDataSourceImpl(SecureStorageImpl(storage)), githubApiService: GithubApiDataSource(services: ApiServices(Dio(), _githubToken)),
+      localDB: AuthLocalDataSourceImpl(localDatabase),
+      githubApiService: githubApiDataSource,
     ),
   );
-  final fetchUserOrgsUseCase = FetchUserOrgsUseCase(OrgRepositoryImpl());
+  final fetchUserOrgsUseCase = FetchUserOrgsUseCase(
+    OrgRepositoryImpl(githubApiDataSource),
+  );
 
   runApp(
     MultiBlocProvider(
