@@ -17,16 +17,32 @@ class AuthRepositoryImpl implements AuthRepository{
   AuthRepositoryImpl({required this.remoteDB,required this.authenticate,required this.localDB, required this.githubApiService});
 
   @override
-  Future<Either<Failure, UserEntity>> githubAuthentication() async{
-    try{
+  Future<Either<Failure, UserEntity>> githubAuthentication() async {
+    try {
       final userModel = await authenticate.authenticate();
-      final String accessToken = userModel.githubAccessToken!;
-      userModel.copyWith(allOrganizations: await githubApiService.getOrganizations(userModel.githubUsername));
+      final String? accessToken = userModel.githubAccessToken;
+
+      if (accessToken == null || accessToken.isEmpty) {
+        return left(Failure("GitHub authentication failed: Access token missing"));
+      }
+
       await localDB.updateToken(accessToken: accessToken);
-      await remoteDB.saveUser(user: userModel);
-      return right(userModel);
-    }catch(e){
-        return left(Failure(e.toString()));
+
+      final orgsResult = await githubApiService.getOrganizations(
+        githubUsername: userModel.githubUsername,
+        accessToken: accessToken,
+      );
+
+      return orgsResult.fold(
+        (failure) => left(failure),
+        (orgs) async {
+          final updatedUser = userModel.copyWith(allOrganizations: orgs);
+          await remoteDB.saveUser(user: updatedUser);
+          return right(updatedUser);
+        },
+      );
+    } catch (e) {
+      return left(Failure(e.toString()));
     }
   }
 

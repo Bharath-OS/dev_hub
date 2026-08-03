@@ -20,14 +20,9 @@ class AuthLocalDataSourceImpl{
     return await _local.isContains(_key);
   }
 
-  Future<void> updateToken({required String accessToken}) async{
-    bool isContains = await isTokenContains();
-    if(isContains){
-      await _local.delete(_key);
-      await _local.save(_key, accessToken);
-      return;
-    }
-    await _local.save(_key,accessToken);
+  Future<void> updateToken({required String accessToken}) async {
+    // LocalDatabase.save (SecureStorage.write) already overwrites the existing value.
+    await _local.save(_key, accessToken);
   }
 
 }
