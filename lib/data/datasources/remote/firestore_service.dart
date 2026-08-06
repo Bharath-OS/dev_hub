@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dev_hub/data/datasources/database_contract.dart';
+import 'package:dev_hub/data/datasources/database_interface.dart';
 import '../../../core/errors/failures.dart';
 import '../../../core/params/firestore_params.dart';
 

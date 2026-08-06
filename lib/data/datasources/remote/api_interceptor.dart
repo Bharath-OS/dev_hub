@@ -1,5 +1,5 @@
 import 'package:dev_hub/core/constants/local_storage_keys.dart';
-import 'package:dev_hub/data/datasources/local/local_db_contract.dart';
+import 'package:dev_hub/data/datasources/local/local_database_interface.dart';
 import 'package:dio/dio.dart';
 
 class ApiInterceptor extends Interceptor {

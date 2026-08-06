@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dev_hub/core/params/api_params.dart';
-import 'package:dev_hub/data/datasources/local/local_db_contract.dart';
+import 'package:dev_hub/data/datasources/local/local_database_interface.dart';
 import 'package:dev_hub/data/datasources/remote/api_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';

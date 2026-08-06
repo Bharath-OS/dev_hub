@@ -1,31 +1,37 @@
+import 'package:dev_hub/core/params/secure_storage_params.dart';
+import 'package:dev_hub/data/datasources/database_interface.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../core/errors/failures.dart';
-import 'local_db_contract.dart';
 
-class SecureStorageImpl implements LocalDatabase {
+class SecureStorageImpl implements Database<SecureStorageParams, dynamic> {
   final FlutterSecureStorage storage;
 
   SecureStorageImpl(this.storage);
 
   @override
-  Future<void> save(String key, dynamic value) async {
+  Future<void> create(SecureStorageParams params) async {
     try {
-      await storage.write(key: key, value: value);
+      await storage.write(key: params.key, value: params.value);
     } catch (e) {
       throw Failure('Something went wrong when storing.');
     }
   }
 
   @override
-  Future<String?> readData(String key) async {
+  Future<void> update(SecureStorageParams params) async{
+    await create(params);
+  }
+
+  @override
+  Future<String?> read(SecureStorageParams params) async {
     try {
-      return await storage.read(key: key);
+      return await storage.read(key: params.key);
     } catch (e) {
       throw Failure();
     }
   }
 
-  @override
+  // @override
   Future<void> clearAll() async{
     try{
       await storage.deleteAll();
@@ -35,18 +41,27 @@ class SecureStorageImpl implements LocalDatabase {
   }
 
   @override
-  Future<void> delete(String key) async{
+  Future<void> delete(SecureStorageParams params) async{
     try{
-      await storage.delete(key: key);
+      await storage.delete(key: params.key);
+    }catch(e){
+      throw Failure();
+    }
+  }
+
+  // @override
+  Future<bool> isContains(String key)async{
+    try{
+      return await storage.containsKey(key: key);
     }catch(e){
       throw Failure();
     }
   }
 
   @override
-  Future<bool> isContains(String key)async{
+  Future<Map<String, String>?> readAll(SecureStorageParams params) async {
     try{
-      return await storage.containsKey(key: key);
+      return await storage.readAll();
     }catch(e){
       throw Failure();
     }
