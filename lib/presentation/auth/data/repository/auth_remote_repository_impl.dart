@@ -1,5 +1,6 @@
 import 'package:dev_hub/core/errors/failures.dart';
 import 'package:dev_hub/data/datasources/remote/github_api_data_source.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
@@ -7,14 +8,20 @@ import '../datasource/local/local_datasource_impl.dart';
 import '../datasource/remote/auth_data_source.dart';
 import '../datasource/remote/auth_remote_datasource.dart';
 
-class AuthRepositoryImpl implements AuthRepository{
-
+class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource authenticate;
   final AuthLocalDataSourceImpl localDB;
   final AuthRemoteDatabaseImpl remoteDB;
   final GithubApiDataSource githubApiService;
+  final FirebaseAuth firebaseAuth;
 
-  AuthRepositoryImpl({required this.remoteDB,required this.authenticate,required this.localDB, required this.githubApiService});
+  AuthRepositoryImpl({
+    required this.remoteDB,
+    required this.authenticate,
+    required this.localDB,
+    required this.githubApiService,
+    required this.firebaseAuth,
+  });
 
   @override
   Future<Either<Failure, UserEntity>> githubAuthentication() async {
@@ -23,7 +30,9 @@ class AuthRepositoryImpl implements AuthRepository{
       final String? accessToken = userModel.githubAccessToken;
 
       if (accessToken == null || accessToken.isEmpty) {
-        return left(Failure("GitHub authentication failed: Access token missing"));
+        return left(
+          Failure("GitHub authentication failed: Access token missing"),
+        );
       }
 
       await localDB.updateToken(accessToken: accessToken);
@@ -33,26 +42,30 @@ class AuthRepositoryImpl implements AuthRepository{
         accessToken: accessToken,
       );
 
-      return orgsResult.fold(
-        (failure) => left(failure),
-        (orgs) async {
-          final updatedUser = userModel.copyWith(allOrganizations: orgs);
-          await remoteDB.saveUser(user: updatedUser);
-          return right(updatedUser);
-        },
-      );
+      return orgsResult.fold((failure) => left(failure), (orgs) async {
+        final updatedUser = userModel.copyWith(allOrganizations: orgs);
+        await remoteDB.saveUser(user: updatedUser);
+        return right(updatedUser);
+      });
     } catch (e) {
       return left(Failure(e.toString()));
     }
   }
 
-  // @override
-  // Future<Either<Failure, UserEntity?>> currentUser()async{
-  //   try{
-  //     final user = await remoteDB.getUser();
-  //     return user;
-  //   }catch(e){
-  //     return left(Failure(e.toString()));
-  //   }
-  // }
+  @override
+  Future<Either<Failure, UserEntity?>> getCurrentUser() async {
+    try {
+      final currentFirebaseUser = firebaseAuth.currentUser;
+
+      if (currentFirebaseUser == null) return right(null);
+
+      final userModel = await remoteDB.getUser(id: currentFirebaseUser.uid);
+
+      if (userModel == null) return right(null);
+
+      return right(userModel);
+    } catch (e) {
+      return left(Failure('Failed to restore session: ${e.toString()}'));
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../../../../data/datasources/database_contract.dart';
+import '../../../../../../data/datasources/database_interface.dart';
 import '../../../../../core/params/firestore_params.dart';
 import '../../models/user_model.dart';
 
@@ -18,16 +18,30 @@ class AuthRemoteDatabaseImpl {
   }
 
   Future<UserModel?> getUser({required String id}) async {
-    final DocumentSnapshot<Map<String, dynamic>?> docSnapshot = await _dbService.read(
-      FirestoreParams(id: id, collectionPath: _collectionPath),
-    );
+    final DocumentSnapshot<Map<String, dynamic>?> docSnapshot = await _dbService
+        .read(FirestoreParams(id: id, collectionPath: _collectionPath));
     final data = docSnapshot.data();
     if (data == null) return null; // covers both non-existent and empty
 
     return UserModel.fromMap(data);
   }
 
+  Future<void> updateUser({
+    required String userId,
+    required Map<String, dynamic> fields,
+  }) async {
+    await _dbService.update(
+      FirestoreParams(
+        collectionPath: _collectionPath,
+        id: userId,
+        data: fields,
+      ),
+    );
+  }
+
   Future<void> deleteUser({required String id}) async {
-    await _dbService.delete(FirestoreParams(collectionPath: _collectionPath, id: id));
+    await _dbService.delete(
+      FirestoreParams(collectionPath: _collectionPath, id: id),
+    );
   }
 }

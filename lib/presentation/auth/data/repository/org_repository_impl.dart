@@ -4,14 +4,18 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repository/org_repository.dart';
+import '../datasource/remote/auth_remote_datasource.dart';
 
 class OrgRepositoryImpl implements OrgRepository {
   final GithubApiDataSource _githubApiDataSource;
+  final AuthRemoteDatabaseImpl _remoteDB;
 
-  OrgRepositoryImpl(this._githubApiDataSource);
+  OrgRepositoryImpl(this._githubApiDataSource, this._remoteDB);
 
   @override
-  Future<Either<Failure, UserEntity>> fetchOrganizations(UserEntity user) async {
+  Future<Either<Failure, UserEntity>> fetchOrganizations(
+    UserEntity user,
+  ) async {
     final token = user.githubAccessToken;
 
     if (token == null || token.isEmpty) {
@@ -23,18 +27,43 @@ class OrgRepositoryImpl implements OrgRepository {
       accessToken: token,
     );
 
-    return result.fold(
-      (failure) => left(failure),
-      (orgs) {
-        final ownOrgs = orgs
-            .where((org) => org.role == 'admin' || org.role == 'owner')
-            .toList();
+    return result.fold((failure) => left(failure), (orgs) {
+      final ownOrgs = orgs
+          .where((org) => org.role == 'admin' || org.role == 'owner')
+          .toList();
 
-        return right(user.copyWith(
-          allOrganizations: orgs,
-          ownOrganizations: ownOrgs,
-        ));
-      },
-    );
+      return right(
+        user.copyWith(allOrganizations: orgs, ownOrganizations: ownOrgs),
+      );
+    });
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> updateCurrentOrganization({
+    required UserEntity user,
+    required GitHubOrgInfo selectedOrg,
+  }) async {
+    try {
+      final now = DateTime.now();
+
+      await _remoteDB.updateUser(
+        userId: user.id,
+        fields: {
+          'currentOrganizationId': selectedOrg.id,
+          'currentOrganizationLogin': selectedOrg.login,
+          'lastSeen': now.toIso8601String(),
+        },
+      );
+
+      final updatedUser = user.copyWith(
+        currentOrganizationId: selectedOrg.id,
+        currentOrganizationLogin: selectedOrg.login,
+        lastSeen: now,
+      );
+
+      return right(updatedUser);
+    } catch (e) {
+      return left(Failure('Failed to update organization: ${e.toString()}'));
+    }
   }
 }
