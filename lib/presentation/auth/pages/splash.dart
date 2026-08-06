@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../bloc/auth/auth_bloc.dart';
-import '../../workspace/pages/workspace.dart';
+import 'choose_org_screen.dart';
 import 'member_only_screen.dart';
 import 'no_organization_screen.dart';
 import 'register.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -46,7 +47,9 @@ class _SplashScreenState extends State<SplashScreen> {
             context.read<AuthBloc>().add(AuthOrgVerification(state.user));
           } else if (state is AuthOrgAdminSuccess) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const WorkspacePage()),
+              MaterialPageRoute(
+                builder: (_) => ChooseOrgScreen(user: state.user),
+              ),
             );
           } else if (state is AuthNoOrganization) {
             Navigator.of(context).pushReplacement(

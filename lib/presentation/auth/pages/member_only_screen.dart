@@ -5,8 +5,8 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../widgets/primary_button.dart';
-import '../../workspace/pages/workspace.dart';
 import '../domain/entities/user_entity.dart';
+import 'choose_org_screen.dart';
 import 'no_organization_screen.dart';
 
 class MemberOnlyScreen extends StatelessWidget {
@@ -16,10 +16,8 @@ class MemberOnlyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final orgNames = user.allOrganizations
-            ?.map((org) => org.login)
-            .join(', ') ??
-        '';
+    final orgNames =
+        user.allOrganizations?.map((org) => org.login).join(', ') ?? '';
 
     return Scaffold(
       backgroundColor: AppPalette.background,
@@ -27,7 +25,9 @@ class MemberOnlyScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is AuthOrgAdminSuccess) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const WorkspacePage()),
+              MaterialPageRoute(
+                builder: (_) => ChooseOrgScreen(user: state.user),
+              ),
             );
           } else if (state is AuthNoOrganization) {
             Navigator.of(context).pushReplacement(
@@ -38,7 +38,9 @@ class MemberOnlyScreen extends StatelessWidget {
           } else if (state is AuthMemberOnly) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('No workspace invitation found yet. Please ask an admin to add you to a team.'),
+                content: Text(
+                  'No workspace invitation found yet. Please ask an admin to add you to a team.',
+                ),
                 backgroundColor: AppPalette.info,
               ),
             );
@@ -98,9 +100,7 @@ class MemberOnlyScreen extends StatelessWidget {
                   PrimaryButton(
                     text: 'Refresh',
                     onPressed: () {
-                      context.read<AuthBloc>().add(
-                        AuthOrgVerification(user),
-                      );
+                      context.read<AuthBloc>().add(AuthOrgVerification(user));
                     },
                     icon: const Icon(
                       Icons.refresh_rounded,

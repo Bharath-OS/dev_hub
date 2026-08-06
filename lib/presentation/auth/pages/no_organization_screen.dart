@@ -5,8 +5,8 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../widgets/primary_button.dart';
-import '../../workspace/pages/workspace.dart';
 import '../domain/entities/user_entity.dart';
+import 'choose_org_screen.dart';
 import 'member_only_screen.dart';
 
 class NoOrganizationScreen extends StatelessWidget {
@@ -22,7 +22,9 @@ class NoOrganizationScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is AuthOrgAdminSuccess) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const WorkspacePage()),
+              MaterialPageRoute(
+                builder: (_) => ChooseOrgScreen(user: state.user),
+              ),
             );
           } else if (state is AuthNoOrganization) {
             ScaffoldMessenger.of(context).showSnackBar(

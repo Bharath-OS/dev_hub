@@ -8,7 +8,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../widgets/app_logo_header.dart';
-import '../../workspace/pages/workspace.dart';
+import 'choose_org_screen.dart';
 import 'member_only_screen.dart';
 import 'no_organization_screen.dart';
 
@@ -62,7 +62,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
             );
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => const WorkspacePage(),
+                builder: (context) => ChooseOrgScreen(user: state.user),
               ),
             );
           } else if (state is AuthNoOrganization) {
