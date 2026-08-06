@@ -2,15 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/domain/entities/user_entity.dart';
 import '../../auth/domain/usecases/auth/auth_usecase.dart';
+import '../../auth/domain/usecases/auth/get_current_user_usecase.dart';
 import '../../auth/domain/usecases/org/fetch_user_orgs_usecase.dart';
+import '../../auth/domain/usecases/org/update_organization_usecase.dart';
+import '../../../core/usecases/usecase.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthUseCase _authUseCase;
   final FetchUserOrgsUseCase _fetchUserOrgsUseCase;
+  final GetCurrentUserUseCase _getCurrentUserUseCase;
+  final UpdateOrganizationUseCase _updateOrganizationUseCase;
 
-  AuthBloc(this._authUseCase, this._fetchUserOrgsUseCase) : super(AuthInitial()) {
+  AuthBloc(
+    this._authUseCase,
+    this._fetchUserOrgsUseCase,
+    this._getCurrentUserUseCase,
+    this._updateOrganizationUseCase,
+  ) : super(AuthInitial()) {
+    // ── GitHub OAuth login ────────────────────────────────────────────────────
     on<AuthSignUp>((event, emit) async {
       emit(AuthLoading());
       final result = await _authUseCase.call(null);
@@ -20,31 +31,52 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
     });
 
+    // ── Org membership check after login ─────────────────────────────────────
     on<AuthOrgVerification>((event, emit) async {
       emit(AuthOrgVerifying(event.user));
-      print("[AuthBloc] AuthOrgVerification started for ${event.user.githubUsername}");
       final result = await _fetchUserOrgsUseCase.call(event.user);
       result.fold(
-        (failure) {
-          print("[AuthBloc] AuthOrgVerification FAILED: ${failure.message}");
-          emit(AuthOrgError(failure.message, event.user));
-        },
+        (failure) => emit(AuthOrgError(failure.message, event.user)),
         (user) {
           final allOrgs = user.allOrganizations;
           final ownOrgs = user.ownOrganizations;
-          print("[AuthBloc] allOrgs: ${allOrgs?.length ?? 0}, ownOrgs: ${ownOrgs?.length ?? 0}");
 
           if (allOrgs == null || allOrgs.isEmpty) {
-            print("[AuthBloc] Emitting AuthNoOrganization");
             emit(AuthNoOrganization(user));
           } else if (ownOrgs != null && ownOrgs.isNotEmpty) {
-            print("[AuthBloc] Emitting AuthOrgAdminSuccess");
             emit(AuthOrgAdminSuccess(user));
           } else {
-            print("[AuthBloc] Emitting AuthMemberOnly");
             emit(AuthMemberOnly(user));
           }
         },
+      );
+    });
+
+    on<AuthCheckSession>((event, emit) async {
+      emit(AuthSessionChecking());
+      final result = await _getCurrentUserUseCase.call(NoParams());
+      result.fold(
+        (failure) {
+          emit(AuthSessionNotFound());
+        },
+        (user) {
+          if (user == null) {
+            emit(AuthSessionNotFound());
+          } else {
+            emit(AuthSessionRestored(user));
+          }
+        },
+      );
+    });
+
+    on<AuthUpdateOrganization>((event, emit) async {
+      emit(AuthOrgUpdating());
+      final result = await _updateOrganizationUseCase.call(
+        UpdateOrgParams(user: event.user, selectedOrg: event.selectedOrg),
+      );
+      result.fold(
+        (failure) => emit(AuthOrgUpdateFailure(failure.message)),
+        (updatedUser) => emit(AuthOrgUpdateSuccess(updatedUser)),
       );
     });
   }
