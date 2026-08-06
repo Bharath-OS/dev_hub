@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_hub/core/params/firestore_params.dart';
-import '../../../../../data/datasources/remote/firebase_firestore.dart';
+import '../../../../../data/datasources/remote/firestore_service.dart';
 import '../../domain/entity/workspace_entity.dart';
 import '../model/workspace_model.dart';
 

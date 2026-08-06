@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_hub/core/constants/theme.dart';
-import 'package:dev_hub/data/datasources/local/local_data_source.dart';
-import 'package:dev_hub/data/datasources/remote/dio_impl.dart';
+import 'package:dev_hub/data/datasources/remote/dio_client.dart';
 import 'package:dev_hub/data/datasources/remote/github_api_data_source.dart';
 import 'package:dev_hub/presentation/auth/data/datasource/local/local_datasource_impl.dart';
 import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_data_source.dart';
@@ -9,7 +8,9 @@ import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_remote_dat
 import 'package:dev_hub/presentation/auth/data/repository/auth_remote_repository_impl.dart';
 import 'package:dev_hub/presentation/auth/data/repository/org_repository_impl.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/auth/auth_usecase.dart';
+import 'package:dev_hub/presentation/auth/domain/usecases/auth/get_current_user_usecase.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/org/fetch_user_orgs_usecase.dart';
+import 'package:dev_hub/presentation/auth/domain/usecases/org/update_organization_usecase.dart';
 import 'package:dev_hub/presentation/auth/pages/splash.dart';
 import 'package:dev_hub/firebase_options.dart';
 import 'package:dev_hub/presentation/bloc/auth/auth_bloc.dart';
@@ -20,7 +21,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'data/datasources/remote/firebase_firestore.dart';
+import 'data/datasources/local/secure_store_impl.dart';
+import 'data/datasources/remote/firestore_service.dart';
 
 void main() async {
   final storage = FlutterSecureStorage(
@@ -39,25 +41,35 @@ void main() async {
     ),
   );
 
-  final authUseCase = AuthUseCase(
-    AuthRepositoryImpl(
-      remoteDB: AuthRemoteDatabaseImpl(
-        FirestoreService(FirebaseFirestore.instance),
-      ),
-      authenticate: AuthenticationImpl(FirebaseAuth.instance),
-      localDB: AuthLocalDataSourceImpl(localDatabase),
-      githubApiService: githubApiDataSource,
-    ),
+  final remoteDatabase = AuthRemoteDatabaseImpl(
+    FirestoreService(FirebaseFirestore.instance),
   );
-  final fetchUserOrgsUseCase = FetchUserOrgsUseCase(
-    OrgRepositoryImpl(githubApiDataSource),
+
+  final authRepository = AuthRepositoryImpl(
+    remoteDB: remoteDatabase,
+    authenticate: AuthenticationImpl(FirebaseAuth.instance),
+    localDB: AuthLocalDataSourceImpl(SecureStorageImpl(storage)),
+    githubApiService: githubApiDataSource,
+    firebaseAuth: FirebaseAuth.instance,
   );
+
+  final orgRepository = OrgRepositoryImpl(githubApiDataSource, remoteDatabase);
+
+  final authUseCase = AuthUseCase(authRepository);
+  final fetchUserOrgsUseCase = FetchUserOrgsUseCase(orgRepository);
+  final getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
+  final updateOrganizationUseCase = UpdateOrganizationUseCase(orgRepository);
 
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => AuthBloc(authUseCase, fetchUserOrgsUseCase),
+          create: (_) => AuthBloc(
+            authUseCase,
+            fetchUserOrgsUseCase,
+            getCurrentUserUseCase,
+            updateOrganizationUseCase,
+          ),
         ),
       ],
       child: MyApp(),
