@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/domain/entities/user_entity.dart';
-import '../../auth/domain/usecases/auth/auth_usecase.dart';
-import '../../auth/domain/usecases/auth/get_current_user_usecase.dart';
-import '../../auth/domain/usecases/org/fetch_user_orgs_usecase.dart';
-import '../../auth/domain/usecases/org/update_organization_usecase.dart';
+import '../../auth/domain/usecases/auth_usecases/auth_usecase.dart';
+import '../../auth/domain/usecases/auth_usecases/get_current_user_usecase.dart';
+import '../../auth/domain/usecases/org_usecases/fetch_user_orgs_usecase.dart';
+import '../../auth/domain/usecases/org_usecases/update_organization_usecase.dart';
 import '../../../core/usecases/usecase.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
