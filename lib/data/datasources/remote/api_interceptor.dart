@@ -1,9 +1,9 @@
 import 'package:dev_hub/core/constants/local_storage_keys.dart';
-import 'package:dev_hub/data/datasources/local/local_database_interface.dart';
 import 'package:dio/dio.dart';
+import '../database_interface.dart';
 
 class ApiInterceptor extends Interceptor {
-  final LocalDatabase _db;
+  final DatabaseInterface _db;
   ApiInterceptor(this._db);
 
   @override
@@ -13,7 +13,7 @@ class ApiInterceptor extends Interceptor {
   ) async {
     // Only add authorization if not already present
     if (!options.headers.containsKey('Authorization')) {
-      final accessToken = await _db.readData(Keys.accessTokenKey);
+      final accessToken = await _db.read(LocalStorageKeys.accessTokenKey);
       if (accessToken != null && accessToken.isNotEmpty) {
         options.headers['Authorization'] = 'token $accessToken';
       }

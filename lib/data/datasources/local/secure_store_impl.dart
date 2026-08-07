@@ -3,7 +3,7 @@ import 'package:dev_hub/data/datasources/database_interface.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../core/errors/failures.dart';
 
-class SecureStorageImpl implements Database<SecureStorageParams, dynamic> {
+class SecureStorageImpl implements DatabaseInterface<SecureStorageParams, dynamic> {
   final FlutterSecureStorage storage;
 
   SecureStorageImpl(this.storage);

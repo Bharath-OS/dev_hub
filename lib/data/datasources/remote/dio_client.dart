@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:dev_hub/core/params/api_params.dart';
-import 'package:dev_hub/data/datasources/local/local_database_interface.dart';
 import 'package:dev_hub/data/datasources/remote/api_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../../core/errors/failures.dart';
 import 'api_client.dart';
+import '../database_interface.dart';
 
 class DioClient implements ApiClient {
   final Dio _dio;
   final String _baseURL;
-  final LocalDatabase _db;
+  final DatabaseInterface _db;
 
   DioClient({required this._dio, required this._baseURL,required this._db}) {
     _configureDio();

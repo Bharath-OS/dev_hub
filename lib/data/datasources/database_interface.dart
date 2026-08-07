@@ -1,4 +1,4 @@
-abstract interface class Database<DataParams, ReturnDataType> {
+abstract interface class DatabaseInterface<DataParams, ReturnDataType> {
   Future<void> create(DataParams params);
 
   Future<ReturnDataType> read(DataParams params);

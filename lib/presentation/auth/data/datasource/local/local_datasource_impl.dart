@@ -3,11 +3,11 @@ import 'package:dev_hub/core/params/secure_storage_params.dart';
 import '../../../../../data/datasources/database_interface.dart';
 
 class AuthLocalDataSourceImpl {
-  final Database _db;
+  final DatabaseInterface _db;
 
   AuthLocalDataSourceImpl(this._db);
 
-  final String _key = Keys.accessTokenKey;
+  final String _key = LocalStorageKeys.accessTokenKey;
 
   Future<void> storeUserToken({required String userToken}) async {
     final params = SecureStorageParams(key: _key, value: userToken);
@@ -19,10 +19,8 @@ class AuthLocalDataSourceImpl {
   }
 
   Future<bool> isTokenContains() async {
-    final data = await _db.read(_key);
-    if(data == null){
-      return false;
-    }return true;
+    final data = await _db.read(SecureStorageParams(key: _key));
+    return data != null;
   }
 
   Future<void> updateToken({required String accessToken}) async {

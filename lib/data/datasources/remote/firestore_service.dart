@@ -3,7 +3,7 @@ import 'package:dev_hub/data/datasources/database_interface.dart';
 import '../../../core/errors/failures.dart';
 import '../../../core/params/firestore_params.dart';
 
-class FirestoreService implements Database<FirestoreParams, dynamic> {
+class FirestoreService implements DatabaseInterface<FirestoreParams, dynamic> {
   late final FirebaseFirestore _firestore;
 
   FirestoreService(FirebaseFirestore firestore) : _firestore = firestore;

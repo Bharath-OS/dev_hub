@@ -4,7 +4,7 @@ import '../../../../../core/params/firestore_params.dart';
 import '../../models/user_model.dart';
 
 class AuthRemoteDatabaseImpl {
-  final Database _dbService;
+  final DatabaseInterface _dbService;
   final String _collectionPath = 'Users';
   AuthRemoteDatabaseImpl(this._dbService);
 
