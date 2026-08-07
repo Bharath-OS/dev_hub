@@ -27,14 +27,31 @@ class OrgRepositoryImpl implements OrgRepository {
       accessToken: token,
     );
 
-    return result.fold((failure) => left(failure), (orgs) {
+    return result.fold((failure) => left(failure), (orgs) async {
       final ownOrgs = orgs
           .where((org) => org.role == 'admin' || org.role == 'owner')
           .toList();
 
-      return right(
-        user.copyWith(allOrganizations: orgs, ownOrganizations: ownOrgs),
+      final updatedUser = user.copyWith(
+        allOrganizations: orgs,
+        ownOrganizations: ownOrgs,
       );
+
+      // Persist the fetched organizations to the remote database
+      try {
+        await _remoteDB.updateUser(
+          userId: user.id,
+          fields: {
+            'allOrganizations': orgs.map((e) => e.toMap()).toList(),
+            'ownOrganizations': ownOrgs.map((e) => e.toMap()).toList(),
+          },
+        );
+      } catch (e) {
+        // We log the error but still return the updated user object as we have the data in memory
+        print("[OrgRepository] Failed to persist orgs: $e");
+      }
+
+      return right(updatedUser);
     });
   }
 

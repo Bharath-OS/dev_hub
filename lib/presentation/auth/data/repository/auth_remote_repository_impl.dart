@@ -1,5 +1,5 @@
 import 'package:dev_hub/core/errors/failures.dart';
-import 'package:dev_hub/data/datasources/remote/github_api_data_source.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../domain/entities/user_entity.dart';
@@ -12,14 +12,12 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource authenticate;
   final AuthLocalDataSourceImpl localDB;
   final AuthRemoteDatabaseImpl remoteDB;
-  final GithubApiDataSource githubApiService;
   final FirebaseAuth firebaseAuth;
 
   AuthRepositoryImpl({
     required this.remoteDB,
     required this.authenticate,
     required this.localDB,
-    required this.githubApiService,
     required this.firebaseAuth,
   });
 
@@ -35,18 +33,13 @@ class AuthRepositoryImpl implements AuthRepository {
         );
       }
 
+      // Save token locally for subsequent API calls
       await localDB.updateToken(accessToken: accessToken);
 
-      final orgsResult = await githubApiService.getOrganizations(
-        githubUsername: userModel.githubUsername,
-        accessToken: accessToken,
-      );
+      // Save the basic user profile to the remote database
+      await remoteDB.saveUser(user: userModel);
 
-      return orgsResult.fold((failure) => left(failure), (orgs) async {
-        final updatedUser = userModel.copyWith(allOrganizations: orgs);
-        await remoteDB.saveUser(user: updatedUser);
-        return right(updatedUser);
-      });
+      return right(userModel);
     } catch (e) {
       return left(Failure(e.toString()));
     }

@@ -7,10 +7,10 @@ import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_data_sourc
 import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_remote_datasource.dart';
 import 'package:dev_hub/presentation/auth/data/repository/auth_remote_repository_impl.dart';
 import 'package:dev_hub/presentation/auth/data/repository/org_repository_impl.dart';
-import 'package:dev_hub/presentation/auth/domain/usecases/auth/auth_usecase.dart';
-import 'package:dev_hub/presentation/auth/domain/usecases/auth/get_current_user_usecase.dart';
-import 'package:dev_hub/presentation/auth/domain/usecases/org/fetch_user_orgs_usecase.dart';
-import 'package:dev_hub/presentation/auth/domain/usecases/org/update_organization_usecase.dart';
+import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/auth_usecase.dart';
+import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/get_current_user_usecase.dart';
+import 'package:dev_hub/presentation/auth/domain/usecases/org_usecases/fetch_user_orgs_usecase.dart';
+import 'package:dev_hub/presentation/auth/domain/usecases/org_usecases/update_organization_usecase.dart';
 import 'package:dev_hub/presentation/auth/pages/splash.dart';
 import 'package:dev_hub/firebase_options.dart';
 import 'package:dev_hub/presentation/bloc/auth/auth_bloc.dart';
@@ -48,8 +48,7 @@ void main() async {
   final authRepository = AuthRepositoryImpl(
     remoteDB: remoteDatabase,
     authenticate: AuthenticationImpl(FirebaseAuth.instance),
-    localDB: AuthLocalDataSourceImpl(SecureStorageImpl(storage)),
-    githubApiService: githubApiDataSource,
+    localDB: AuthLocalDataSourceImpl(localDatabase),
     firebaseAuth: FirebaseAuth.instance,
   );
 
