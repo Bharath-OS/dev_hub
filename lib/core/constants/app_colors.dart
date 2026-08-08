@@ -5,7 +5,7 @@ class AppPalette {
   AppPalette._();
 
   // Core Brand Colors
-  static const Color primary = Color(0xFF1E00A9);
+  static const Color primary = Color(0xFF2D1ACE);
   static const Color onPrimary = Color(0xFFFFFFFF);
   static const Color primaryContainer = Color(0xFF3525CD);
   static const Color onPrimaryContainer = Color(0xFFB1AFFF);

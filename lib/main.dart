@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_hub/core/constants/local_storage_keys.dart';
 import 'package:dev_hub/core/constants/theme.dart';
 import 'package:dev_hub/data/datasources/remote/dio_client.dart';
 import 'package:dev_hub/data/datasources/remote/github_api_data_source.dart';
-import 'package:dev_hub/presentation/auth/data/datasource/local/local_datasource_impl.dart';
-import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_data_source.dart';
-import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_remote_datasource.dart';
-import 'package:dev_hub/presentation/auth/data/repository/auth_remote_repository_impl.dart';
+import 'package:dev_hub/presentation/auth/data/datasource/local/auth_local_database_impl.dart';
+import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_remote_data_source.dart';
+import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_remote_database_impl.dart';
+import 'package:dev_hub/presentation/auth/data/repository/auth_repository_impl.dart';
 import 'package:dev_hub/presentation/auth/data/repository/org_repository_impl.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/auth_usecase.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/get_current_user_usecase.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/org_usecases/fetch_user_orgs_usecase.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/org_usecases/update_organization_usecase.dart';
-import 'package:dev_hub/presentation/auth/pages/splash.dart';
+import 'package:dev_hub/presentation/auth/pages/splash_screen.dart';
 import 'package:dev_hub/firebase_options.dart';
 import 'package:dev_hub/presentation/bloc/auth/auth_bloc.dart';
 import 'package:dio/dio.dart';
@@ -21,7 +22,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'data/datasources/local/secure_store_impl.dart';
+import 'data/datasources/local/secure_storage_impl.dart';
 import 'data/datasources/remote/firestore_service.dart';
 
 void main() async {
@@ -37,7 +38,10 @@ void main() async {
     client: DioClient(
       dio: dio,
       baseURL: "https://api.github.com/",
-      db: localDatabase,
+      localDB: AuthLocalDatabaseImpl(
+        db: SecureStorageImpl(storage),
+        keys: LocalStorageKeys(),
+      ),
     ),
   );
 
@@ -47,12 +51,15 @@ void main() async {
 
   final authRepository = AuthRepositoryImpl(
     remoteDB: remoteDatabase,
-    authenticate: AuthenticationImpl(FirebaseAuth.instance),
-    localDB: AuthLocalDataSourceImpl(localDatabase),
+    authService: AuthenticationImpl(FirebaseAuth.instance),
+    localDB: AuthLocalDatabaseImpl(db: localDatabase, keys: LocalStorageKeys()),
     firebaseAuth: FirebaseAuth.instance,
   );
 
-  final orgRepository = OrgRepositoryImpl(githubApiDataSource, remoteDatabase);
+  final orgRepository = OrgRepositoryImpl(
+    githubApiDataSource: githubApiDataSource,
+    remoteDB: remoteDatabase,
+  );
 
   final authUseCase = AuthUseCase(authRepository);
   final fetchUserOrgsUseCase = FetchUserOrgsUseCase(orgRepository);
