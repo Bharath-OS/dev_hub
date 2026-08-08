@@ -22,7 +22,8 @@ class OrgDropdownSelector extends StatelessWidget {
       initialValue: selectedOrg,
       onChanged: onChanged,
       isExpanded: true,
-      itemHeight: 100, // This height will now be respected because isDense is false
+      isDense: false,
+      itemHeight: 80, // This height will now be respected because isDense is false
       icon: const Icon(
         Icons.keyboard_arrow_down_rounded,
         color: AppPalette.outline,
@@ -30,10 +31,7 @@ class OrgDropdownSelector extends StatelessWidget {
       ),
       dropdownColor: AppPalette.surfaceContainerLowest,
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: 0, // Removed vertical padding to let content height control it
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         filled: true,
         fillColor: AppPalette.surfaceContainerLowest,
         hintText: 'Select an organization',
@@ -53,10 +51,11 @@ class OrgDropdownSelector extends StatelessWidget {
       ),
       selectedItemBuilder: (BuildContext context) {
         return organizations.map<Widget>((GitHubOrgInfo org) {
-          return Container(
+          return SizedBox(
             height: 100,
-            alignment: Alignment.center,
+            // alignment: Alignment.center,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Avatar
                 Container(
@@ -143,7 +142,7 @@ class OrgDropdownSelector extends StatelessWidget {
         return DropdownMenuItem<GitHubOrgInfo>(
           value: org,
           child: Container(
-            height: 100,
+            height: 150,
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Row(
               children: [
