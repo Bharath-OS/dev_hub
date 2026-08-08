@@ -5,6 +5,8 @@ import '../../models/user_model.dart';
 abstract interface class AuthRemoteDataSource {
   Future<UserModel> authenticate();
 
+  User? getCurrentUser();
+
   Future<void> signOut();
 }
 
@@ -46,6 +48,11 @@ class AuthenticationImpl implements AuthRemoteDataSource {
   @override
   Future<void> signOut() async{
     await _firebaseAuth.signOut();
+  }
+
+  @override
+  User? getCurrentUser() {
+    return _firebaseAuth.currentUser;
   }
 
 }

@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_remote_database_interface.dart';
 import '../../../../../../data/datasources/database_interface.dart';
 import '../../../../../core/params/firestore_params.dart';
 import '../../models/user_model.dart';
 
-class AuthRemoteDatabaseImpl {
+class AuthRemoteDatabaseImpl implements AuthRemoteDatabaseInterface{
   final DatabaseInterface _dbService;
   final String _collectionPath = 'Users';
   AuthRemoteDatabaseImpl(this._dbService);
 
+  @override
   Future<void> saveUser({required UserModel user}) async {
     final params = FirestoreParams(
       collectionPath: _collectionPath,
@@ -17,6 +19,7 @@ class AuthRemoteDatabaseImpl {
     await _dbService.create(params);
   }
 
+  @override
   Future<UserModel?> getUser({required String id}) async {
     final DocumentSnapshot<Map<String, dynamic>?> docSnapshot = await _dbService
         .read(FirestoreParams(id: id, collectionPath: _collectionPath));
@@ -26,6 +29,7 @@ class AuthRemoteDatabaseImpl {
     return UserModel.fromMap(data);
   }
 
+  @override
   Future<void> updateUser({
     required String userId,
     required Map<String, dynamic> fields,
@@ -39,6 +43,7 @@ class AuthRemoteDatabaseImpl {
     );
   }
 
+  @override
   Future<void> deleteUser({required String id}) async {
     await _dbService.delete(
       FirestoreParams(collectionPath: _collectionPath, id: id),

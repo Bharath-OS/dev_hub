@@ -4,18 +4,21 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repository/org_repository.dart';
-import '../datasource/remote/auth_remote_datasource.dart';
+import '../datasource/remote/auth_remote_database_impl.dart';
 
 class OrgRepositoryImpl implements OrgRepository {
   final GithubApiDataSource _githubApiDataSource;
   final AuthRemoteDatabaseImpl _remoteDB;
 
-  OrgRepositoryImpl(this._githubApiDataSource, this._remoteDB);
+  OrgRepositoryImpl({required this._githubApiDataSource,required this._remoteDB});
 
   @override
   Future<Either<Failure, UserEntity>> fetchOrganizations(
     UserEntity user,
   ) async {
+    if(user.allOrganizations != null){
+      return right(user);
+    }
     final token = user.githubAccessToken;
 
     if (token == null || token.isEmpty) {
@@ -80,6 +83,7 @@ class OrgRepositoryImpl implements OrgRepository {
 
       return right(updatedUser);
     } catch (e) {
+      if (e is Failure) return left(e);
       return left(Failure('Failed to update organization: ${e.toString()}'));
     }
   }
