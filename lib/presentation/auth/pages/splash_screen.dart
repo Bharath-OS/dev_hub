@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -6,8 +5,7 @@ import '../../bloc/auth/auth_bloc.dart';
 import 'choose_org_screen.dart';
 import 'member_only_screen.dart';
 import 'no_organization_screen.dart';
-import 'register.dart';
-
+import 'auth_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -27,23 +25,29 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 3));
     if (!mounted) return;
 
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const AuthScreen()),
-      );
-    } else {
-      context.read<AuthBloc>().add(AuthSignUp());
-    }
+    // final user = FirebaseAuth.instance.currentUser;
+    // if (user == null) {
+    //   Navigator.of(context).pushReplacement(
+    //     MaterialPageRoute(builder: (_) => const AuthScreen()),
+    //   );
+    // } else {
+    //   context.read<AuthBloc>().add(AuthSignUp());
+    // }
+    context.read<AuthBloc>().add(AuthCheckSession());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.primaryContainer,
+      backgroundColor: AppPalette.primary,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthSuccess) {
+          if (state is AuthSessionNotFound) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => AuthScreen()),
+            );
+          } else if (state is AuthSessionRestored) {
             context.read<AuthBloc>().add(AuthOrgVerification(state.user));
           } else if (state is AuthOrgAdminSuccess) {
             Navigator.of(context).pushReplacement(
@@ -70,9 +74,22 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         },
         child: Center(
-          child: SizedBox(
-            width: 150,
-            child: Image.asset('assets/app_icon/app_logo.png'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 150,
+                child: Image.asset('assets/app_icon/app_logo.png'),
+              ),
+              SizedBox(
+                width: 150,
+                child: LinearProgressIndicator(
+                  color: AppPalette.white,
+                  minHeight: 6,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+            ],
           ),
         ),
       ),

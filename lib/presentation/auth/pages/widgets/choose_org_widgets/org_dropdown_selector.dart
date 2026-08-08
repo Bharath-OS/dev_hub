@@ -31,7 +31,7 @@ class OrgDropdownSelector extends StatelessWidget {
       dropdownColor: AppPalette.surfaceContainerLowest,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
+          horizontal: AppSpacing.sm,
           vertical: 0, // Removed vertical padding to let content height control it
         ),
         filled: true,
