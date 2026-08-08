@@ -5,9 +5,9 @@ import '../../../presentation/auth/domain/entities/user_entity.dart';
 import 'api_client.dart';
 
 class GithubApiDataSource {
-  final ApiClient _client;
+  final ApiClientInterface _client;
 
-  GithubApiDataSource({required ApiClient client}) : _client = client;
+  GithubApiDataSource({required ApiClientInterface client}) : _client = client;
 
   Future<Either<Failure, List<GitHubOrgInfo>>> getOrganizations({
     required String githubUsername,

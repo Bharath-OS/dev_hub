@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'package:dev_hub/core/params/api_params.dart';
 import 'package:dev_hub/data/datasources/remote/api_interceptor.dart';
+import 'package:dev_hub/presentation/auth/data/datasource/local/auth_local_database_interface.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../../core/errors/failures.dart';
 import 'api_client.dart';
-import '../database_interface.dart';
 
-class DioClient implements ApiClient {
+class DioClient implements ApiClientInterface {
   final Dio _dio;
   final String _baseURL;
-  final DatabaseInterface _db;
+  final AuthLocalDatabaseInterface _localDB;
 
-  DioClient({required this._dio, required this._baseURL,required this._db}) {
+  DioClient({required this._dio, required this._baseURL,required this._localDB}) {
     _configureDio();
   }
 
@@ -20,7 +20,7 @@ class DioClient implements ApiClient {
     _dio.options.baseUrl = _baseURL;
     _dio.options.connectTimeout = Duration(seconds: 5);
     _dio.options.receiveTimeout = Duration(seconds: 3);
-    _dio.interceptors.add(ApiInterceptor(_db));
+    _dio.interceptors.add(ApiInterceptor(_localDB));
   }
 
   @override
@@ -40,9 +40,9 @@ class DioClient implements ApiClient {
       if (error.response != null) {
         return _verifyResponse(error.response!);
       }
-      return right(Failure(error.message ?? "Connection error"));
+      return left(Failure(error.message ?? "Connection error"));
     } catch (e) {
-      return right(Failure(e.toString()));
+      return left(Failure(e.toString()));
     }
   }
 
@@ -63,9 +63,9 @@ class DioClient implements ApiClient {
       if (error.response != null) {
         return _verifyResponse(error.response!);
       }
-      return right(Failure(error.message ?? "Connection error"));
+      return left(Failure(error.message ?? "Connection error"));
     } catch (e) {
-      return right(Failure(e.toString()));
+      return left(Failure(e.toString()));
     }
   }
 
