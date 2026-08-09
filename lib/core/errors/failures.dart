@@ -6,3 +6,11 @@ class Failure {
   @override
   String toString() => message;
 }
+
+class AuthFailure extends Failure{
+  AuthFailure(super.message);
+}
+
+class LoggFailure extends Failure{
+  LoggFailure(super.message);
+}
