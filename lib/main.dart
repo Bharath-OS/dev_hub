@@ -9,6 +9,7 @@ import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_remote_dat
 import 'package:dev_hub/presentation/auth/data/repository/auth_repository_impl.dart';
 import 'package:dev_hub/presentation/auth/data/repository/org_repository_impl.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/auth_usecase.dart';
+import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/check_log_in_usecase.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/get_current_user_usecase.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/org_usecases/fetch_user_orgs_usecase.dart';
 import 'package:dev_hub/presentation/auth/domain/usecases/org_usecases/update_organization_usecase.dart';
@@ -49,22 +50,26 @@ void main() async {
     FirestoreService(FirebaseFirestore.instance),
   );
 
+  final localDatabaseImpl = AuthLocalDatabaseImpl(db: localDatabase, keys: LocalStorageKeys());
+
   final authRepository = AuthRepositoryImpl(
     remoteDB: remoteDatabase,
     authService: AuthenticationImpl(FirebaseAuth.instance),
-    localDB: AuthLocalDatabaseImpl(db: localDatabase, keys: LocalStorageKeys()),
+    localDB: localDatabaseImpl,
     firebaseAuth: FirebaseAuth.instance,
   );
 
   final orgRepository = OrgRepositoryImpl(
     githubApiDataSource: githubApiDataSource,
     remoteDB: remoteDatabase,
+    localDB: localDatabaseImpl
   );
 
   final authUseCase = AuthUseCase(authRepository);
   final fetchUserOrgsUseCase = FetchUserOrgsUseCase(orgRepository);
   final getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
   final updateOrganizationUseCase = UpdateOrganizationUseCase(orgRepository);
+  final checkLoginUseCase = CheckLogInUsecase(authRepository);
 
   runApp(
     MultiBlocProvider(
@@ -75,6 +80,7 @@ void main() async {
             fetchUserOrgsUseCase,
             getCurrentUserUseCase,
             updateOrganizationUseCase,
+            checkLoginUseCase
           ),
         ),
       ],
