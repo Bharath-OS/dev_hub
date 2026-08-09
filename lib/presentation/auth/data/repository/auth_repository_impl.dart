@@ -51,21 +51,35 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity?>> getCurrentUser() async {
     try {
-      final isAuthenticate = await _localDB.getIsAuthenticated();
-      if(isAuthenticate.toString() == 'false'){
-        return left(Failure('User hasn\'t authenticated.'));
-      }
+
+      //checks if the user is authenticated or not.
+      final isAuthenticated = await _localDB.getIsAuthenticated();
+      if(!isAuthenticated) return right(null);
+
+      //checks Firebase session.
       final currentFirebaseUser = _firebaseAuth.currentUser;
+      if (currentFirebaseUser == null) {
+        await _localDB.setIsAuthenticated(false);
+        return right(null);
+      }
 
-      if (currentFirebaseUser == null) return right(null);
-
+      //verifies firestore document exists.
       final userModel = await _remoteDB.getUser(id: currentFirebaseUser.uid);
-
-      if (userModel == null) return right(null);
+      if (userModel == null) {
+        await _localDB.setIsAuthenticated(false);
+        await _localDB.setIsLoggedIn(value: false);
+        return left(AuthFailure("User data not found in database."));
+      }
 
       return right(userModel);
     } catch (e) {
+      if (e is Failure) return left(e);
       return left(Failure('Failed to restore session: ${e.toString()}'));
     }
+  }
+
+  @override
+  Future<bool> isLoggedIn() async {
+    return await _localDB.getIsLoggedIn();
   }
 }
