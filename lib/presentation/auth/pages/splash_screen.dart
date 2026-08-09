@@ -49,6 +49,8 @@ class _SplashScreenState extends State<SplashScreen> {
             );
           } else if (state is AuthSessionRestored) {
             context.read<AuthBloc>().add(AuthOrgVerification(state.user));
+          } else if (state is AuthSuccess) {
+            context.read<AuthBloc>().add(AuthOrgVerification(state.user));
           } else if (state is AuthOrgAdminSuccess) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(

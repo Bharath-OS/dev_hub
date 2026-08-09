@@ -1,3 +1,4 @@
+import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/check_log_in_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/domain/entities/user_entity.dart';
@@ -14,12 +15,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FetchUserOrgsUseCase _fetchUserOrgsUseCase;
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final UpdateOrganizationUseCase _updateOrganizationUseCase;
+  final CheckLogInUsecase _checkLogin;
 
   AuthBloc(
     this._authUseCase,
     this._fetchUserOrgsUseCase,
     this._getCurrentUserUseCase,
     this._updateOrganizationUseCase,
+      this._checkLogin,
   ) : super(AuthInitial()) {
     // ── GitHub OAuth login ────────────────────────────────────────────────────
     on<AuthSignUp>((event, emit) async {
@@ -56,14 +59,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthSessionChecking());
       final result = await _getCurrentUserUseCase.call(NoParams());
       result.fold(
-        (failure) {
-          emit(AuthSessionNotFound());
-        },
-        (user) {
+        (failure) => emit(AuthSessionNotFound()),
+        (user) async {
           if (user == null) {
             emit(AuthSessionNotFound());
           } else {
-            emit(AuthSessionRestored(user));
+            final isLoggedIn = await _checkLogin.call(NoParams());
+            if (isLoggedIn) {
+              emit(AuthSessionRestored(user));
+            } else {
+              emit(AuthSuccess(user));
+            }
           }
         },
       );
@@ -74,10 +80,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await _updateOrganizationUseCase.call(
         UpdateOrgParams(user: event.user, selectedOrg: event.selectedOrg),
       );
-      result.fold(
-        (failure) => emit(AuthOrgUpdateFailure(failure.message)),
-        (updatedUser) => emit(AuthOrgUpdateSuccess(updatedUser)),
-      );
+      result.fold((failure) => emit(AuthOrgUpdateFailure(failure.message)), (
+        updatedUser,
+      ) {
+        emit(AuthOrgUpdateSuccess(updatedUser));
+
+      });
     });
   }
 }
