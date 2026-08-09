@@ -1,5 +1,6 @@
 import 'package:dev_hub/core/errors/failures.dart';
 import 'package:dev_hub/data/datasources/remote/github_api_data_source.dart';
+import 'package:dev_hub/presentation/auth/data/datasource/local/auth_local_database_impl.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../domain/entities/user_entity.dart';
@@ -9,8 +10,9 @@ import '../datasource/remote/auth_remote_database_impl.dart';
 class OrgRepositoryImpl implements OrgRepository {
   final GithubApiDataSource _githubApiDataSource;
   final AuthRemoteDatabaseImpl _remoteDB;
+  final AuthLocalDatabaseImpl _localDB;
 
-  OrgRepositoryImpl({required this._githubApiDataSource,required this._remoteDB});
+  OrgRepositoryImpl({required this._githubApiDataSource,required this._remoteDB, required this._localDB});
 
   @override
   Future<Either<Failure, UserEntity>> fetchOrganizations(
@@ -27,7 +29,7 @@ class OrgRepositoryImpl implements OrgRepository {
 
     final result = await _githubApiDataSource.getOrganizations(
       githubUsername: user.githubUsername,
-      accessToken: token,
+      accessToken: token
     );
 
     return result.fold((failure) => left(failure), (orgs) async {
@@ -54,6 +56,10 @@ class OrgRepositoryImpl implements OrgRepository {
         print("[OrgRepository] Failed to persist orgs: $e");
       }
 
+      //checks if the user is member, completes the authentication by setting the login flag to true.
+      if(updatedUser.allOrganizations!.isNotEmpty && updatedUser.ownOrganizations!.isEmpty){
+        await _localDB.setIsLoggedIn(value: true);
+      }
       return right(updatedUser);
     });
   }
@@ -80,6 +86,9 @@ class OrgRepositoryImpl implements OrgRepository {
         currentOrganizationLogin: selectedOrg.login,
         lastSeen: now,
       );
+
+      //by choosing an organization, the user completes the authentication. So sets this flag to true.
+      await _localDB.setIsLoggedIn(value: true);
 
       return right(updatedUser);
     } catch (e) {
