@@ -59,4 +59,15 @@ class AuthLocalDatabaseImpl implements AuthLocalDatabaseInterface {
     );
     return value == 'true';
   }
+
+  @override
+  Future<void> setIsLoggedIn({required bool value}) async{
+    await _db.create(SecureStorageParams(key: _keys.isLoggedInKey,value: value.toString()));
+  }
+
+  @override
+  Future<bool> getIsLoggedIn() async{
+    final value = await _db.read(SecureStorageParams(key: _keys.isLoggedInKey));
+    return value == 'true';
+  }
 }

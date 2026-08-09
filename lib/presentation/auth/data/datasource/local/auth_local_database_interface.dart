@@ -7,4 +7,6 @@ abstract interface class AuthLocalDatabaseInterface {
   Future<void> setData({required String key, required dynamic value});
   Future<void> setIsAuthenticated(bool value);
   Future<bool> getIsAuthenticated();
+  Future<void> setIsLoggedIn({required bool value});
+  Future<bool> getIsLoggedIn();
 }
