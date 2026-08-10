@@ -58,8 +58,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthCheckSession>((event, emit) async {
       emit(AuthSessionChecking());
       final result = await _getCurrentUserUseCase.call(NoParams());
-      result.fold(
-        (failure) => emit(AuthSessionNotFound()),
+      await result.fold(
+        (failure) async => emit(AuthSessionNotFound()),
         (user) async {
           if (user == null) {
             emit(AuthSessionNotFound());
@@ -80,12 +80,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await _updateOrganizationUseCase.call(
         UpdateOrgParams(user: event.user, selectedOrg: event.selectedOrg),
       );
-      result.fold((failure) => emit(AuthOrgUpdateFailure(failure.message)), (
-        updatedUser,
-      ) {
-        emit(AuthOrgUpdateSuccess(updatedUser));
-
-      });
+      result.fold(
+        (failure) => emit(AuthOrgUpdateFailure(failure.message)),
+        (updatedUser) => emit(AuthOrgUpdateSuccess(updatedUser)),
+      );
     });
   }
 }

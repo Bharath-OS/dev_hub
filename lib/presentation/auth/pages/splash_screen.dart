@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../bloc/auth/auth_bloc.dart';
+import '../../workspace/pages/workspace.dart';
 import 'choose_org_screen.dart';
 import 'member_only_screen.dart';
 import 'no_organization_screen.dart';
@@ -24,15 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void _checkAuthAndNavigate() async {
     await Future.delayed(const Duration(seconds: 3));
     if (!mounted) return;
-
-    // final user = FirebaseAuth.instance.currentUser;
-    // if (user == null) {
-    //   Navigator.of(context).pushReplacement(
-    //     MaterialPageRoute(builder: (_) => const AuthScreen()),
-    //   );
-    // } else {
-    //   context.read<AuthBloc>().add(AuthSignUp());
-    // }
     context.read<AuthBloc>().add(AuthCheckSession());
   }
 
@@ -48,7 +40,9 @@ class _SplashScreenState extends State<SplashScreen> {
               MaterialPageRoute(builder: (_) => AuthScreen()),
             );
           } else if (state is AuthSessionRestored) {
-            context.read<AuthBloc>().add(AuthOrgVerification(state.user));
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const WorkspacePage()),
+            );
           } else if (state is AuthSuccess) {
             context.read<AuthBloc>().add(AuthOrgVerification(state.user));
           } else if (state is AuthOrgAdminSuccess) {
