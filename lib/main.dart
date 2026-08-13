@@ -1,21 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_hub/core/constants/local_storage_keys.dart';
 import 'package:dev_hub/core/constants/theme.dart';
-import 'package:dev_hub/data/datasources/remote/dio_client.dart';
-import 'package:dev_hub/data/datasources/remote/github_api_data_source.dart';
-import 'package:dev_hub/presentation/auth/data/datasource/local/auth_local_database_impl.dart';
-import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_remote_data_source.dart';
-import 'package:dev_hub/presentation/auth/data/datasource/remote/auth_remote_database_impl.dart';
-import 'package:dev_hub/presentation/auth/data/repository/auth_repository_impl.dart';
-import 'package:dev_hub/presentation/auth/data/repository/org_repository_impl.dart';
-import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/auth_usecase.dart';
-import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/check_log_in_usecase.dart';
-import 'package:dev_hub/presentation/auth/domain/usecases/auth_usecases/get_current_user_usecase.dart';
-import 'package:dev_hub/presentation/auth/domain/usecases/org_usecases/fetch_user_orgs_usecase.dart';
-import 'package:dev_hub/presentation/auth/domain/usecases/org_usecases/update_organization_usecase.dart';
-import 'package:dev_hub/presentation/auth/pages/splash_screen.dart';
 import 'package:dev_hub/firebase_options.dart';
-import 'package:dev_hub/presentation/bloc/auth/auth_bloc.dart';
+import 'package:dev_hub/shared/data/datasources/local/secure_storage_impl.dart';
+import 'package:dev_hub/shared/data/datasources/remote/dio_client.dart';
+import 'package:dev_hub/shared/data/datasources/remote/firestore_service.dart';
+import 'package:dev_hub/shared/data/datasources/remote/github_api_data_source.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +13,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'data/datasources/local/secure_storage_impl.dart';
-import 'data/datasources/remote/firestore_service.dart';
+
+import 'features/auth/data/datasource/local/auth_local_database_impl.dart';
+import 'features/auth/data/datasource/remote/auth_remote_data_source.dart';
+import 'features/auth/data/datasource/remote/auth_remote_database_impl.dart';
+import 'features/auth/data/repository/auth_repository_impl.dart';
+import 'features/auth/data/repository/org_repository_impl.dart';
+import 'features/auth/domain/usecases/auth_usecases/auth_usecase.dart';
+import 'features/auth/domain/usecases/auth_usecases/check_log_in_usecase.dart';
+import 'features/auth/domain/usecases/auth_usecases/get_current_user_usecase.dart';
+import 'features/auth/domain/usecases/org_usecases/fetch_user_orgs_usecase.dart';
+import 'features/auth/domain/usecases/org_usecases/update_organization_usecase.dart';
+import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/auth/presentation/pages/splash_screen.dart';
 
 void main() async {
   final storage = FlutterSecureStorage(
