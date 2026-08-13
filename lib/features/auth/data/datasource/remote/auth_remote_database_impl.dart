@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../../../core/params/firestore_params.dart';
 import '../../../../../shared/data/datasources/database_interface.dart';
 import '../../models/user_model.dart';
 import 'auth_remote_database_interface.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthRemoteDatabaseImpl implements AuthRemoteDatabaseInterface{
   final DatabaseInterface _dbService;

@@ -1,4 +1,4 @@
-import 'package:dev_hub/presentation/pages/user_profile/presentation/widgets/profile_tile_item.dart';
+import 'package:dev_hub/features/profile/presentation/widgets/profile_tile_item.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
 

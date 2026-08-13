@@ -1,7 +1,7 @@
+import 'package:dev_hub/features/auth/domain/entities/user_entity.dart';
+import 'package:dev_hub/features/auth/presentation/pages/choose_org_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:dev_hub/presentation/auth/pages/choose_org_screen.dart';
-import 'package:dev_hub/presentation/auth/domain/entities/user_entity.dart';
 
 void main() {
   testWidgets('ChooseOrgScreen renders without overflow', (
