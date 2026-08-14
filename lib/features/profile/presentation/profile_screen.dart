@@ -1,10 +1,10 @@
-import 'package:dev_hub/features/user_profile/presentation/widgets/account_section.dart';
-import 'package:dev_hub/features/user_profile/presentation/widgets/admin_section.dart';
-import 'package:dev_hub/features/user_profile/presentation/widgets/current_organization_section.dart';
-import 'package:dev_hub/features/user_profile/presentation/widgets/logout_section.dart';
-import 'package:dev_hub/features/user_profile/presentation/widgets/profile_footer_section.dart';
-import 'package:dev_hub/features/user_profile/presentation/widgets/profile_header_section.dart';
-import 'package:dev_hub/features/user_profile/presentation/widgets/subscription_section.dart';
+import 'package:dev_hub/features/profile/presentation/widgets/account_section.dart';
+import 'package:dev_hub/features/profile/presentation/widgets/admin_section.dart';
+import 'package:dev_hub/features/profile/presentation/widgets/current_organization_section.dart';
+import 'package:dev_hub/features/profile/presentation/widgets/logout_section.dart';
+import 'package:dev_hub/features/profile/presentation/widgets/profile_footer_section.dart';
+import 'package:dev_hub/features/profile/presentation/widgets/profile_header_section.dart';
+import 'package:dev_hub/features/profile/presentation/widgets/subscription_section.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 
