@@ -3,7 +3,7 @@ import '../../../../../core/errors/failures.dart';
 import '../entity/workspace_entity.dart';
 
 abstract interface class WorkspaceRepository {
-  Future<void> createWorkspace(WorkspaceEntity params);
+  Future<Either<Failure, WorkspaceEntity>> createWorkspace(WorkspaceParams params);
 
-  Future<Either<void, Failure>> updateWorkspace(WorkspaceEntity updated);
+  Future<Either<Failure, WorkspaceEntity>> updateWorkspace(WorkspaceParams updated);
 }

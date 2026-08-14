@@ -4,17 +4,27 @@ import 'package:fpdart/fpdart.dart';
 import '../entity/workspace_entity.dart';
 import '../repository/workspace_repo.dart';
 
-class CreateWorkspace implements UseCase<void, WorkspaceEntity> {
+class CreateWorkspaceUsecase implements UseCase<WorkspaceEntity, WorkspaceParams> {
   final WorkspaceRepository repo;
-  CreateWorkspace(this.repo);
+  CreateWorkspaceUsecase(this.repo);
 
   @override
-  Future<Either<Failure, void>> call(WorkspaceEntity params) async {
+  Future<Either<Failure,WorkspaceEntity>> call(WorkspaceParams params) async {
     try {
-      await repo.createWorkspace(params);
-      return right(null);
+      return await repo.createWorkspace(params);
     } catch (e) {
       return left(Failure(e.toString()));
     }
+  }
+}
+
+class UpdateWorkspaceUsecase implements UseCase<WorkspaceEntity, WorkspaceParams>{
+  final WorkspaceRepository _repository;
+  UpdateWorkspaceUsecase(this._repository);
+
+  @override
+  Future<Either<Failure, WorkspaceEntity>> call(WorkspaceParams params) {
+    // TODO: implement call
+    throw UnimplementedError();
   }
 }

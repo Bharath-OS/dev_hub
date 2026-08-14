@@ -6,9 +6,11 @@ import '../model/workspace_model.dart';
 
 abstract interface class WorkspaceDataSource {
   //create workspace method
-  Future<void> createWorkspace(WorkspaceEntity params);
+  Future<WorkspaceModel> createWorkspace(WorkspaceParams params);
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getWorkspaceStream();
+
+  Future<WorkspaceModel> updateWorkspace(WorkspaceParams params);
 }
 
 class WorkspaceDatasourceImpl implements WorkspaceDataSource {
@@ -17,7 +19,7 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
   WorkspaceDatasourceImpl(this._firestoreService);
 
   @override
-  Future<void> createWorkspace(WorkspaceEntity params) async {
+  Future<WorkspaceModel> createWorkspace(WorkspaceParams params) async {
     final workspace = WorkspaceModel(
       name: params.name,
       id: params.id,
@@ -32,6 +34,7 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
           data: workspace.toFirestore(),
         ),
       );
+      return workspace;
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -42,5 +45,28 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
     return _firestoreService.readAll(
       FirestoreParams(collectionPath: collectionPath),
     );
+  }
+
+  @override
+  Future<WorkspaceModel> updateWorkspace(WorkspaceParams params) async {
+    final updatedWorkspaceModel = WorkspaceModel(
+      name: params.name,
+      id: params.id,
+      orgId: params.orgId,
+      githubOrgLogin: params.githubOrgLogin,
+      adminId: params.adminId,
+    );
+    try {
+      await _firestoreService.update(
+        FirestoreParams(
+          collectionPath: collectionPath,
+          id: updatedWorkspaceModel.id,
+          data: updatedWorkspaceModel.toFirestore(),
+        ),
+      );
+      return updatedWorkspaceModel;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 }

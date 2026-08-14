@@ -10,13 +10,22 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository{
   WorkspaceRepositoryImpl(this._dataSource);
 
   @override
-  Future<void> createWorkspace(WorkspaceEntity params) async {
-    await _dataSource.createWorkspace(params);
+  Future<Either<Failure,WorkspaceEntity>> createWorkspace(WorkspaceParams params) async {
+    try{
+      final result =  await _dataSource.createWorkspace(params);
+      return right(result);
+    }catch (error){
+      return left(Failure(error.toString()));
+    }
   }
 
   @override
-  Future<Either<void, Failure>> updateWorkspace(WorkspaceEntity updated) {
-    // TODO: implement updateWorkspace
-    throw UnimplementedError();
+  Future<Either<Failure, WorkspaceEntity>> updateWorkspace(WorkspaceParams updatedWorkspace) async{
+    try{
+      final updatedWorkspaceModel = await _dataSource.updateWorkspace(updatedWorkspace);
+      return right(updatedWorkspaceModel);
+    }catch(e){
+      return left(Failure(e.toString()));
+    }
   }
 }
