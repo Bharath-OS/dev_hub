@@ -17,9 +17,6 @@ class OrgRepositoryImpl implements OrgRepository {
   Future<Either<Failure, UserEntity>> fetchOrganizations(
     UserEntity user,
   ) async {
-    if(user.allOrganizations != null){
-      return right(user);
-    }
     final token = user.githubAccessToken;
 
     if (token == null || token.isEmpty) {

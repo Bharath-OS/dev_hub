@@ -71,7 +71,13 @@ class AuthRepositoryImpl implements AuthRepository {
         return left(AuthFailure("User data not found in database."));
       }
 
-      return right(userModel);
+      // 1. Fetch the GitHub access token from local storage
+      final localToken = await _localDB.getToken();
+      
+      // 2. Attach the token to the user model so subsequent API calls don't fail
+      final userWithToken = userModel.copyWith(githubAccessToken: localToken);
+
+      return right(userWithToken);
     } catch (e) {
       if (e is Failure) return left(e);
       return left(Failure('Failed to restore session: ${e.toString()}'));
