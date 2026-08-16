@@ -9,6 +9,11 @@ final class WorkspaceInitial extends WorkspaceState {
   List<Object> get props => [];
 }
 
+final class WorkspaceLoadingState extends WorkspaceState{
+  @override
+  List<Object?> get props => [];
+}
+
 final class WorkspaceCreated extends WorkspaceState{
   final WorkspaceEntity workspaceEntity;
   const WorkspaceCreated(this.workspaceEntity);

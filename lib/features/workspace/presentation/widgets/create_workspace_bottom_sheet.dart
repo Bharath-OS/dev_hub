@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../bloc/workspace_bloc.dart';
 
 class CreateWorkspaceBottomSheet extends StatefulWidget {
   const CreateWorkspaceBottomSheet({super.key});
 
   @override
-  State<CreateWorkspaceBottomSheet> createState() => _CreateWorkspaceBottomSheetState();
+  State<CreateWorkspaceBottomSheet> createState() =>
+      _CreateWorkspaceBottomSheetState();
 }
 
-class _CreateWorkspaceBottomSheetState extends State<CreateWorkspaceBottomSheet> {
+class _CreateWorkspaceBottomSheetState
+    extends State<CreateWorkspaceBottomSheet> {
   final TextEditingController _nameController = TextEditingController();
   String? _selectedRepo;
+
+  @override
+  void initState(){
+    super.initState();
+    _getRepository();
+  }
 
   @override
   void dispose() {
@@ -75,7 +85,7 @@ class _CreateWorkspaceBottomSheetState extends State<CreateWorkspaceBottomSheet>
 
         // Single Icon & Upload Button
         Row(
-          crossAxisAlignment:CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Selected Solid Color Icon with active ring border
             Container(
@@ -83,7 +93,10 @@ class _CreateWorkspaceBottomSheetState extends State<CreateWorkspaceBottomSheet>
               height: 52,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppPalette.primaryContainer, width: 2),
+                border: Border.all(
+                  color: AppPalette.primaryContainer,
+                  width: 2,
+                ),
               ),
               padding: const EdgeInsets.all(2),
               child: Container(
@@ -157,7 +170,10 @@ class _CreateWorkspaceBottomSheetState extends State<CreateWorkspaceBottomSheet>
               color: AppPalette.outline,
               fontSize: 14,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: 14,
+            ),
             border: OutlineInputBorder(
               borderRadius: AppRadius.mdBorderRadius,
               borderSide: const BorderSide(color: AppPalette.border),
@@ -186,7 +202,10 @@ class _CreateWorkspaceBottomSheetState extends State<CreateWorkspaceBottomSheet>
         const SizedBox(height: AppSpacing.sm),
         DropdownButtonFormField<String>(
           initialValue: _selectedRepo,
-          icon: const Icon(Icons.keyboard_arrow_down, color: AppPalette.onSurfaceVariant),
+          icon: const Icon(
+            Icons.keyboard_arrow_down,
+            color: AppPalette.onSurfaceVariant,
+          ),
           decoration: InputDecoration(
             prefixIcon: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -198,7 +217,10 @@ class _CreateWorkspaceBottomSheetState extends State<CreateWorkspaceBottomSheet>
               color: AppPalette.mutedTextColor,
               fontSize: 14,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: 14,
+            ),
             border: OutlineInputBorder(
               borderRadius: AppRadius.mdBorderRadius,
               borderSide: const BorderSide(color: AppPalette.border),
@@ -242,29 +264,42 @@ class _CreateWorkspaceBottomSheetState extends State<CreateWorkspaceBottomSheet>
         SizedBox(
           width: double.infinity,
           height: AppHeights.buttonHeight,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
+          child: BlocConsumer<WorkspaceBloc, WorkspaceState>(
+            listener: (context, state) {
+              // TODO: implement listener
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppPalette.primaryContainer,
-              foregroundColor: AppPalette.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.mdBorderRadius,
-              ),
-              elevation: 0,
-            ),
-            child: Text(
-              'Create Workspace',
-              style: AppTextStyles.button.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            builder: (context, state) {
+              return ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppPalette.primaryContainer,
+                  foregroundColor: AppPalette.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: AppRadius.mdBorderRadius,
+                  ),
+                  elevation: 0,
+                ),
+                child: state is WorkspaceLoadingState
+                    ? CircularProgressIndicator()
+                    : Text(
+                        'Create Workspace',
+                        style: AppTextStyles.button.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+              );
+            },
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
       ],
     );
+  }
+
+  void _getRepository() {
+
   }
 }

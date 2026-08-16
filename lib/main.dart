@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_hub/core/constants/local_storage_keys.dart';
 import 'package:dev_hub/core/constants/theme.dart';
+import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
+import 'package:dev_hub/features/workspace/data/Datasource/workspace_datasource.dart';
+import 'package:dev_hub/features/workspace/data/repository/workspace_repository_impl.dart';
+import 'package:dev_hub/features/workspace/domain/usecases/workspace_usecases.dart';
 import 'package:dev_hub/firebase_options.dart';
 import 'package:dev_hub/shared/data/datasources/local/secure_storage_impl.dart';
 import 'package:dev_hub/shared/data/datasources/remote/dio_client.dart';
@@ -35,6 +39,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   final dio = Dio();
+  final firestoreInstance = FirebaseFirestore.instance;
   final localDatabase = SecureStorageImpl(storage);
   final githubApiDataSource = GithubApiDataSource(
     client: DioClient(
@@ -48,8 +53,10 @@ void main() async {
   );
 
   final remoteDatabase = AuthRemoteDatabaseImpl(
-    FirestoreService(FirebaseFirestore.instance),
+    FirestoreService(firestoreInstance),
   );
+  
+  final workspaceRemoteDatabase = WorkspaceDatasourceImpl(FirestoreService(firestoreInstance));
 
   final localDatabaseImpl = AuthLocalDatabaseImpl(db: localDatabase, keys: LocalStorageKeys());
 
@@ -71,6 +78,7 @@ void main() async {
   final getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
   final updateOrganizationUseCase = UpdateOrganizationUseCase(orgRepository);
   final checkLoginUseCase = CheckLogInUsecase(authRepository);
+  final createworkspaceUsecase = CreateWorkspaceUsecase(WorkspaceRepositoryImpl(workspaceRemoteDatabase));
 
   runApp(
     MultiBlocProvider(
@@ -84,6 +92,7 @@ void main() async {
             checkLoginUseCase
           ),
         ),
+        BlocProvider(create: (_)=>WorkspaceBloc(createworkspaceUsecase))
       ],
       child: MyApp(),
     ),
