@@ -6,4 +6,6 @@ abstract interface class WorkspaceRepository {
   Future<Either<Failure, WorkspaceEntity>> createWorkspace(WorkspaceParams params);
 
   Future<Either<Failure, WorkspaceEntity>> updateWorkspace(WorkspaceParams updated);
+
+  Future<Either<Failure, List<RepositoryEntity>>> getRepositories(WorkspaceParams workspaceParams);
 }
