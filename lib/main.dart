@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_hub/core/constants/local_storage_keys.dart';
 import 'package:dev_hub/core/constants/theme.dart';
+import 'package:dev_hub/features/auth/domain/usecases/auth_usecases/auth_logout_usecase.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
+import 'package:dev_hub/features/workspace/data/Datasource/github_workspace_datasource.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/workspace_datasource.dart';
 import 'package:dev_hub/features/workspace/data/repository/workspace_repository_impl.dart';
 import 'package:dev_hub/features/workspace/domain/usecases/workspace_usecases.dart';
 import 'package:dev_hub/firebase_options.dart';
 import 'package:dev_hub/shared/data/datasources/local/secure_storage_impl.dart';
+import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
 import 'package:dev_hub/shared/data/datasources/remote/dio_client.dart';
 import 'package:dev_hub/shared/data/datasources/remote/firestore_service.dart';
 import 'package:dev_hub/shared/data/datasources/remote/github_api_data_source.dart';
@@ -41,36 +44,46 @@ void main() async {
   final dio = Dio();
   final firestoreInstance = FirebaseFirestore.instance;
   final localDatabase = SecureStorageImpl(storage);
-  final githubApiDataSource = GithubApiDataSource(
-    client: DioClient(
-      dio: dio,
-      baseURL: "https://api.github.com/",
-      localDB: AuthLocalDatabaseImpl(
-        db: SecureStorageImpl(storage),
-        keys: LocalStorageKeys(),
-      ),
-    ),
+
+  //manages token across the app.
+  final tokenManager = TokenManager(
+    localDatabaseService: localDatabase,
+    keys: LocalStorageKeys(),
   );
+
+  final apiClient = DioClient(
+    dio: dio,
+    baseURL: "https://api.github.com/",
+    tokenManager:tokenManager
+    );
+
+  final githubApiDataSource = GithubApiDataSource(client: apiClient);
 
   final remoteDatabase = AuthRemoteDatabaseImpl(
     FirestoreService(firestoreInstance),
   );
-  
-  final workspaceRemoteDatabase = WorkspaceDatasourceImpl(FirestoreService(firestoreInstance));
 
-  final localDatabaseImpl = AuthLocalDatabaseImpl(db: localDatabase, keys: LocalStorageKeys());
+  final workspaceRemoteDatabase = WorkspaceDatasourceImpl(
+    FirestoreService(firestoreInstance),
+  );
+
+  final localDatabaseImpl = AuthLocalDatabaseImpl(
+    db: localDatabase,
+    keys: LocalStorageKeys(),
+  );
 
   final authRepository = AuthRepositoryImpl(
     remoteDB: remoteDatabase,
     authService: AuthenticationImpl(FirebaseAuth.instance),
     localDB: localDatabaseImpl,
     firebaseAuth: FirebaseAuth.instance,
+    tokenManager: tokenManager,
   );
 
   final orgRepository = OrgRepositoryImpl(
     githubApiDataSource: githubApiDataSource,
     remoteDB: remoteDatabase,
-    localDB: localDatabaseImpl
+    localDB: localDatabaseImpl,
   );
 
   final authUseCase = AuthUseCase(authRepository);
@@ -78,7 +91,14 @@ void main() async {
   final getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
   final updateOrganizationUseCase = UpdateOrganizationUseCase(orgRepository);
   final checkLoginUseCase = CheckLogInUsecase(authRepository);
-  final createworkspaceUsecase = CreateWorkspaceUsecase(WorkspaceRepositoryImpl(workspaceRemoteDatabase));
+  final createWorkspaceUseCase = CreateWorkspaceUsecase(
+    WorkspaceRepositoryImpl(
+      tokenManager: tokenManager,
+      dataSource: WorkspaceDatasourceImpl(FirestoreService(firestoreInstance)),
+      githubApiService: GithubWorkspaceDataSourceImpl(apiClient),
+    ),
+  );
+  final logoutUseCase = AuthLogoutUseCase(authRepository);
 
   runApp(
     MultiBlocProvider(
@@ -89,10 +109,11 @@ void main() async {
             fetchUserOrgsUseCase,
             getCurrentUserUseCase,
             updateOrganizationUseCase,
-            checkLoginUseCase
+            checkLoginUseCase,
+            logoutUseCase
           ),
         ),
-        BlocProvider(create: (_)=>WorkspaceBloc(createworkspaceUsecase))
+        BlocProvider(create: (_) => WorkspaceBloc(createWorkspaceUseCase)),
       ],
       child: MyApp(),
     ),
