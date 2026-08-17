@@ -1,6 +1,8 @@
 import 'package:dev_hub/features/profile/presentation/widgets/profile_tile_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
 
 class LogoutSection extends StatelessWidget {
   const LogoutSection({super.key});
@@ -21,7 +23,7 @@ class LogoutSection extends StatelessWidget {
         titleColor: AppPalette.error,
         subtitle: 'Sign out from DevHub',
         onTap: () {
-          // TODO: Add backend logic to handle user log out session
+          context.read<AuthBloc>().add(AuthLogOut());
           print('Clicked: Log Out');
         },
       ),

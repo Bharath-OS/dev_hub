@@ -1,4 +1,5 @@
 import 'package:dev_hub/core/errors/failures.dart';
+import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../domain/entities/user_entity.dart';
@@ -12,12 +13,14 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthLocalDatabaseInterface _localDB;
   final AuthRemoteDatabaseInterface _remoteDB;
   final FirebaseAuth _firebaseAuth;
+  final TokenManager _tokenManager;
 
   AuthRepositoryImpl({
     required this._remoteDB,
     required this._authService,
     required this._localDB,
     required this._firebaseAuth,
+    required this._tokenManager,
   });
 
   @override
@@ -33,7 +36,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       // Save token locally for subsequent API calls
-      await _localDB.updateToken(accessToken: accessToken);
+      await _tokenManager.updateToken(accessToken);
 
       // Sets isAuthenticated flag locally
       await _localDB.setIsAuthenticated(true);
@@ -51,10 +54,9 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity?>> getCurrentUser() async {
     try {
-
       //checks if the user is authenticated or not.
       final isAuthenticated = await _localDB.getIsAuthenticated();
-      if(!isAuthenticated) return right(null);
+      if (!isAuthenticated) return right(null);
 
       //checks Firebase session.
       final currentFirebaseUser = _firebaseAuth.currentUser;
@@ -72,8 +74,8 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       // 1. Fetch the GitHub access token from local storage
-      final localToken = await _localDB.getToken();
-      
+      final localToken = await _tokenManager.getToken();
+
       // 2. Attach the token to the user model so subsequent API calls don't fail
       final userWithToken = userModel.copyWith(githubAccessToken: localToken);
 
@@ -87,5 +89,23 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<bool> isLoggedIn() async {
     return await _localDB.getIsLoggedIn();
+  }
+
+  @override
+  Future<Either<Failure, void>> logOut() async {
+    try {
+      //Signs out the user from firebase auth
+      await _authService.signOut();
+
+      //clears the user token locally
+      await _tokenManager.clearToken();
+
+      //sets the isLoggedIn and isAuthenticated flags to false
+      await _localDB.setIsLoggedIn(value: false);
+      await _localDB.setIsAuthenticated(false);
+      return right(null);
+    } catch (error) {
+      return left(Failure(error.toString()));
+    }
   }
 }

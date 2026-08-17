@@ -68,3 +68,6 @@ final class AuthOrgUpdateFailure extends AuthState {
   final String message;
   AuthOrgUpdateFailure(this.message);
 }
+
+final class AuthLogoutSuccess extends AuthState{
+}
