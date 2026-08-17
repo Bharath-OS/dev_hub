@@ -26,8 +26,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> githubAuthentication() async {
     try {
-      final userModel = await _authService.authenticate();
-      final String? accessToken = userModel.githubAccessToken;
+      final (userModel, accessToken) = await _authService.authenticate();
 
       if (accessToken == null || accessToken.isEmpty) {
         return left(
@@ -77,9 +76,9 @@ class AuthRepositoryImpl implements AuthRepository {
       final localToken = await _tokenManager.getToken();
 
       // 2. Attach the token to the user model so subsequent API calls don't fail
-      final userWithToken = userModel.copyWith(githubAccessToken: localToken);
+      // final userWithToken = userModel.copyWith(githubAccessToken: localToken);
 
-      return right(userWithToken);
+      return right(userModel);
     } catch (e) {
       if (e is Failure) return left(e);
       return left(Failure('Failed to restore session: ${e.toString()}'));

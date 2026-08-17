@@ -17,7 +17,7 @@ class UserModel extends UserEntity {
     super.currentOrganizationLogin,
     super.subscription,
     super.fcmToken,
-    super.githubAccessToken,
+    // super.githubAccessToken,
   });
 
   factory UserModel.fromRemoteSource(
@@ -29,7 +29,7 @@ class UserModel extends UserEntity {
       displayName: credential.additionalUserInfo!.username!,
       avatarUrl: credential.user!.photoURL!,
       email: credential.user!.email!,
-      githubAccessToken: credential.credential?.accessToken,
+      // githubAccessToken: credential.credential?.accessToken,
       createdAt: DateTime.now(),
       lastSeen: DateTime.now(),
     );
@@ -49,7 +49,7 @@ class UserModel extends UserEntity {
     String? currentOrganizationLogin,
     SubscriptionInfo? subscription,
     String? fcmToken,
-    String? githubAccessToken,
+    // String? githubAccessToken,
   }) {
     return UserModel(
       id: id ?? super.id,
@@ -66,7 +66,7 @@ class UserModel extends UserEntity {
       currentOrganizationLogin: currentOrganizationLogin ?? super.currentOrganizationLogin,
       subscription: subscription ?? super.subscription,
       fcmToken: fcmToken ?? super.fcmToken,
-      githubAccessToken: githubAccessToken ?? super.githubAccessToken,
+      // githubAccessToken: githubAccessToken ?? super.githubAccessToken,
     );
   }
 
@@ -86,7 +86,7 @@ class UserModel extends UserEntity {
       'currentOrganizationLogin': currentOrganizationLogin,
       'subscription': subscription?.toMap(),
       'fcmToken': fcmToken,
-      'githubAccessToken': githubAccessToken,
+      // 'githubAccessToken': githubAccessToken,
     };
   }
 
@@ -112,7 +112,7 @@ class UserModel extends UserEntity {
           ? SubscriptionInfo.fromMap(map['subscription'] as Map<String, dynamic>)
           : null,
       fcmToken: map['fcmToken'] as String?,
-      githubAccessToken: map['githubAccessToken'] as String?,
+      // githubAccessToken: map['githubAccessToken'] as String?,
     );
   }
 }

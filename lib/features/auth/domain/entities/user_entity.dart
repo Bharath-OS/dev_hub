@@ -13,7 +13,7 @@ class UserEntity {
   final String? currentOrganizationLogin; // selected org login
   final SubscriptionInfo? subscription; // subscription state
   final String? fcmToken; // device push token
-  final String? githubAccessToken; // GitHub OAuth access token
+  // final String? githubAccessToken; // GitHub OAuth access token
 
   UserEntity({
     required this.id,
@@ -28,7 +28,7 @@ class UserEntity {
     this.currentOrganizationLogin,
     required this.subscription,
     this.fcmToken,
-    this.githubAccessToken,
+    // this.githubAccessToken,
     required this.createdAt,
     required this.lastSeen,
   });
@@ -47,7 +47,7 @@ class UserEntity {
     String? currentOrganizationLogin,
     SubscriptionInfo? subscription,
     String? fcmToken,
-    String? githubAccessToken,
+    // String? githubAccessToken,
   }) {
     return UserEntity(
       id: id ?? this.id,
@@ -64,7 +64,7 @@ class UserEntity {
       currentOrganizationLogin: currentOrganizationLogin ?? this.currentOrganizationLogin,
       subscription: subscription ?? this.subscription,
       fcmToken: fcmToken ?? this.fcmToken,
-      githubAccessToken: githubAccessToken ?? this.githubAccessToken,
+      // githubAccessToken: githubAccessToken ?? this.githubAccessToken,
     );
   }
 }

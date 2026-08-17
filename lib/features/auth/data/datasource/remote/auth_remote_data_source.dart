@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
 
 abstract interface class AuthRemoteDataSource {
-  Future<UserModel> authenticate();
+  Future<(UserModel, String?)> authenticate();
 
   User? getCurrentUser();
 
@@ -15,7 +15,7 @@ class AuthenticationImpl implements AuthRemoteDataSource {
   AuthenticationImpl(this._firebaseAuth);
 
   @override
-  Future<UserModel> authenticate() async {
+  Future<(UserModel, String?)> authenticate() async {
     final githubProvider = GithubAuthProvider();
 
     // Scopes for all roles
@@ -42,7 +42,9 @@ class AuthenticationImpl implements AuthRemoteDataSource {
     // Basic GitHub profile info
     debugPrint("GitHub profile JSON: ${credential.additionalUserInfo?.profile}");
 
-    return UserModel.fromRemoteSource(credential: credential);
+    final userModel = UserModel.fromRemoteSource(credential: credential);
+    
+    return (userModel, token);
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:dev_hub/core/errors/failures.dart';
+import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../../../shared/data/datasources/remote/github_api_data_source.dart';
 import '../../domain/entities/user_entity.dart';
@@ -8,16 +9,17 @@ import '../datasource/remote/auth_remote_database_impl.dart';
 
 class OrgRepositoryImpl implements OrgRepository {
   final GithubApiDataSource _githubApiDataSource;
+  final TokenManager _tokenManager;
   final AuthRemoteDatabaseImpl _remoteDB;
   final AuthLocalDatabaseImpl _localDB;
 
-  OrgRepositoryImpl({required this._githubApiDataSource,required this._remoteDB, required this._localDB});
+  OrgRepositoryImpl({required this._githubApiDataSource,required this._tokenManager,required this._remoteDB, required this._localDB});
 
   @override
   Future<Either<Failure, UserEntity>> fetchOrganizations(
     UserEntity user,
   ) async {
-    final token = user.githubAccessToken;
+    final String? token = await _tokenManager.getToken();
 
     if (token == null || token.isEmpty) {
       return left(Failure('GitHub access token not found'));
