@@ -11,7 +11,7 @@ class WorkspaceBloc extends Bloc<WorkspaceEvent, WorkspaceState> {
   final List<WorkspaceEntity> workspaces = [];
 
   WorkspaceBloc(this._createWorkspaceUsecase) : super(WorkspaceInitial()) {
-    on<WorkspaceEvent>((event, emit) async{
+    on<CreateWorkspaceEvent>((event, emit) async{
       emit(WorkspaceLoadingState());
       try{
         final response = await _createWorkspaceUsecase.call(event.params);

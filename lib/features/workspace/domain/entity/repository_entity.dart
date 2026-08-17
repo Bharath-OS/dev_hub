@@ -1,6 +1,6 @@
 import 'package:dev_hub/features/auth/domain/entities/user_entity.dart';
 
-class RepositoryEntity {
+class GitHubRepositoryEntity {
   final int id;
   final String name;
   final String fullName;
@@ -18,7 +18,7 @@ class RepositoryEntity {
   final DateTime pushedAt;
   final Map<String, bool> permissions;
 
-  const RepositoryEntity({
+  const GitHubRepositoryEntity({
     required this.id,
     required this.name,
     required this.fullName,
@@ -38,7 +38,7 @@ class RepositoryEntity {
   });
 
   // Domain logic: copyWith is allowed in entities
-  RepositoryEntity copyWith({
+  GitHubRepositoryEntity copyWith({
     int? id,
     String? name,
     String? fullName,
@@ -56,7 +56,7 @@ class RepositoryEntity {
     DateTime? pushedAt,
     Map<String, bool>? permissions,
   }) {
-    return RepositoryEntity(
+    return GitHubRepositoryEntity(
       id: id ?? this.id,
       name: name ?? this.name,
       fullName: fullName ?? this.fullName,

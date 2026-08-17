@@ -1,7 +1,7 @@
 import '../../../auth/data/models/user_model.dart';
 import '../../domain/entity/repository_entity.dart';
 
-class RepositoryModel extends RepositoryEntity {
+class RepositoryModel extends GitHubRepositoryEntity {
   RepositoryModel({
     required super.id,
     required super.name,
