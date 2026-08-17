@@ -54,8 +54,8 @@ void main() async {
   final apiClient = DioClient(
     dio: dio,
     baseURL: "https://api.github.com/",
-    tokenManager:tokenManager
-    );
+    tokenManager: tokenManager,
+  );
 
   final githubApiDataSource = GithubApiDataSource(client: apiClient);
 
@@ -64,7 +64,7 @@ void main() async {
   );
 
   final workspaceRemoteDatabase = WorkspaceDatasourceImpl(
-    FirestoreService(firestoreInstance),
+    firestoreService: FirestoreService(firestoreInstance),
   );
 
   final localDatabaseImpl = AuthLocalDatabaseImpl(
@@ -83,7 +83,13 @@ void main() async {
   final orgRepository = OrgRepositoryImpl(
     githubApiDataSource: githubApiDataSource,
     remoteDB: remoteDatabase,
-    localDB: localDatabaseImpl,
+    localDB: localDatabaseImpl, tokenManager: tokenManager,
+  );
+
+  final workspaceRepository = WorkspaceRepositoryImpl(
+    dataSource: workspaceRemoteDatabase,
+    githubApiService: GithubWorkspaceDataSourceImpl(apiClient),
+    tokenManager: tokenManager,
   );
 
   final authUseCase = AuthUseCase(authRepository);
@@ -94,11 +100,14 @@ void main() async {
   final createWorkspaceUseCase = CreateWorkspaceUsecase(
     WorkspaceRepositoryImpl(
       tokenManager: tokenManager,
-      dataSource: WorkspaceDatasourceImpl(FirestoreService(firestoreInstance)),
+      dataSource: WorkspaceDatasourceImpl(
+        firestoreService: FirestoreService(firestoreInstance),
+      ),
       githubApiService: GithubWorkspaceDataSourceImpl(apiClient),
     ),
   );
   final logoutUseCase = AuthLogoutUseCase(authRepository);
+  final getWorkspacesUseCase = GetWorkspaceUseCase(workspaceRepository);
 
   runApp(
     MultiBlocProvider(
@@ -110,10 +119,15 @@ void main() async {
             getCurrentUserUseCase,
             updateOrganizationUseCase,
             checkLoginUseCase,
-            logoutUseCase
+            logoutUseCase,
           ),
         ),
-        BlocProvider(create: (_) => WorkspaceBloc(createWorkspaceUseCase)),
+        BlocProvider(
+          create: (_) => WorkspaceBloc(
+            createWorkspaceUsecase: createWorkspaceUseCase,
+            getWorkspaceUseCase: getWorkspacesUseCase,
+          ),
+        ),
       ],
       child: MyApp(),
     ),
