@@ -1,9 +1,9 @@
+import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
 import 'package:dio/dio.dart';
-import '../../../../features/auth/data/datasource/local/auth_local_database_interface.dart';
 
 class ApiInterceptor extends Interceptor {
-  final AuthLocalDatabaseInterface _localDB;
-  ApiInterceptor(this._localDB);
+  final TokenManager _tokenManager;
+  ApiInterceptor(this._tokenManager);
 
   @override
   void onRequest(
@@ -12,7 +12,7 @@ class ApiInterceptor extends Interceptor {
   ) async {
     // Only add authorization if not already present
     if (!options.headers.containsKey('Authorization')) {
-      final accessToken = await _localDB.getToken();
+      final accessToken = await _tokenManager.getToken();
       if (accessToken != null && accessToken.isNotEmpty) {
         options.headers['Authorization'] = 'token $accessToken';
       }

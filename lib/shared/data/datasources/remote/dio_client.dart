@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'package:dev_hub/core/params/api_params.dart';
+import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../features/auth/data/datasource/local/auth_local_database_interface.dart';
 import 'api_client.dart';
 import 'api_interceptor.dart';
 
 class DioClient implements ApiClientInterface {
   final Dio _dio;
   final String _baseURL;
-  final AuthLocalDatabaseInterface _localDB;
+  final TokenManager _tokenManager;
 
-  DioClient({required this._dio, required this._baseURL,required this._localDB}) {
+  DioClient({required this._dio, required this._baseURL,required this._tokenManager}) {
     _configureDio();
   }
 
@@ -20,7 +20,7 @@ class DioClient implements ApiClientInterface {
     _dio.options.baseUrl = _baseURL;
     _dio.options.connectTimeout = Duration(seconds: 5);
     _dio.options.receiveTimeout = Duration(seconds: 3);
-    _dio.interceptors.add(ApiInterceptor(_localDB));
+    _dio.interceptors.add(ApiInterceptor(_tokenManager));
   }
 
   @override

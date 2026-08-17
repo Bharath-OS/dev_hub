@@ -13,7 +13,6 @@ class SecureStorageImpl implements DatabaseInterface<SecureStorageParams, dynami
     try {
       await storage.write(key: params.key, value: params.value);
     } catch (e) {
-      //something went wrong when storing.
       throw Failure(e.toString());
     }
   }
