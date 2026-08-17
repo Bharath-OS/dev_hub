@@ -1,19 +1,30 @@
 part of 'workspace_bloc.dart';
 
 sealed class WorkspaceEvent extends Equatable {
-  final WorkspaceParams params;
-  const WorkspaceEvent(this.params);
+  const WorkspaceEvent();
 }
 
-class CreateWorkspaceEvent extends WorkspaceEvent{
-  const CreateWorkspaceEvent(super.params);
+class CreateWorkspaceEvent extends WorkspaceEvent {
+  final WorkspaceParams params;
+  const CreateWorkspaceEvent(this.params);
   @override
   List<Object?> get props => [params];
 }
 
-class UpdateWorkspaceEvent extends WorkspaceEvent{
-  const UpdateWorkspaceEvent(super.params);
+class UpdateWorkspaceEvent extends WorkspaceEvent {
+  final WorkspaceParams params;
+  const UpdateWorkspaceEvent(this.params);
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [params];
 }
+
+class WatchWorkspacesEvent extends WorkspaceEvent {
+  final String userId;
+  const WatchWorkspacesEvent(this.userId);
+
+  @override
+  List<Object?> get props => [userId];
+}
+
+

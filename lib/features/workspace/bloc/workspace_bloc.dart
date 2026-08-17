@@ -8,22 +8,44 @@ part 'workspace_state.dart';
 
 class WorkspaceBloc extends Bloc<WorkspaceEvent, WorkspaceState> {
   final CreateWorkspaceUsecase _createWorkspaceUsecase;
-  final List<WorkspaceEntity> workspaces = [];
+  final GetWorkspaceUseCase _getWorkspaceUseCase;
 
-  WorkspaceBloc(this._createWorkspaceUsecase) : super(WorkspaceInitial()) {
-    on<CreateWorkspaceEvent>((event, emit) async{
+  WorkspaceBloc({
+    required CreateWorkspaceUsecase createWorkspaceUsecase,
+    required GetWorkspaceUseCase getWorkspaceUseCase,
+  })  : _createWorkspaceUsecase = createWorkspaceUsecase,
+        _getWorkspaceUseCase = getWorkspaceUseCase,
+        super(WorkspaceInitial()) {
+    on<CreateWorkspaceEvent>((event, emit) async {
       emit(WorkspaceLoadingState());
-      try{
+      try {
         final response = await _createWorkspaceUsecase.call(event.params);
-        response.fold((error)=>emit(WorkspaceFailure(error.message)), (workspace){
-          emit(WorkspaceCreated(workspace));
-          workspaces.add(workspace);
-        });
-      }on Failure catch(error){
+        response.fold(
+          (error) => emit(WorkspaceFailure(error.message)),
+          (workspace) => emit(WorkspaceCreated(workspace)),
+        );
+      } on Failure catch (error) {
         emit(WorkspaceFailure(error.message));
-    }catch (e){
+      } catch (e) {
         emit(WorkspaceFailure(e.toString()));
       }
     });
+
+    on<WatchWorkspacesEvent>((event, emit) async {
+      emit(WorkspaceLoadingState());
+      final result = await _getWorkspaceUseCase.call(event.userId);
+
+      await result.fold(
+        (failure) async => emit(WorkspaceFailure(failure.message)),
+        (stream) async {
+          await emit.forEach<List<WorkspaceEntity>>(
+            stream,
+            onData: (workspaces) => WorkspaceLoaded(workspaces),
+            onError: (error, stackTrace) => WorkspaceFailure(error.toString()),
+          );
+        },
+      );
+    });
+
   }
 }

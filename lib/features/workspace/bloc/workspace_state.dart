@@ -22,7 +22,15 @@ final class WorkspaceCreated extends WorkspaceState{
   List<Object?> get props => [workspaceEntity];
 }
 
-final class WorkspaceFailure extends WorkspaceState{
+final class WorkspaceLoaded extends WorkspaceState {
+  final List<WorkspaceEntity> workspaces;
+  const WorkspaceLoaded(this.workspaces);
+
+  @override
+  List<Object?> get props => [workspaces];
+}
+
+final class WorkspaceFailure extends WorkspaceState {
   final String error;
   const WorkspaceFailure(this.error);
 

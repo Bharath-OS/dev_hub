@@ -74,4 +74,9 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       return left(Failure(error.toString()));
     }
   }
+
+  @override
+  Stream<List<WorkspaceEntity>> getWorkspaces(String userId) {
+    return _dataSource.getWorkspaceStream(userId);
+  }
 }

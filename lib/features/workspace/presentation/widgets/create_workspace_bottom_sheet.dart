@@ -21,7 +21,6 @@ class _CreateWorkspaceBottomSheetState
   @override
   void initState(){
     super.initState();
-    _getRepository();
   }
 
   @override

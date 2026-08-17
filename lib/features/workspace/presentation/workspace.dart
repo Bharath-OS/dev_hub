@@ -1,4 +1,6 @@
+import 'package:dev_hub/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
+import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import 'package:dev_hub/features/workspace/presentation/widgets/create_workspace_bottom_sheet.dart';
 import 'package:dev_hub/features/workspace/presentation/widgets/workspace_card.dart';
 import 'package:dev_hub/features/workspace/presentation/widgets/workspace_filter_chips.dart';
@@ -17,6 +19,22 @@ class WorkspacePage extends StatefulWidget {
 }
 
 class _WorkspacePageState extends State<WorkspacePage> {
+  @override
+  void initState() {
+    super.initState();
+    final authState = context.read<AuthBloc>().state;
+    String? userId;
+    if (authState is AuthSessionRestored) {
+      userId = authState.user.id;
+    } else if (authState is AuthSuccess) {
+      userId = authState.user.id;
+    }
+
+    if (userId != null) {
+      context.read<WorkspaceBloc>().add(WatchWorkspacesEvent(userId));
+    }
+  }
+
   void _showCreateWorkspaceBottomSheet() {
     CustomBottomSheet.show(
       context: context,
@@ -26,17 +44,19 @@ class _WorkspacePageState extends State<WorkspacePage> {
 
   @override
   Widget build(BuildContext context) {
-    final workspaces = context.watch<WorkspaceBloc>().workspaces;
     return Scaffold(
       backgroundColor: AppPalette.background,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context,constraints) {
+        child: BlocBuilder<WorkspaceBloc, WorkspaceState>(
+          builder: (context, state) {
             return CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12.0,
+                  ),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
                       const WorkspaceSearchBar(),
@@ -46,41 +66,56 @@ class _WorkspacePageState extends State<WorkspacePage> {
                     ]),
                   ),
                 ),
-                if (workspaces.isEmpty)
+                if (state is WorkspaceLoadingState)
                   const SliverFillRemaining(
                     hasScrollBody: false,
-                    child: Center(
-                      child: Text('No Workspace detected'),
-                    ),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (state is WorkspaceLoaded)
+                  state.workspaces.isEmpty
+                      ? const SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(child: Text('No Workspace detected')),
+                      )
+                      : SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final workspace = state.workspaces[index];
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: WorkspaceCard(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) =>
+                                                const WorkspaceDetailScreen(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            childCount: state.workspaces.length,
+                          ),
+                        ),
+                      )
+                else if (state is WorkspaceFailure)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(child: Text('Error: ${state.error}')),
                   )
                 else
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final workspace = workspaces[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: WorkspaceCard(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const WorkspaceDetailScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                        childCount: workspaces.length,
-                      ),
-                    ),
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(child: Text('Start watching workspaces...')),
                   ),
               ],
             );
-          }
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(

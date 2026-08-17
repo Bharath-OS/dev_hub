@@ -8,7 +8,7 @@ abstract interface class WorkspaceDataSource {
   //create workspace method
   Future<WorkspaceModel> createWorkspace(WorkspaceParams params);
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getWorkspaceStream();
+  Stream<List<WorkspaceEntity>> getWorkspaceStream(String userId);
 
   Future<WorkspaceModel> updateWorkspace(WorkspaceParams params);
 }
@@ -16,7 +16,9 @@ abstract interface class WorkspaceDataSource {
 class WorkspaceDatasourceImpl implements WorkspaceDataSource {
   final FirestoreService _firestoreService;
   final String collectionPath = 'Workspaces';
-  WorkspaceDatasourceImpl(this._firestoreService);
+  WorkspaceDatasourceImpl({
+    required this._firestoreService,
+  });
 
   @override
   Future<WorkspaceModel> createWorkspace(WorkspaceParams params) async {
@@ -31,6 +33,7 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
       await _firestoreService.create(
         FirestoreParams(
           collectionPath: collectionPath,
+          id: workspace.id,
           data: workspace.toFirestore(),
         ),
       );
@@ -41,10 +44,20 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
   }
 
   @override
-  Stream<QuerySnapshot<Map<String, dynamic>>> getWorkspaceStream() {
-    return _firestoreService.readAll(
-      FirestoreParams(collectionPath: collectionPath),
-    );
+  Stream<List<WorkspaceEntity>> getWorkspaceStream(String userId) {
+    return _firestoreService
+        .readAll(
+          FirestoreParams(
+            collectionPath: collectionPath,
+            queryField: 'adminId',
+            queryValue: userId,
+          ),
+        )
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => WorkspaceModel.fromFirestore(doc.data()))
+              .toList();
+        });
   }
 
   @override
