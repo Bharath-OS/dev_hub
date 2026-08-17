@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/params/firestore_params.dart';
 import '../database_interface.dart';
@@ -48,7 +49,16 @@ class FirestoreService implements DatabaseInterface<FirestoreParams, dynamic> {
 
   @override
   Stream<QuerySnapshot<Map<String, dynamic>>> readAll(FirestoreParams params) {
-    return _firestore.collection(params.collectionPath).snapshots();
+    CollectionReference<Map<String, dynamic>> collection =
+        _firestore.collection(params.collectionPath);
+
+    if (params.queryField != null && params.queryValue != null) {
+      return collection
+          .where(params.queryField!, isEqualTo: params.queryValue)
+          .snapshots();
+    }
+
+    return collection.snapshots();
   }
 
   @override
