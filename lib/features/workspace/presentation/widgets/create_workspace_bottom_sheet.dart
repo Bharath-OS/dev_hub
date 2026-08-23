@@ -21,25 +21,21 @@ class _CreateWorkspaceBottomSheetState
     extends State<CreateWorkspaceBottomSheet> {
   final TextEditingController _nameController = TextEditingController();
   GitHubRepositoryEntity? _selectedRepo;
+  late final String? orgName;
 
   @override
   void initState() {
     super.initState();
     final authState = context.read<AuthBloc>().state;
-    String? orgName;
 
-    if (authState is AuthSessionRestored) {
-      orgName = authState.user.currentOrganizationLogin;
-    } else if (authState is AuthSuccess) {
-      orgName = authState.user.currentOrganizationLogin;
-    } else if (authState is AuthOrgUpdateSuccess) {
-      orgName = authState.user.currentOrganizationLogin;
-    } else if (authState is AuthOrgAdminSuccess) {
+    if (authState is AuthenticatedState) {
       orgName = authState.user.currentOrganizationLogin;
     }
 
     if (orgName != null) {
-      context.read<WorkspaceBloc>().add(GetRepositoriesEvent(orgName));
+      if (context.read<WorkspaceBloc>().state is! RepositoriesLoaded) {
+        context.read<WorkspaceBloc>().add(GetRepositoriesEvent(orgName!));
+      }
     }
   }
 
@@ -234,59 +230,76 @@ class _CreateWorkspaceBottomSheetState
               repos = state.repositories;
             }
 
-            return DropdownButtonFormField<GitHubRepositoryEntity>(
-              isExpanded: true,
-              initialValue: _selectedRepo,
-              icon: const Icon(
-                Icons.keyboard_arrow_down,
-                color: AppPalette.onSurfaceVariant,
-              ),
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.code, color: AppPalette.black),
-                prefixIconConstraints: const BoxConstraints(minWidth: 40),
-                hintText: repos.isEmpty ? 'No Repositories Found' : 'Select Repository',
-                hintStyle: AppTextStyles.body.copyWith(
-                  color: AppPalette.mutedTextColor,
-                  fontSize: 14,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: 14,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.mdBorderRadius,
-                  borderSide: const BorderSide(color: AppPalette.border),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.mdBorderRadius,
-                  borderSide: const BorderSide(color: AppPalette.border),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.mdBorderRadius,
-                  borderSide: const BorderSide(color: AppPalette.primaryContainer),
-                ),
-              ),
-              items: repos.map((repo) {
-                return DropdownMenuItem<GitHubRepositoryEntity>(
-                  value: repo,
-                  child: Text(
-                    repo.fullName,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 14),
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: DropdownButtonFormField<GitHubRepositoryEntity>(
+                    isExpanded: true,
+                    initialValue: _selectedRepo,
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: AppPalette.onSurfaceVariant,
+                    ),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.code, color: AppPalette.black),
+                      prefixIconConstraints: const BoxConstraints(minWidth: 40),
+                      hintText: repos.isEmpty
+                          ? 'No Repositories Found'
+                          : 'Select Repository',
+                      hintStyle: AppTextStyles.body.copyWith(
+                        color: AppPalette.mutedTextColor,
+                        fontSize: 14,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: 14,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: AppRadius.mdBorderRadius,
+                        borderSide: const BorderSide(color: AppPalette.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: AppRadius.mdBorderRadius,
+                        borderSide: const BorderSide(color: AppPalette.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: AppRadius.mdBorderRadius,
+                        borderSide: const BorderSide(
+                          color: AppPalette.primaryContainer,
+                        ),
+                      ),
+                    ),
+                    items: repos.map((repo) {
+                      return DropdownMenuItem<GitHubRepositoryEntity>(
+                        value: repo,
+                        child: Text(
+                          repo.fullName,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedRepo = val;
+                      });
+                    },
                   ),
-                );
-              }).toList(),
-              onChanged: (val) {
-                setState(() {
-                  _selectedRepo = val;
-                });
-              },
+                ),
+                IconButton.outlined(
+                  onPressed: () => context.read<WorkspaceBloc>().add(
+                    GetRepositoriesEvent(''),
+                  ),
+                  icon: Center(child: Icon(Icons.refresh)),
+                ),
+              ],
             );
           },
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'You can only select project repositories where you have write or admin permissions.',
+          'If you don’t see the repository you’re looking for, please click the refresh button to reload the list.',
           style: AppTextStyles.caption.copyWith(
             fontSize: 12,
             color: AppPalette.mutedTextColor,
@@ -318,7 +331,9 @@ class _CreateWorkspaceBottomSheetState
               }
             },
             builder: (context, state) {
-              final isLoading = state is WorkspaceLoadingState || state is RepositoriesLoading;
+              final isLoading =
+                  state is WorkspaceLoadingState ||
+                  state is RepositoriesLoading;
 
               return ElevatedButton(
                 onPressed: isLoading
@@ -327,7 +342,9 @@ class _CreateWorkspaceBottomSheetState
                         if (_nameController.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Please enter a name and select a repository.'),
+                              content: Text(
+                                'Please enter a name and select a repository.',
+                              ),
                             ),
                           );
                           return;
@@ -356,10 +373,14 @@ class _CreateWorkspaceBottomSheetState
                           adminId = authState.user.id;
                         }
 
-                        if (orgId == null || orgLogin == null || adminId == null) {
+                        if (orgId == null ||
+                            orgLogin == null ||
+                            adminId == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Failed to retrieve organization details. Please re-login.'),
+                              content: Text(
+                                'Failed to retrieve organization details. Please re-login.',
+                              ),
                             ),
                           );
                           return;
@@ -375,19 +396,20 @@ class _CreateWorkspaceBottomSheetState
                         }
 
                         context.read<WorkspaceBloc>().add(
-                              CreateWorkspaceEvent(
-                                WorkspaceParams(
-                                  name: _nameController.text,
-                                  id: DateTime.now().millisecondsSinceEpoch.toString(),
-                                  orgId: orgId,
-                                  githubOrgLogin: orgLogin,
-                                  repositoryName: _selectedRepo!.fullName,
-                                  adminId: adminId,
-                                  createdAt: DateTime.now(),
-                                  updatedAt: DateTime.now(),
-                                ),
-                              ),
-                            );
+                          CreateWorkspaceEvent(
+                            WorkspaceParams(
+                              name: _nameController.text,
+                              id: DateTime.now().millisecondsSinceEpoch
+                                  .toString(),
+                              orgId: orgId,
+                              githubOrgLogin: orgLogin,
+                              repositoryName: _selectedRepo!.fullName,
+                              adminId: adminId,
+                              createdAt: DateTime.now(),
+                              updatedAt: DateTime.now(),
+                            ),
+                          ),
+                        );
                       },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppPalette.primaryContainer,
