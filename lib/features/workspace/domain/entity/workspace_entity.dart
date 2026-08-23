@@ -5,6 +5,7 @@ class WorkspaceEntity {
   final String? avatarUrl;
   final String orgId;
   final String githubOrgLogin;
+  final String repositoryName;
   final String adminId;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -16,11 +17,12 @@ class WorkspaceEntity {
     this.avatarUrl,
     required this.orgId,
     required this.githubOrgLogin,
+    required this.repositoryName,
     required this.adminId,
     DateTime? createdAt,
-    DateTime? updatedAt
-  }) : createdAt = createdAt ?? DateTime.now(),
-       updatedAt = updatedAt ?? DateTime.now();
+    DateTime? updatedAt,
+  })  : createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
 }
 
 class WorkspaceParams {
@@ -30,6 +32,7 @@ class WorkspaceParams {
   final String? avatarUrl;
   final String orgId;
   final String githubOrgLogin;
+  final String repositoryName;
   final String adminId;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -41,6 +44,7 @@ class WorkspaceParams {
     this.avatarUrl,
     required this.orgId,
     required this.githubOrgLogin,
+    required this.repositoryName,
     required this.adminId,
     required this.createdAt,
     required this.updatedAt,

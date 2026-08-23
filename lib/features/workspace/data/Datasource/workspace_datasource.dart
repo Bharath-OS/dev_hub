@@ -27,6 +27,7 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
       id: params.id,
       orgId: params.orgId,
       githubOrgLogin: params.githubOrgLogin,
+      repositoryName: params.repositoryName,
       adminId: params.adminId,
     );
     try {
@@ -67,6 +68,7 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
       id: params.id,
       orgId: params.orgId,
       githubOrgLogin: params.githubOrgLogin,
+      repositoryName: params.repositoryName,
       adminId: params.adminId,
     );
     try {

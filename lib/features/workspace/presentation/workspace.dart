@@ -86,6 +86,8 @@ class _WorkspacePageState extends State<WorkspacePage> {
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 12.0),
                                 child: WorkspaceCard(
+                                  title: workspace.name,
+                                  repositoryUrl: workspace.repositoryName,
                                   onTap: () {
                                     Navigator.push(
                                       context,

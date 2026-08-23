@@ -6,22 +6,24 @@ class WorkspaceModel extends WorkspaceEntity {
     required super.id,
     required super.orgId,
     required super.githubOrgLogin,
+    required super.repositoryName,
     required super.adminId,
     super.description,
     super.createdAt,
-    super.updatedAt
+    super.updatedAt,
   });
 
   factory WorkspaceModel.fromFirestore(Map<String, dynamic> data) {
     return WorkspaceModel(
       name: data['Name'],
       id: data['Id'],
-      description: data['Description'],
+      description: data['Description'] ?? '',
       orgId: data['Organization Id'],
       githubOrgLogin: data['Organization Name'],
+      repositoryName: data['Repository Name'] ?? '',
       adminId: data['Admin Id'],
-      createdAt: data['Created At'],
-      updatedAt: data['Updated At']
+      createdAt: data['Created At'] != null ? DateTime.parse(data['Created At']) : null,
+      updatedAt: data['Updated At'] != null ? DateTime.parse(data['Updated At']) : null,
     );
   }
 
@@ -32,9 +34,10 @@ class WorkspaceModel extends WorkspaceEntity {
       'Description': super.description,
       'Organization Id': super.orgId,
       'Organization Name': super.githubOrgLogin,
+      'Repository Name': super.repositoryName,
       'Admin Id': super.adminId,
-      'Created At': super.createdAt,
-      'Updated At': super.updatedAt,
+      'Created At': super.createdAt.toIso8601String(),
+      'Updated At': super.updatedAt.toIso8601String(),
     };
   }
 }
