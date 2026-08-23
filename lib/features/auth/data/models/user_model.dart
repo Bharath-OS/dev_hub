@@ -92,27 +92,26 @@ class UserModel extends UserEntity {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'] as String,
-      githubId: map['githubId'] as int,
-      githubUsername: map['githubUsername'] as String,
-      displayName: map['displayName'] as String,
-      email: map['email'] as String,
-      createdAt: DateTime.parse(map['createdAt'] as String),
-      lastSeen: DateTime.parse(map['lastSeen'] as String),
-      avatarUrl: map['avatarUrl'] as String?,
+      id: map['id']?.toString() ?? '',
+      githubId: map['githubId'] is int ? map['githubId'] : (int.tryParse(map['githubId']?.toString() ?? '0') ?? 0),
+      githubUsername: map['githubUsername'] ?? map['login'] ?? '',
+      displayName: map['displayName'] ?? map['login'] ?? '',
+      email: map['email'] ?? '',
+      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt'] as String) : DateTime.now(),
+      lastSeen: map['lastSeen'] != null ? DateTime.parse(map['lastSeen'] as String) : DateTime.now(),
+      avatarUrl: map['avatarUrl'] ?? map['avatar_url'],
       allOrganizations: (map['allOrganizations'] as List<dynamic>?)
           ?.map((org) => GitHubOrgInfo.fromMap(org as Map<String, dynamic>))
           .toList(),
       ownOrganizations: (map['ownOrganizations'] as List<dynamic>?)
           ?.map((org) => GitHubOrgInfo.fromMap(org as Map<String, dynamic>))
           .toList(),
-      currentOrganizationId: map['currentOrganizationId'] as String?,
-      currentOrganizationLogin: map['currentOrganizationLogin'] as String?,
+      currentOrganizationId: map['currentOrganizationId']?.toString(),
+      currentOrganizationLogin: map['currentOrganizationLogin']?.toString(),
       subscription: map['subscription'] != null
           ? SubscriptionInfo.fromMap(map['subscription'] as Map<String, dynamic>)
           : null,
       fcmToken: map['fcmToken'] as String?,
-      // githubAccessToken: map['githubAccessToken'] as String?,
     );
   }
 }

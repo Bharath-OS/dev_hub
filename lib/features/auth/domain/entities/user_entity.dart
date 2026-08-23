@@ -96,9 +96,9 @@ class GitHubOrgInfo {
 
   factory GitHubOrgInfo.fromMap(Map<String, dynamic> map) {
     return GitHubOrgInfo(
-      id: map['id'] as String,
+      id: map['id']?.toString() ?? '',
       login: map['login'] as String,
-      avatarUrl: map['avatarUrl'] as String,
+      avatarUrl: map['avatarUrl'] as String? ?? map['avatar_url'] as String? ?? '',
       role: map['role'] as String?,
       state: map['state'] as String?,
     );
