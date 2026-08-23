@@ -5,7 +5,7 @@ class ApiParams {
   final String? orgName;
   final String? memberName;
   final Map<String, String>? queryParams;
-  final Map<String, String>? data;
+  final Map<String, dynamic>? data;
 
   ApiParams({
     required this.accessToken,
