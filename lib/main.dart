@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dev_hub/core/constants/api_endpoints.dart';
 import 'package:dev_hub/core/constants/local_storage_keys.dart';
 import 'package:dev_hub/core/constants/theme.dart';
 import 'package:dev_hub/features/auth/domain/usecases/auth_usecases/auth_logout_usecase.dart';
@@ -53,7 +54,7 @@ void main() async {
 
   final apiClient = DioClient(
     dio: dio,
-    baseURL: "https://api.github.com/",
+    baseURL: "https://api.github.com",
     tokenManager: tokenManager,
   );
 
@@ -83,12 +84,16 @@ void main() async {
   final orgRepository = OrgRepositoryImpl(
     githubApiDataSource: githubApiDataSource,
     remoteDB: remoteDatabase,
-    localDB: localDatabaseImpl, tokenManager: tokenManager,
+    localDB: localDatabaseImpl,
+    tokenManager: tokenManager,
   );
 
   final workspaceRepository = WorkspaceRepositoryImpl(
     dataSource: workspaceRemoteDatabase,
-    githubApiService: GithubWorkspaceDataSourceImpl(apiClient),
+    githubApiService: GithubWorkspaceDataSourceImpl(
+      apiClient: apiClient,
+      apiEndpoints: ApiEndpoints(),
+    ),
     tokenManager: tokenManager,
   );
 
@@ -97,17 +102,10 @@ void main() async {
   final getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
   final updateOrganizationUseCase = UpdateOrganizationUseCase(orgRepository);
   final checkLoginUseCase = CheckLogInUsecase(authRepository);
-  final createWorkspaceUseCase = CreateWorkspaceUsecase(
-    WorkspaceRepositoryImpl(
-      tokenManager: tokenManager,
-      dataSource: WorkspaceDatasourceImpl(
-        firestoreService: FirestoreService(firestoreInstance),
-      ),
-      githubApiService: GithubWorkspaceDataSourceImpl(apiClient),
-    ),
-  );
+  final createWorkspaceUseCase = CreateWorkspaceUsecase(workspaceRepository);
   final logoutUseCase = AuthLogoutUseCase(authRepository);
   final getWorkspacesUseCase = GetWorkspaceUseCase(workspaceRepository);
+  final getRepositoriesUseCase = GetRepositoriesUseCase(workspaceRepository);
 
   runApp(
     MultiBlocProvider(
@@ -126,6 +124,7 @@ void main() async {
           create: (_) => WorkspaceBloc(
             createWorkspaceUsecase: createWorkspaceUseCase,
             getWorkspaceUseCase: getWorkspacesUseCase,
+            getRepositoriesUseCase: getRepositoriesUseCase,
           ),
         ),
       ],

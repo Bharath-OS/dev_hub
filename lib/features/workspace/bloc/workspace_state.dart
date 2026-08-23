@@ -38,3 +38,24 @@ final class WorkspaceFailure extends WorkspaceState {
   List<Object?> get props => [error];
 }
 
+final class RepositoriesLoading extends WorkspaceState {
+  @override
+  List<Object?> get props => [];
+}
+
+final class RepositoriesLoaded extends WorkspaceState {
+  final List<GitHubRepositoryEntity> repositories;
+  const RepositoriesLoaded(this.repositories);
+
+  @override
+  List<Object?> get props => [repositories];
+}
+
+final class RepositoriesFailure extends WorkspaceState {
+  final String error;
+  const RepositoriesFailure(this.error);
+
+  @override
+  List<Object?> get props => [error];
+}
+

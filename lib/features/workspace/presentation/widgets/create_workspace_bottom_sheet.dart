@@ -1,9 +1,13 @@
+import 'package:dev_hub/features/workspace/domain/entity/github_repository_entity.dart';
+import 'package:dev_hub/features/workspace/domain/usecases/workspace_usecases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../bloc/workspace_bloc.dart';
+import '../../domain/entity/workspace_entity.dart';
 
 class CreateWorkspaceBottomSheet extends StatefulWidget {
   const CreateWorkspaceBottomSheet({super.key});
@@ -16,11 +20,27 @@ class CreateWorkspaceBottomSheet extends StatefulWidget {
 class _CreateWorkspaceBottomSheetState
     extends State<CreateWorkspaceBottomSheet> {
   final TextEditingController _nameController = TextEditingController();
-  String? _selectedRepo;
+  GitHubRepositoryEntity? _selectedRepo;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
+    final authState = context.read<AuthBloc>().state;
+    String? orgName;
+
+    if (authState is AuthSessionRestored) {
+      orgName = authState.user.currentOrganizationLogin;
+    } else if (authState is AuthSuccess) {
+      orgName = authState.user.currentOrganizationLogin;
+    } else if (authState is AuthOrgUpdateSuccess) {
+      orgName = authState.user.currentOrganizationLogin;
+    } else if (authState is AuthOrgAdminSuccess) {
+      orgName = authState.user.currentOrganizationLogin;
+    }
+
+    if (orgName != null) {
+      context.read<WorkspaceBloc>().add(GetRepositoriesEvent(orgName));
+    }
   }
 
   @override
@@ -199,54 +219,71 @@ class _CreateWorkspaceBottomSheetState
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        DropdownButtonFormField<String>(
-          initialValue: _selectedRepo,
-          icon: const Icon(
-            Icons.keyboard_arrow_down,
-            color: AppPalette.onSurfaceVariant,
-          ),
-          decoration: InputDecoration(
-            prefixIcon: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Icon(Icons.code, color: AppPalette.black),
-            ),
-            prefixIconConstraints: const BoxConstraints(minWidth: 40),
-            hintText: 'Select Repository',
-            hintStyle: AppTextStyles.body.copyWith(
-              color: AppPalette.mutedTextColor,
-              fontSize: 14,
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: 14,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.mdBorderRadius,
-              borderSide: const BorderSide(color: AppPalette.border),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.mdBorderRadius,
-              borderSide: const BorderSide(color: AppPalette.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.mdBorderRadius,
-              borderSide: const BorderSide(color: AppPalette.primaryContainer),
-            ),
-          ),
-          items: const [
-            DropdownMenuItem(
-              value: 'devhub-org/next-dev',
-              child: Text('devhub-org/next-dev'),
-            ),
-            DropdownMenuItem(
-              value: 'devhub-org/flutter-app',
-              child: Text('devhub-org/flutter-app'),
-            ),
-          ],
-          onChanged: (val) {
-            setState(() {
-              _selectedRepo = val;
-            });
+        BlocBuilder<WorkspaceBloc, WorkspaceState>(
+          buildWhen: (previous, current) =>
+              current is RepositoriesLoading ||
+              current is RepositoriesLoaded ||
+              current is RepositoriesFailure,
+          builder: (context, state) {
+            if (state is RepositoriesLoading) {
+              return const LinearProgressIndicator();
+            }
+
+            List<GitHubRepositoryEntity> repos = [];
+            if (state is RepositoriesLoaded) {
+              repos = state.repositories;
+            }
+
+            return DropdownButtonFormField<GitHubRepositoryEntity>(
+              value: _selectedRepo,
+              icon: const Icon(
+                Icons.keyboard_arrow_down,
+                color: AppPalette.onSurfaceVariant,
+              ),
+              decoration: InputDecoration(
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Icon(Icons.code, color: AppPalette.black),
+                ),
+                prefixIconConstraints: const BoxConstraints(minWidth: 40),
+                hintText: repos.isEmpty ? 'No Repositories Found' : 'Select Repository',
+                hintStyle: AppTextStyles.body.copyWith(
+                  color: AppPalette.mutedTextColor,
+                  fontSize: 14,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: 14,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: AppRadius.mdBorderRadius,
+                  borderSide: const BorderSide(color: AppPalette.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: AppRadius.mdBorderRadius,
+                  borderSide: const BorderSide(color: AppPalette.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: AppRadius.mdBorderRadius,
+                  borderSide: const BorderSide(color: AppPalette.primaryContainer),
+                ),
+              ),
+              items: repos.map((repo) {
+                return DropdownMenuItem<GitHubRepositoryEntity>(
+                  value: repo,
+                  child: Text(
+                    repo.fullName,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  _selectedRepo = val;
+                });
+              },
+            );
           },
         ),
         const SizedBox(height: AppSpacing.xs),
@@ -265,13 +302,95 @@ class _CreateWorkspaceBottomSheetState
           height: AppHeights.buttonHeight,
           child: BlocConsumer<WorkspaceBloc, WorkspaceState>(
             listener: (context, state) {
-              // TODO: implement listener
+              if (state is WorkspaceCreated) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Workspace created successfully!'),
+                    backgroundColor: AppPalette.success,
+                  ),
+                );
+                Navigator.of(context).pop();
+              } else if (state is WorkspaceFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error),
+                    backgroundColor: AppPalette.error,
+                  ),
+                );
+              }
             },
             builder: (context, state) {
+              final isLoading = state is WorkspaceLoadingState || state is RepositoriesLoading;
+
               return ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        if (_nameController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please enter a name and select a repository.'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final authState = context.read<AuthBloc>().state;
+                        String? orgId;
+                        String? orgLogin;
+                        String? adminId;
+
+                        if (authState is AuthSessionRestored) {
+                          orgId = authState.user.currentOrganizationId;
+                          orgLogin = authState.user.currentOrganizationLogin;
+                          adminId = authState.user.id;
+                        } else if (authState is AuthSuccess) {
+                          orgId = authState.user.currentOrganizationId;
+                          orgLogin = authState.user.currentOrganizationLogin;
+                          adminId = authState.user.id;
+                        } else if (authState is AuthOrgUpdateSuccess) {
+                          orgId = authState.user.currentOrganizationId;
+                          orgLogin = authState.user.currentOrganizationLogin;
+                          adminId = authState.user.id;
+                        } else if (authState is AuthOrgAdminSuccess) {
+                          orgId = authState.user.currentOrganizationId;
+                          orgLogin = authState.user.currentOrganizationLogin;
+                          adminId = authState.user.id;
+                        }
+
+                        if (orgId == null || orgLogin == null || adminId == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Failed to retrieve organization details. Please re-login.'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        if (_selectedRepo == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please select a repository.'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        context.read<WorkspaceBloc>().add(
+                              CreateWorkspaceEvent(
+                                WorkspaceParams(
+                                  name: _nameController.text,
+                                  id: DateTime.now().millisecondsSinceEpoch.toString(),
+                                  orgId: orgId,
+                                  githubOrgLogin: orgLogin,
+                                  repositoryName: _selectedRepo!.fullName,
+                                  adminId: adminId,
+                                  createdAt: DateTime.now(),
+                                  updatedAt: DateTime.now(),
+                                ),
+                              ),
+                            );
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppPalette.primaryContainer,
                   foregroundColor: AppPalette.white,
@@ -281,7 +400,14 @@ class _CreateWorkspaceBottomSheetState
                   elevation: 0,
                 ),
                 child: state is WorkspaceLoadingState
-                    ? CircularProgressIndicator()
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: AppPalette.white,
+                          strokeWidth: 2,
+                        ),
+                      )
                     : Text(
                         'Create Workspace',
                         style: AppTextStyles.button.copyWith(
@@ -296,9 +422,5 @@ class _CreateWorkspaceBottomSheetState
         const SizedBox(height: AppSpacing.sm),
       ],
     );
-  }
-
-  void _getRepository() {
-
   }
 }

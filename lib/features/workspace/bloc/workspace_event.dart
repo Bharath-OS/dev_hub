@@ -28,3 +28,11 @@ class WatchWorkspacesEvent extends WorkspaceEvent {
 }
 
 
+class GetRepositoriesEvent extends WorkspaceEvent{
+  final String orgName;
+  const GetRepositoriesEvent(this.orgName);
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [orgName];
+}
