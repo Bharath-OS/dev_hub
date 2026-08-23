@@ -7,15 +7,20 @@ final class AuthInitial extends AuthState {}
 
 final class AuthLoading extends AuthState {}
 
-final class AuthSuccess extends AuthState {
+abstract class AuthenticatedState extends AuthState{
   final UserEntity user;
-  AuthSuccess(this.user);
+  AuthenticatedState(this.user);
+}
+final class AuthSuccess extends AuthenticatedState {
+  // final UserEntity user;
+  AuthSuccess(super.user);
 }
 
 final class AuthFailure extends AuthState {
   final String message;
   AuthFailure(this.message);
 }
+
 
 final class AuthOrgVerifying extends AuthState {
   final UserEntity user;
@@ -28,14 +33,14 @@ final class AuthOrgError extends AuthState {
   AuthOrgError(this.message, this.user);
 }
 
-final class AuthOrgSuccess extends AuthState {
-  final UserEntity user;
-  AuthOrgSuccess(this.user);
+final class AuthOrgSuccess extends AuthenticatedState {
+  // final UserEntity user;
+  AuthOrgSuccess(super.user);
 }
 
-final class AuthOrgAdminSuccess extends AuthState {
-  final UserEntity user;
-  AuthOrgAdminSuccess(this.user);
+final class AuthOrgAdminSuccess extends AuthenticatedState {
+  // final UserEntity user;
+  AuthOrgAdminSuccess(super.user);
 }
 
 final class AuthNoOrganization extends AuthState {
@@ -43,25 +48,25 @@ final class AuthNoOrganization extends AuthState {
   AuthNoOrganization(this.user);
 }
 
-final class AuthMemberOnly extends AuthState {
-  final UserEntity user;
-  AuthMemberOnly(this.user);
+final class AuthMemberOnly extends AuthenticatedState {
+  // final UserEntity user;
+  AuthMemberOnly(super.user);
 }
 
 final class AuthSessionChecking extends AuthState {}
 
-final class AuthSessionRestored extends AuthState {
-  final UserEntity user;
-  AuthSessionRestored(this.user);
+final class AuthSessionRestored extends AuthenticatedState {
+  // final UserEntity user;
+  AuthSessionRestored(super.user);
 }
 
 final class AuthSessionNotFound extends AuthState {}
 
 final class AuthOrgUpdating extends AuthState {}
 
-final class AuthOrgUpdateSuccess extends AuthState {
-  final UserEntity user;
-  AuthOrgUpdateSuccess(this.user);
+final class AuthOrgUpdateSuccess extends AuthenticatedState {
+  // final UserEntity user;
+  AuthOrgUpdateSuccess(super.user);
 }
 
 final class AuthOrgUpdateFailure extends AuthState {
