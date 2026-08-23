@@ -21,20 +21,20 @@ class _CreateWorkspaceBottomSheetState
     extends State<CreateWorkspaceBottomSheet> {
   final TextEditingController _nameController = TextEditingController();
   GitHubRepositoryEntity? _selectedRepo;
-  late final String? orgName;
+  String? _orgName;
 
   @override
   void initState() {
     super.initState();
+    
     final authState = context.read<AuthBloc>().state;
-
     if (authState is AuthenticatedState) {
-      orgName = authState.user.currentOrganizationLogin;
+      _orgName = authState.user.currentOrganizationLogin;
     }
 
-    if (orgName != null) {
+    if (_orgName != null) {
       if (context.read<WorkspaceBloc>().state is! RepositoriesLoaded) {
-        context.read<WorkspaceBloc>().add(GetRepositoriesEvent(orgName!));
+        context.read<WorkspaceBloc>().add(GetRepositoriesEvent(_orgName!));
       }
     }
   }
@@ -288,9 +288,18 @@ class _CreateWorkspaceBottomSheetState
                   ),
                 ),
                 IconButton.outlined(
-                  onPressed: () => context.read<WorkspaceBloc>().add(
-                    GetRepositoriesEvent(''),
-                  ),
+                  onPressed: () {
+                    if (_orgName == null) {
+                      final state = context.read<AuthBloc>().state;
+                      if (state is AuthenticatedState) {
+                        _orgName = state.user.currentOrganizationLogin;
+                      }
+                    } else if (_orgName != null) {
+                      context.read<WorkspaceBloc>().add(
+                        GetRepositoriesEvent(_orgName!),
+                      );
+                    }
+                  },
                   icon: Center(child: Icon(Icons.refresh)),
                 ),
               ],
@@ -351,31 +360,26 @@ class _CreateWorkspaceBottomSheetState
                         }
 
                         final authState = context.read<AuthBloc>().state;
-                        String? orgId;
-                        String? orgLogin;
-                        String? adminId;
+                        // String? orgId;
+                        // String? orgLogin;
+                        // String? adminId;
 
-                        if (authState is AuthSessionRestored) {
-                          orgId = authState.user.currentOrganizationId;
-                          orgLogin = authState.user.currentOrganizationLogin;
-                          adminId = authState.user.id;
-                        } else if (authState is AuthSuccess) {
-                          orgId = authState.user.currentOrganizationId;
-                          orgLogin = authState.user.currentOrganizationLogin;
-                          adminId = authState.user.id;
-                        } else if (authState is AuthOrgUpdateSuccess) {
-                          orgId = authState.user.currentOrganizationId;
-                          orgLogin = authState.user.currentOrganizationLogin;
-                          adminId = authState.user.id;
-                        } else if (authState is AuthOrgAdminSuccess) {
-                          orgId = authState.user.currentOrganizationId;
-                          orgLogin = authState.user.currentOrganizationLogin;
-                          adminId = authState.user.id;
+                        if (authState is! AuthenticatedState) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Failed to retrieve organization details. Please re-login.',
+                              ),
+                            ),
+                          );
+                          return;
                         }
+                        final orgId = authState.user.currentOrganizationId;
+                        final orgLogin = authState.user.currentOrganizationLogin;
+                        final adminId = authState.user.id;
 
                         if (orgId == null ||
-                            orgLogin == null ||
-                            adminId == null) {
+                            orgLogin == null  ) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
