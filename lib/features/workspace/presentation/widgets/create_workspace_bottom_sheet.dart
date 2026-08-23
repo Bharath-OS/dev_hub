@@ -235,16 +235,14 @@ class _CreateWorkspaceBottomSheetState
             }
 
             return DropdownButtonFormField<GitHubRepositoryEntity>(
-              value: _selectedRepo,
+              isExpanded: true,
+              initialValue: _selectedRepo,
               icon: const Icon(
                 Icons.keyboard_arrow_down,
                 color: AppPalette.onSurfaceVariant,
               ),
               decoration: InputDecoration(
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: Icon(Icons.code, color: AppPalette.black),
-                ),
+                prefixIcon: Icon(Icons.code, color: AppPalette.black),
                 prefixIconConstraints: const BoxConstraints(minWidth: 40),
                 hintText: repos.isEmpty ? 'No Repositories Found' : 'Select Repository',
                 hintStyle: AppTextStyles.body.copyWith(
