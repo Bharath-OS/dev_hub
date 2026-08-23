@@ -1,5 +1,5 @@
 import '../../../auth/data/models/user_model.dart';
-import '../../domain/entity/repository_entity.dart';
+import '../../domain/entity/github_repository_entity.dart';
 
 class RepositoryModel extends GitHubRepositoryEntity {
   RepositoryModel({
@@ -23,25 +23,25 @@ class RepositoryModel extends GitHubRepositoryEntity {
 
   factory RepositoryModel.fromMap(Map<String, dynamic> map) {
     return RepositoryModel(
-      id: map['id'],
-      name: map['name'],
-      fullName: map['full_name'],
-      owner: UserModel.fromMap(map['owner']),
-      isPrivate: map['private'],
-      htmlUrl: map['html_url'],
-      description: map['description'],
-      fork: map['fork'],
-      apiUrl: map['url'],
-      forksCount: map['forks_count'],
-      openIssuesCount: map['open_issues_count'],
-      visibility: map['visibility'],
-      createdAt: DateTime.parse(map['created_at']),
-      updatedAt: DateTime.parse(map['updated_at']),
-      pushedAt: DateTime.parse(map['pushed_at']),
+      id: map['id'] as int,
+      name: map['name'] as String,
+      fullName: map['full_name'] as String,
+      owner: UserModel.fromMap(map['owner'] as Map<String, dynamic>),
+      isPrivate: map['private'] as bool,
+      htmlUrl: map['html_url'] as String,
+      description: map['description'] as String?,
+      fork: map['fork'] as bool,
+      apiUrl: map['url'] as String,
+      forksCount: map['forks_count'] as int,
+      openIssuesCount: map['open_issues_count'] as int,
+      visibility: map['visibility'] as String,
+      createdAt: DateTime.parse(map['created_at'] as String),
+      updatedAt: DateTime.parse(map['updated_at'] as String),
+      pushedAt: DateTime.parse(map['pushed_at'] as String),
       permissions: {
-        'admin': map['permissions']['admin'],
-        'push': map['permissions']['push'],
-        'pull': map['permissions']['pull'],
+        'admin': map['permissions']?['admin'] ?? false,
+        'push': map['permissions']?['push'] ?? false,
+        'pull': map['permissions']?['pull'] ?? false,
       },
     );
   }

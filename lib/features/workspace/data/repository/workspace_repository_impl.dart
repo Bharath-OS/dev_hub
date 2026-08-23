@@ -2,7 +2,7 @@ import 'package:dev_hub/core/errors/failures.dart';
 import 'package:dev_hub/features/auth/data/datasource/local/auth_local_database_impl.dart';
 import 'package:dev_hub/features/auth/data/datasource/local/auth_local_database_interface.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/github_workspace_datasource.dart';
-import 'package:dev_hub/features/workspace/domain/entity/repository_entity.dart';
+import 'package:dev_hub/features/workspace/domain/entity/github_repository_entity.dart';
 import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
 import 'package:dev_hub/shared/data/datasources/remote/github_api_data_source.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,7 +50,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
   @override
   Future<Either<Failure, List<GitHubRepositoryEntity>>> getRepositories(
-    WorkspaceParams workspaceParams,
+    String orgName,
   ) async {
     final accessToken = await _tokenManager.getToken();
     if (accessToken == null) {
@@ -58,9 +58,10 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
     try {
       final repositoryList = await _githubApiService.getRepositories(
-        orgName: workspaceParams.githubOrgLogin,
+        orgName: orgName,
         accessToken: accessToken,
       );
+      print(repositoryList);
       for (var repo in repositoryList) {
         print(
           "Here is the repo name: ${repo.name} and full name: ${repo.fullName} and ${repo.htmlUrl}",

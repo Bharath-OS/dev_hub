@@ -1,6 +1,6 @@
 import 'package:dev_hub/core/errors/failures.dart';
 import 'package:dev_hub/core/usecases/usecase.dart';
-import 'package:dev_hub/features/workspace/domain/entity/repository_entity.dart';
+import 'package:dev_hub/features/workspace/domain/entity/github_repository_entity.dart';
 import 'package:fpdart/fpdart.dart';
 import '../entity/workspace_entity.dart';
 import '../repository/workspace_repo.dart';
@@ -45,13 +45,13 @@ class GetWorkspaceUseCase implements UseCase<Stream<List<WorkspaceEntity>>, Stri
   }
 }
 
-class GetRepositoriesUseCase implements UseCase<List<GitHubRepositoryEntity>,WorkspaceParams>{
+class GetRepositoriesUseCase implements UseCase<List<GitHubRepositoryEntity>,String>{
   final WorkspaceRepository _repository;
   GetRepositoriesUseCase(this._repository);
 
   @override
-  Future<Either<Failure,List<GitHubRepositoryEntity>>> call(WorkspaceParams params) async {
-      final repositories = await _repository.getRepositories(params);
+  Future<Either<Failure,List<GitHubRepositoryEntity>>> call(String orgName) async {
+      final repositories = await _repository.getRepositories(orgName);
       return repositories;
   }
 }
