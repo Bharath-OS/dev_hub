@@ -100,7 +100,7 @@ class OrgDropdownSelector extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Role: ${org.role ?? 'Member'} â€¢ Status: ${org.state ?? 'active'}',
+                        'Role: ${org.role ?? 'Member'} Status: ${org.state ?? 'active'}',
                         style: AppTextStyles.caption.copyWith(
                           color: AppPalette.onSurfaceVariant,
                           fontSize: 12,

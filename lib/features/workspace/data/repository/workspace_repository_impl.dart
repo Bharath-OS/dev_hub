@@ -61,9 +61,8 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
         orgName: orgName,
         accessToken: accessToken,
       );
-      print(repositoryList);
       for (var repo in repositoryList) {
-        print(
+        debugPrint(
           "Here is the repo name: ${repo.name} and full name: ${repo.fullName} and ${repo.htmlUrl}",
         );
       }
