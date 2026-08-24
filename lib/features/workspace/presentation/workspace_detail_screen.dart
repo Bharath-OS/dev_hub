@@ -1,34 +1,39 @@
+import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
-
-// ---------------------------------------------------------------------------
-// Workspace Detail Screen
-// ---------------------------------------------------------------------------
+import '../bloc/workspace_bloc.dart';
 
 class WorkspaceDetailScreen extends StatefulWidget {
-  const WorkspaceDetailScreen({super.key});
+  final String workspaceId;
+  const WorkspaceDetailScreen({super.key, required this.workspaceId});
 
   @override
   State<WorkspaceDetailScreen> createState() => _WorkspaceDetailScreenState();
 }
 
 class _WorkspaceDetailScreenState extends State<WorkspaceDetailScreen> {
-
   @override
   Widget build(BuildContext context) {
+    final state = context.read<WorkspaceBloc>().state as WorkspaceDisplayState;
+    final WorkspaceEntity workspace = state.workspaces.firstWhere(
+      (workspace) => workspace.id == widget.workspaceId,
+    );
     return Scaffold(
       backgroundColor: AppPalette.background,
-      appBar: _WorkspaceDetailAppBar(title: 'Workspace: NextDev'),
+      appBar: _WorkspaceDetailAppBar(title: workspace.name),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md, vertical: AppSpacing.md),
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.md,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             // Repository URL row
-            _RepoUrlRow(url: 'github.com/devhub-org'),
+            _RepoUrlRow(url: workspace.repositoryName),
             SizedBox(height: AppSpacing.lg),
 
             // Overview card
@@ -286,8 +291,9 @@ class _OverviewCard extends StatelessWidget {
               value: progress,
               minHeight: 7,
               backgroundColor: AppPalette.outlineVariant,
-              valueColor:
-                  const AlwaysStoppedAnimation<Color>(AppPalette.surfaceTint),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppPalette.surfaceTint,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -316,8 +322,11 @@ class _OverviewCard extends StatelessWidget {
           const SizedBox(height: 6),
           Row(
             children: [
-              const Icon(Icons.flag_outlined,
-                  size: 16, color: AppPalette.surfaceTint),
+              const Icon(
+                Icons.flag_outlined,
+                size: 16,
+                color: AppPalette.surfaceTint,
+              ),
               const SizedBox(width: 6),
               Text(
                 milestoneName,
@@ -437,8 +446,9 @@ class _TeamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final taskProgress =
-        team.totalTasks > 0 ? team.completedTasks / team.totalTasks : 0.0;
+    final taskProgress = team.totalTasks > 0
+        ? team.completedTasks / team.totalTasks
+        : 0.0;
 
     return Container(
       decoration: BoxDecoration(
@@ -545,18 +555,9 @@ class _QuickActionsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const actions = [
-      _QuickActionData(
-        icon: Icons.group_add_outlined,
-        label: 'Create Team',
-      ),
-      _QuickActionData(
-        icon: Icons.person_add_outlined,
-        label: 'Invite Member',
-      ),
-      _QuickActionData(
-        icon: Icons.add_task_outlined,
-        label: 'Create Task',
-      ),
+      _QuickActionData(icon: Icons.group_add_outlined, label: 'Create Team'),
+      _QuickActionData(icon: Icons.person_add_outlined, label: 'Invite Member'),
+      _QuickActionData(icon: Icons.add_task_outlined, label: 'Create Task'),
       _QuickActionData(
         icon: Icons.settings_outlined,
         label: 'Workspace Settings',
@@ -573,8 +574,7 @@ class _QuickActionsGrid extends StatelessWidget {
         mainAxisSpacing: AppSpacing.sm,
         childAspectRatio: 2.2,
       ),
-      itemBuilder: (context, index) =>
-          _QuickActionTile(data: actions[index]),
+      itemBuilder: (context, index) => _QuickActionTile(data: actions[index]),
     );
   }
 }
@@ -587,10 +587,7 @@ class _QuickActionData {
   final IconData icon;
   final String label;
 
-  const _QuickActionData({
-    required this.icon,
-    required this.label,
-  });
+  const _QuickActionData({required this.icon, required this.label});
 }
 
 // ---------------------------------------------------------------------------
@@ -620,7 +617,9 @@ class _QuickActionTile extends StatelessWidget {
           ],
         ),
         padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

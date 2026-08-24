@@ -90,7 +90,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                                       MaterialPageRoute(
                                         builder:
                                             (_) =>
-                                                const WorkspaceDetailScreen(),
+                                                WorkspaceDetailScreen(workspaceId: workspace.id,),
                                       ),
                                     );
                                   },
