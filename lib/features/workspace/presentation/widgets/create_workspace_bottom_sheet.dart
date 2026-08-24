@@ -1,5 +1,4 @@
 import 'package:dev_hub/features/workspace/domain/entity/github_repository_entity.dart';
-import 'package:dev_hub/features/workspace/domain/usecases/workspace_usecases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -360,9 +359,6 @@ class _CreateWorkspaceBottomSheetState
                         }
 
                         final authState = context.read<AuthBloc>().state;
-                        // String? orgId;
-                        // String? orgLogin;
-                        // String? adminId;
 
                         if (authState is! AuthenticatedState) {
                           ScaffoldMessenger.of(context).showSnackBar(
