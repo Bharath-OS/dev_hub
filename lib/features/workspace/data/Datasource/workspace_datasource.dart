@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_hub/core/params/firestore_params.dart';
+import 'package:flutter/cupertino.dart';
 import '../../../../shared/data/datasources/remote/firestore_service.dart';
 import '../../domain/entity/workspace_entity.dart';
 import '../model/workspace_model.dart';
@@ -16,9 +17,7 @@ abstract interface class WorkspaceDataSource {
 class WorkspaceDatasourceImpl implements WorkspaceDataSource {
   final FirestoreService _firestoreService;
   final String collectionPath = 'Workspaces';
-  WorkspaceDatasourceImpl({
-    required this._firestoreService,
-  });
+  WorkspaceDatasourceImpl({required this._firestoreService});
 
   @override
   Future<WorkspaceModel> createWorkspace(WorkspaceParams params) async {
@@ -50,14 +49,15 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
         .readAll(
           FirestoreParams(
             collectionPath: collectionPath,
-            queryField: 'adminId',
+            queryField: 'Admin Id',
             queryValue: userId,
           ),
         )
         .map((snapshot) {
-          return snapshot.docs
-              .map((doc) => WorkspaceModel.fromFirestore(doc.data()))
-              .toList();
+          return snapshot.docs.map((doc) {
+            debugPrint(doc.data().toString());
+            return WorkspaceModel.fromFirestore(doc.data());
+          }).toList();
         });
   }
 

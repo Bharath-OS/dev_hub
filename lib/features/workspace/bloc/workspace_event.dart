@@ -27,7 +27,6 @@ class WatchWorkspacesEvent extends WorkspaceEvent {
   List<Object?> get props => [userId];
 }
 
-
 class GetRepositoriesEvent extends WorkspaceEvent{
   final String orgName;
   const GetRepositoriesEvent(this.orgName);

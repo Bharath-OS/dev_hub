@@ -14,20 +14,21 @@ final class WorkspaceLoadingState extends WorkspaceState{
   List<Object?> get props => [];
 }
 
-final class WorkspaceCreated extends WorkspaceState{
-  final WorkspaceEntity workspaceEntity;
-  const WorkspaceCreated(this.workspaceEntity);
-
-  @override
-  List<Object?> get props => [workspaceEntity];
-}
-
-final class WorkspaceLoaded extends WorkspaceState {
+abstract class WorkspaceDisplayState extends WorkspaceState{
   final List<WorkspaceEntity> workspaces;
-  const WorkspaceLoaded(this.workspaces);
+  const WorkspaceDisplayState(this.workspaces);
 
   @override
   List<Object?> get props => [workspaces];
+}
+
+final class WorkspaceCreated extends WorkspaceDisplayState{
+  final WorkspaceEntity workspace;
+  const WorkspaceCreated(this.workspace,super.workspaces);
+}
+
+final class WorkspaceLoaded extends WorkspaceDisplayState {
+  const WorkspaceLoaded(super.workspaces);
 }
 
 final class WorkspaceFailure extends WorkspaceState {

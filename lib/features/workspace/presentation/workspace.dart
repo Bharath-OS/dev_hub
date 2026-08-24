@@ -24,12 +24,9 @@ class _WorkspacePageState extends State<WorkspacePage> {
     super.initState();
     final authState = context.read<AuthBloc>().state;
     String? userId;
-    if (authState is AuthSessionRestored) {
-      userId = authState.user.id;
-    } else if (authState is AuthSuccess) {
+    if (authState is AuthenticatedState) {
       userId = authState.user.id;
     }
-
     if (userId != null) {
       context.read<WorkspaceBloc>().add(WatchWorkspacesEvent(userId));
     }
@@ -71,7 +68,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                     hasScrollBody: false,
                     child: Center(child: CircularProgressIndicator()),
                   )
-                else if (state is WorkspaceLoaded)
+                else if (state is WorkspaceDisplayState)
                   state.workspaces.isEmpty
                       ? const SliverFillRemaining(
                         hasScrollBody: false,

@@ -11,6 +11,7 @@ class WorkspaceBloc extends Bloc<WorkspaceEvent, WorkspaceState> {
   final CreateWorkspaceUsecase _createWorkspaceUsecase;
   final GetWorkspaceUseCase _getWorkspaceUseCase;
   final GetRepositoriesUseCase _getRepositoriesUseCase;
+  List<WorkspaceEntity> _currentWorkspaces = [];
 
   WorkspaceBloc({
     required CreateWorkspaceUsecase createWorkspaceUsecase,
@@ -21,12 +22,11 @@ class WorkspaceBloc extends Bloc<WorkspaceEvent, WorkspaceState> {
        _getRepositoriesUseCase = getRepositoriesUseCase,
        super(WorkspaceInitial()) {
     on<CreateWorkspaceEvent>((event, emit) async {
-      emit(WorkspaceLoadingState());
       try {
         final response = await _createWorkspaceUsecase.call(event.params);
         response.fold(
           (error) => emit(WorkspaceFailure(error.message)),
-          (workspace) => emit(WorkspaceCreated(workspace)),
+          (workspace) => emit(WorkspaceCreated(workspace,_currentWorkspaces)),
         );
       } on Failure catch (error) {
         emit(WorkspaceFailure(error.message));
@@ -44,7 +44,10 @@ class WorkspaceBloc extends Bloc<WorkspaceEvent, WorkspaceState> {
         (stream) async {
           await emit.forEach<List<WorkspaceEntity>>(
             stream,
-            onData: (workspaces) => WorkspaceLoaded(workspaces),
+            onData: (workspaces) {
+              _currentWorkspaces = workspaces;
+              return WorkspaceLoaded(workspaces);
+            },
             onError: (error, stackTrace) => WorkspaceFailure(error.toString()),
           );
         },
