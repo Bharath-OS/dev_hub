@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_constants.dart';
-import '../../../../core/widgets/app_logo_header.dart';
+import '../../../../shared/presentation/widgets/app_logo_header.dart';
 import '../bloc/auth_bloc.dart';
 import '../widgets/register_screen_widgets/app_logo.dart';
 import '../widgets/register_screen_widgets/authentication_button.dart';

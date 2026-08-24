@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_constants.dart';
 import '../../../../../core/constants/app_text_styles.dart';
-import '../../../../core/widgets/primary_button.dart';
+import '../../../../shared/presentation/widgets/primary_button.dart';
 import '../../domain/entities/user_entity.dart';
 import '../bloc/auth_bloc.dart';
 import 'choose_org_screen.dart';

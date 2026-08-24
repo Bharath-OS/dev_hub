@@ -4,7 +4,7 @@ import 'package:dev_hub/core/constants/app_colors.dart';
 import 'package:dev_hub/core/constants/app_constants.dart';
 import 'package:dev_hub/core/constants/app_text_styles.dart';
 import '../../../../../main_screen.dart';
-import '../../../../core/widgets/primary_button.dart';
+import '../../../../shared/presentation/widgets/primary_button.dart';
 import '../../domain/entities/user_entity.dart';
 import '../bloc/auth_bloc.dart';
 import '../widgets/choose_org_widgets/admin_success_illustration.dart';

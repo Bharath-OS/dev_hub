@@ -1,6 +1,5 @@
 import 'package:dev_hub/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
-import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import 'package:dev_hub/features/workspace/presentation/widgets/create_workspace_bottom_sheet.dart';
 import 'package:dev_hub/features/workspace/presentation/widgets/workspace_card.dart';
 import 'package:dev_hub/features/workspace/presentation/widgets/workspace_filter_chips.dart';
@@ -8,7 +7,7 @@ import 'package:dev_hub/features/workspace/presentation/widgets/workspace_search
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../core/widgets/custom_bottom_sheet.dart';
+import '../../../shared/presentation/widgets/custom_bottom_sheet.dart';
 import 'workspace_detail_screen.dart';
 
 class WorkspacePage extends StatefulWidget {
