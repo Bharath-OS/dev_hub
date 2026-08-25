@@ -41,7 +41,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.background,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: BlocBuilder<WorkspaceBloc, WorkspaceState>(
           builder: (context, state) {
@@ -118,9 +118,9 @@ class _WorkspacePageState extends State<WorkspacePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showCreateWorkspaceBottomSheet,
-        backgroundColor: AppPalette.primaryContainer,
+        backgroundColor: AppColors.primaryContainer,
         shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: AppPalette.white, size: 28),
+        child: const Icon(Icons.add, color: AppColors.white, size: 28),
       ),
     );
   }

@@ -17,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.bgColor,
+      backgroundColor: AppColors.bgColor,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if(state is AuthLogoutSuccess){

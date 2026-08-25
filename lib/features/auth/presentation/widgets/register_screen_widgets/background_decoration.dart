@@ -24,7 +24,7 @@ class BackgroundDecoration extends StatelessWidget {
                   height: 400,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppPalette.gradientColor
+                      color: AppColors.gradientColor
                   ),
                 ),
               );
@@ -41,7 +41,7 @@ class BackgroundDecoration extends StatelessWidget {
             height: 320,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppPalette.gradientColor,
+              color: AppColors.gradientColor,
             ),
           ),
         ),

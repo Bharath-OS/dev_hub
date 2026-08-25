@@ -42,7 +42,7 @@ class _MainClassState extends State<MainClass> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.background,
+      backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         onMenuPressed: () {},
         onSearchPressed: () {},
@@ -78,20 +78,20 @@ class _PlaceholderTab extends StatelessWidget {
             Icon(
               icon,
               size: 48,
-              color: AppPalette.secondary,
+              color: AppColors.secondary,
             ),
             const SizedBox(height: 16),
             Text(
               title,
               style: AppTextStyles.title.copyWith(
-                color: AppPalette.secondary,
+                color: AppColors.secondary,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Coming soon',
               style: AppTextStyles.body.copyWith(
-                color: AppPalette.secondary,
+                color: AppColors.secondary,
               ),
             ),
           ],

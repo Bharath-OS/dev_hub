@@ -15,15 +15,15 @@ class AdminSection extends StatelessWidget {
           'Admin',
           style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppPalette.onSurface,
+            color: AppColors.onSurface,
           ),
         ),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppPalette.surfaceContainerLowest,
+            color: AppColors.surfaceContainerLowest,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppPalette.border),
+            border: Border.all(color: AppColors.border),
           ),
           child: Column(
             children: [
@@ -36,7 +36,7 @@ class AdminSection extends StatelessWidget {
                   print('Clicked: Manage Organizations');
                 },
               ),
-              const Divider(height: 1, color: AppPalette.border),
+              const Divider(height: 1, color: AppColors.border),
               ProfileTileItem(
                 icon: Icons.settings_outlined,
                 title: 'Workspace Settings',

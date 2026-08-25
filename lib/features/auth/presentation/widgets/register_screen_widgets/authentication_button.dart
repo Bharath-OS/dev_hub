@@ -28,7 +28,7 @@ class AuthenticationButton extends StatelessWidget {
             const Icon(
               Icons.code,
               size: 22,
-              color: AppPalette.onPrimary,
+              color: AppColors.onPrimary,
             ),
           ),
         );

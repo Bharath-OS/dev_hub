@@ -19,8 +19,8 @@ class PrimaryButton extends StatefulWidget {
     this.onPressed,
     this.icon,
     this.isLoading = false,
-    this.backgroundColor = AppPalette.primaryContainer,
-    this.foregroundColor = AppPalette.onPrimary,
+    this.backgroundColor = AppColors.primaryContainer,
+    this.foregroundColor = AppColors.onPrimary,
   });
 
   @override

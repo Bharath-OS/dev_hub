@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// Clean and organized color palette for DevHub, strictly following design.md specs.
-class AppPalette {
-  AppPalette._();
+class AppColors {
+  AppColors._();
 
   // Core Brand Colors
   static const Color primary = Color(0xFF2D1ACE);

@@ -14,7 +14,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w700,
     height: 40 / 32,
     letterSpacing: -0.64, // -0.02em
-    color: AppPalette.onSurface,
+    color: AppColors.onSurface,
   );
 
   /// Display Mobile style: 28px bold, letter spacing -0.02em
@@ -24,7 +24,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w700,
     height: 36 / 28,
     letterSpacing: -0.56,
-    color: AppPalette.onSurface,
+    color: AppColors.onSurface,
   );
 
   /// Heading style: 24px semi-bold, letter spacing -0.01em
@@ -34,7 +34,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     height: 32 / 24,
     letterSpacing: -0.24,
-    color: AppPalette.onSurface,
+    color: AppColors.onSurface,
   );
 
   /// Title style: 20px semi-bold
@@ -43,7 +43,7 @@ class AppTextStyles {
     fontSize: 20,
     fontWeight: FontWeight.w600,
     height: 28 / 20,
-    color: AppPalette.onSurface,
+    color: AppColors.onSurface,
   );
 
   /// Body style: 16px regular
@@ -52,7 +52,7 @@ class AppTextStyles {
     fontSize: 16,
     fontWeight: FontWeight.w400,
     height: 24 / 16,
-    color: AppPalette.onSurfaceVariant,
+    color: AppColors.onSurfaceVariant,
   );
 
   /// Body Medium style: 16px medium
@@ -61,7 +61,7 @@ class AppTextStyles {
     fontSize: 16,
     fontWeight: FontWeight.w500,
     height: 24 / 16,
-    color: AppPalette.onSurfaceVariant,
+    color: AppColors.onSurfaceVariant,
   );
 
   /// Caption style: 13px medium
@@ -70,7 +70,7 @@ class AppTextStyles {
     fontSize: 13,
     fontWeight: FontWeight.w500,
     height: 18 / 13,
-    color: AppPalette.outline,
+    color: AppColors.outline,
   );
 
   /// Button text style: 15px semi-bold
@@ -79,7 +79,7 @@ class AppTextStyles {
     fontSize: 15,
     fontWeight: FontWeight.w600,
     height: 20 / 15,
-    color: AppPalette.onPrimary,
+    color: AppColors.onPrimary,
   );
 
   /// Overline style: 10px bold, letter spacing 0.8px
@@ -89,6 +89,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w700,
     height: 14 / 10,
     letterSpacing: 0.8,
-    color: AppPalette.outline,
+    color: AppColors.outline,
   );
 }

@@ -22,7 +22,7 @@ class _WorkspaceDetailScreenState extends State<WorkspaceDetailScreen> {
       (workspace) => workspace.id == widget.workspaceId,
     );
     return Scaffold(
-      backgroundColor: AppPalette.background,
+      backgroundColor: AppColors.background,
       appBar: _WorkspaceDetailAppBar(title: workspace.name),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
@@ -113,11 +113,11 @@ class _WorkspaceDetailAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppPalette.white,
+      backgroundColor: AppColors.white,
       elevation: 0,
       scrolledUnderElevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: AppPalette.black),
+        icon: const Icon(Icons.arrow_back, color: AppColors.black),
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
@@ -125,12 +125,12 @@ class _WorkspaceDetailAppBar extends StatelessWidget
         style: AppTextStyles.title.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: AppPalette.headingTextColor,
+          color: AppColors.headingTextColor,
         ),
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.more_vert, color: AppPalette.black),
+          icon: const Icon(Icons.more_vert, color: AppColors.black),
           onPressed: () {},
         ),
       ],
@@ -153,12 +153,12 @@ class _RepoUrlRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.link, size: 16, color: AppPalette.mutedTextColor),
+        const Icon(Icons.link, size: 16, color: AppColors.mutedTextColor),
         const SizedBox(width: 6),
         Text(
           url,
           style: AppTextStyles.caption.copyWith(
-            color: AppPalette.surfaceTint,
+            color: AppColors.surfaceTint,
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),
@@ -188,7 +188,7 @@ class _SectionHeader extends StatelessWidget {
           style: AppTextStyles.title.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: AppPalette.headingTextColor,
+            color: AppColors.headingTextColor,
           ),
         ),
         if (actionLabel != null)
@@ -199,7 +199,7 @@ class _SectionHeader extends StatelessWidget {
               style: AppTextStyles.caption.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppPalette.surfaceTint,
+                color: AppColors.surfaceTint,
               ),
             ),
           ),
@@ -235,9 +235,9 @@ class _OverviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppPalette.white,
+        color: AppColors.white,
         borderRadius: AppRadius.primaryBorderRadius,
-        border: Border.all(color: AppPalette.border),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(8), // 0.03 * 255 approx 8
@@ -255,7 +255,7 @@ class _OverviewCard extends StatelessWidget {
             style: AppTextStyles.title.copyWith(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: AppPalette.headingTextColor,
+              color: AppColors.headingTextColor,
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -269,7 +269,7 @@ class _OverviewCard extends StatelessWidget {
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: AppPalette.mutedTextColor,
+                  color: AppColors.mutedTextColor,
                 ),
               ),
               Text(
@@ -277,7 +277,7 @@ class _OverviewCard extends StatelessWidget {
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: AppPalette.surfaceTint,
+                  color: AppColors.surfaceTint,
                 ),
               ),
             ],
@@ -290,9 +290,9 @@ class _OverviewCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 7,
-              backgroundColor: AppPalette.outlineVariant,
+              backgroundColor: AppColors.outlineVariant,
               valueColor: const AlwaysStoppedAnimation<Color>(
-                AppPalette.surfaceTint,
+                AppColors.surfaceTint,
               ),
             ),
           ),
@@ -309,14 +309,14 @@ class _OverviewCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          const Divider(color: AppPalette.border, height: 1),
+          const Divider(color: AppColors.border, height: 1),
           const SizedBox(height: AppSpacing.md),
 
           // Active Milestone
           Text(
             'ACTIVE MILESTONE',
             style: AppTextStyles.overline.copyWith(
-              color: AppPalette.mutedTextColor,
+              color: AppColors.mutedTextColor,
             ),
           ),
           const SizedBox(height: 6),
@@ -325,14 +325,14 @@ class _OverviewCard extends StatelessWidget {
               const Icon(
                 Icons.flag_outlined,
                 size: 16,
-                color: AppPalette.surfaceTint,
+                color: AppColors.surfaceTint,
               ),
               const SizedBox(width: 6),
               Text(
                 milestoneName,
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppPalette.headingTextColor,
+                  color: AppColors.headingTextColor,
                   fontSize: 13,
                 ),
               ),
@@ -340,7 +340,7 @@ class _OverviewCard extends StatelessWidget {
               Text(
                 'Due: $milestoneDue',
                 style: AppTextStyles.caption.copyWith(
-                  color: AppPalette.mutedTextColor,
+                  color: AppColors.mutedTextColor,
                   fontSize: 12,
                 ),
               ),
@@ -372,14 +372,14 @@ class _StatItem extends StatelessWidget {
           style: AppTextStyles.title.copyWith(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppPalette.headingTextColor,
+            color: AppColors.headingTextColor,
           ),
         ),
         const SizedBox(height: 2),
         Text(
           label,
           style: AppTextStyles.overline.copyWith(
-            color: AppPalette.mutedTextColor,
+            color: AppColors.mutedTextColor,
           ),
         ),
       ],
@@ -452,9 +452,9 @@ class _TeamCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppPalette.white,
+        color: AppColors.white,
         borderRadius: AppRadius.mdBorderRadius,
-        border: Border.all(color: AppPalette.border),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(5), // 0.02 * 255 approx 5
@@ -482,7 +482,7 @@ class _TeamCard extends StatelessWidget {
                 child: Text(
                   team.acronym,
                   style: AppTextStyles.caption.copyWith(
-                    color: AppPalette.white,
+                    color: AppColors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 11,
                   ),
@@ -498,7 +498,7 @@ class _TeamCard extends StatelessWidget {
                       style: AppTextStyles.bodyMedium.copyWith(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: AppPalette.headingTextColor,
+                        color: AppColors.headingTextColor,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -507,7 +507,7 @@ class _TeamCard extends StatelessWidget {
                       '${team.memberCount} Members',
                       style: AppTextStyles.caption.copyWith(
                         fontSize: 11,
-                        color: AppPalette.mutedTextColor,
+                        color: AppColors.mutedTextColor,
                       ),
                     ),
                   ],
@@ -523,7 +523,7 @@ class _TeamCard extends StatelessWidget {
                 '${team.completedTasks}/${team.totalTasks} Tasks',
                 style: AppTextStyles.caption.copyWith(
                   fontSize: 11,
-                  color: AppPalette.mutedTextColor,
+                  color: AppColors.mutedTextColor,
                 ),
               ),
               const SizedBox(height: 4),
@@ -533,7 +533,7 @@ class _TeamCard extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: taskProgress,
                   minHeight: 5,
-                  backgroundColor: AppPalette.outlineVariant,
+                  backgroundColor: AppColors.outlineVariant,
                   valueColor: AlwaysStoppedAnimation<Color>(team.color),
                 ),
               ),
@@ -605,9 +605,9 @@ class _QuickActionTile extends StatelessWidget {
       onTap: () {},
       child: Container(
         decoration: BoxDecoration(
-          color: AppPalette.white,
+          color: AppColors.white,
           borderRadius: AppRadius.mdBorderRadius,
-          border: Border.all(color: AppPalette.border),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(5),
@@ -627,11 +627,11 @@ class _QuickActionTile extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: AppPalette.primaryFixed,
+                color: AppColors.primaryFixed,
                 borderRadius: AppRadius.smBorderRadius,
               ),
               alignment: Alignment.center,
-              child: Icon(data.icon, size: 18, color: AppPalette.surfaceTint),
+              child: Icon(data.icon, size: 18, color: AppColors.surfaceTint),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
@@ -640,7 +640,7 @@ class _QuickActionTile extends StatelessWidget {
                 style: AppTextStyles.caption.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: AppPalette.headingTextColor,
+                  color: AppColors.headingTextColor,
                 ),
                 maxLines: 2,
               ),

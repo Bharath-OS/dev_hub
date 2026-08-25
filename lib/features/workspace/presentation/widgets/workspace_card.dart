@@ -37,9 +37,9 @@ class WorkspaceCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: AppPalette.white,
+          color: AppColors.white,
           borderRadius: AppRadius.primaryBorderRadius,
-          border: Border.all(color: AppPalette.border),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.02),
@@ -61,14 +61,14 @@ class WorkspaceCard extends StatelessWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppPalette.primaryContainer,
+                    color: AppColors.primaryContainer,
                     borderRadius: AppRadius.mdBorderRadius,
                   ),
                   alignment: Alignment.center,
                   child: const Text(
                     'NP',
                     style: TextStyle(
-                      color: AppPalette.white,
+                      color: AppColors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
@@ -88,7 +88,7 @@ class WorkspaceCard extends StatelessWidget {
                               style: AppTextStyles.title.copyWith(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: AppPalette.black,
+                                color: AppColors.black,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -99,7 +99,7 @@ class WorkspaceCard extends StatelessWidget {
                             child: const Icon(
                               Icons.more_vert,
                               size: 18,
-                              color: AppPalette.black,
+                              color: AppColors.black,
                             ),
                           ),
                         ],
@@ -110,7 +110,7 @@ class WorkspaceCard extends StatelessWidget {
                           const Icon(
                             Icons.folder_outlined,
                             size: 15,
-                            color: AppPalette.mutedTextColor,
+                            color: AppColors.mutedTextColor,
                           ),
                           const SizedBox(width: 4),
                           Expanded(
@@ -118,7 +118,7 @@ class WorkspaceCard extends StatelessWidget {
                               repositoryUrl,
                               style: AppTextStyles.caption.copyWith(
                                 fontSize: 13,
-                                color: AppPalette.mutedTextColor,
+                                color: AppColors.mutedTextColor,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -134,13 +134,13 @@ class WorkspaceCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: const BoxDecoration(
-                      color: AppPalette.error,
+                      color: AppColors.error,
                       shape: BoxShape.circle,
                     ),
                     child: Text(
                       '$badgeCount',
                       style: AppTextStyles.caption.copyWith(
-                        color: AppPalette.white,
+                        color: AppColors.white,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
@@ -171,7 +171,7 @@ class WorkspaceCard extends StatelessWidget {
                         width: 7,
                         height: 7,
                         decoration: const BoxDecoration(
-                          color: AppPalette.success,
+                          color: AppColors.success,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -181,7 +181,7 @@ class WorkspaceCard extends StatelessWidget {
                         style: AppTextStyles.caption.copyWith(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          color: AppPalette.headingTextColor,
+                          color: AppColors.headingTextColor,
                         ),
                       ),
                     ],
@@ -189,7 +189,7 @@ class WorkspaceCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            const Divider(color: AppPalette.border, height: 1),
+            const Divider(color: AppColors.border, height: 1),
             const SizedBox(height: AppSpacing.md),
 
             // Progress Header
@@ -201,7 +201,7 @@ class WorkspaceCard extends StatelessWidget {
                   style: AppTextStyles.caption.copyWith(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: AppPalette.mutedTextColor,
+                    color: AppColors.mutedTextColor,
                   ),
                 ),
                 Text(
@@ -209,7 +209,7 @@ class WorkspaceCard extends StatelessWidget {
                   style: AppTextStyles.caption.copyWith(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    color: AppPalette.primaryContainer,
+                    color: AppColors.primaryContainer,
                   ),
                 ),
               ],
@@ -222,9 +222,9 @@ class WorkspaceCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 6,
-                backgroundColor: AppPalette.outlineVariant,
+                backgroundColor: AppColors.outlineVariant,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                  AppPalette.primaryContainer,
+                  AppColors.primaryContainer,
                 ),
               ),
             ),
@@ -239,7 +239,7 @@ class WorkspaceCard extends StatelessWidget {
                     const Icon(
                       Icons.calendar_today_outlined,
                       size: 15,
-                      color: AppPalette.mutedTextColor,
+                      color: AppColors.mutedTextColor,
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -247,7 +247,7 @@ class WorkspaceCard extends StatelessWidget {
                       style: AppTextStyles.caption.copyWith(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: AppPalette.mutedTextColor,
+                        color: AppColors.mutedTextColor,
                       ),
                     ),
                   ],
@@ -258,13 +258,13 @@ class WorkspaceCard extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: AppPalette.primaryFixed,
+                    color: AppColors.primaryFixed,
                     borderRadius: AppRadius.smBorderRadius,
                   ),
                   child: Text(
                     badgeText,
                     style: AppTextStyles.caption.copyWith(
-                      color: AppPalette.onPrimaryFixedVariant,
+                      color: AppColors.onPrimaryFixedVariant,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -282,20 +282,20 @@ class WorkspaceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppPalette.surfaceContainerLow,
+        color: AppColors.surfaceContainerLow,
         borderRadius: AppRadius.smBorderRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 15, color: AppPalette.mutedTextColor),
+          Icon(icon, size: 15, color: AppColors.mutedTextColor),
           const SizedBox(width: 4),
           Text(
             label,
             style: AppTextStyles.caption.copyWith(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: AppPalette.headingTextColor,
+              color: AppColors.headingTextColor,
             ),
           ),
         ],

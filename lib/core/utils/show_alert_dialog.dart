@@ -10,31 +10,31 @@ Future<bool?> showAlertDialog({
   return await showDialog<bool>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
-      backgroundColor: AppPalette.surfaceContainerLowest,
+      backgroundColor: AppColors.surfaceContainerLowest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
       title: Text(
         title,
-        style: AppTextStyles.title.copyWith(color: AppPalette.onSurface),
+        style: AppTextStyles.title.copyWith(color: AppColors.onSurface),
       ),
       content: Text(
         description,
-        style: AppTextStyles.body.copyWith(color: AppPalette.onSurfaceVariant),
+        style: AppTextStyles.body.copyWith(color: AppColors.onSurfaceVariant),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
           child: Text(
             'No',
-            style: AppTextStyles.button.copyWith(color: AppPalette.secondary),
+            style: AppTextStyles.button.copyWith(color: AppColors.secondary),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, true),
           child: Text(
             'Yes',
-            style: AppTextStyles.button.copyWith(color: AppPalette.primary),
+            style: AppTextStyles.button.copyWith(color: AppColors.primary),
           ),
         ),
       ],

@@ -12,16 +12,16 @@ class LogoutSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppPalette.surfaceContainerLowest,
+        color: AppColors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppPalette.border),
+        border: Border.all(color: AppColors.border),
       ),
       child: ProfileTileItem(
         icon: Icons.logout_rounded,
-        iconColor: AppPalette.error,
-        iconBackgroundColor: AppPalette.errorContainer,
+        iconColor: AppColors.error,
+        iconBackgroundColor: AppColors.errorContainer,
         title: 'Log Out',
-        titleColor: AppPalette.error,
+        titleColor: AppColors.error,
         subtitle: 'Sign out from DevHub',
         onTap: () async {
           final bool? shouldLogOut = await showAlertDialog(context: context, title: 'Log Out', description: "Do you want to logout from the app?");

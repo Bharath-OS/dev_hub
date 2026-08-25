@@ -48,7 +48,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.background,
+      backgroundColor: AppColors.background,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
@@ -57,7 +57,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Organization verified successfully!'),
-                backgroundColor: AppPalette.success,
+                backgroundColor: AppColors.success,
               ),
             );
             Navigator.of(context).pushReplacement(
@@ -81,14 +81,14 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: AppPalette.error,
+                backgroundColor: AppColors.error,
               ),
             );
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: AppPalette.error,
+                backgroundColor: AppColors.error,
               ),
             );
           }

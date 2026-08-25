@@ -13,7 +13,7 @@ class DescriptionText extends StatelessWidget {
     return Text(
       'Manage GitHub projects, communicate with your team, and track development progress from one place.',
       style: AppTextStyles.bodyMedium.copyWith(
-        color: AppPalette.onSurfaceVariant,
+        color: AppColors.onSurfaceVariant,
       ),
       textAlign: TextAlign.center,
     );
@@ -30,7 +30,7 @@ class WelcomeText extends StatelessWidget {
     return Text(
       'Welcome to DevHub',
       style: AppTextStyles.heading.copyWith(
-        color: AppPalette.onSurface,
+        color: AppColors.onSurface,
         fontWeight: FontWeight.w700,
       ),
       textAlign: TextAlign.center,
@@ -49,13 +49,13 @@ class TermsAndPrivacyText extends StatelessWidget {
       text: TextSpan(
         text: 'By continuing you agree to our\n',
         style: AppTextStyles.caption.copyWith(
-          color: AppPalette.onSurfaceVariant,
+          color: AppColors.onSurfaceVariant,
         ),
         children: const [
           TextSpan(
             text: 'Terms and Privacy Policy.',
             style: TextStyle(
-              color: AppPalette.primaryContainer,
+              color: AppColors.primaryContainer,
               fontWeight: FontWeight.w600,
               decoration: TextDecoration.underline,
             ),

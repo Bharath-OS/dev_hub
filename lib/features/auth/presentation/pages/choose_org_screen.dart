@@ -60,7 +60,7 @@ class _ChooseOrgScreenState extends State<ChooseOrgScreen> {
       context: context,
       barrierDismissible: false,
       builder: (_) => const Center(
-        child: CircularProgressIndicator(color: AppPalette.primary),
+        child: CircularProgressIndicator(color: AppColors.primary),
       ),
     );
   }
@@ -88,13 +88,13 @@ class _ChooseOrgScreenState extends State<ChooseOrgScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: AppPalette.error,
+              backgroundColor: AppColors.error,
             ),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: AppPalette.background,
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -116,7 +116,7 @@ class _ChooseOrgScreenState extends State<ChooseOrgScreen> {
                   const ChooseOrgSubtitleText(),
                   const SizedBox(height: AppSpacing.md),
 
-                  const Divider(color: AppPalette.border, height: 1),
+                  const Divider(color: AppColors.border, height: 1),
                   const SizedBox(height: AppSpacing.md),
 
                   // Selection Section Header
@@ -140,7 +140,7 @@ class _ChooseOrgScreenState extends State<ChooseOrgScreen> {
                       child: Text(
                         'No organizations available.',
                         style: AppTextStyles.body.copyWith(
-                          color: AppPalette.outline,
+                          color: AppColors.outline,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -158,7 +158,7 @@ class _ChooseOrgScreenState extends State<ChooseOrgScreen> {
                     onPressed: _selectedOrg != null ? _onGoToWorkspaces : null,
                     icon: const Icon(
                       Icons.dashboard_customize_rounded,
-                      color: AppPalette.onPrimary,
+                      color: AppColors.onPrimary,
                       size: 20,
                     ),
                   ),

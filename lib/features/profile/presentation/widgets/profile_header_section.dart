@@ -34,12 +34,12 @@ class ProfileHeaderSection extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: const BoxDecoration(
-                          color: AppPalette.primary,
+                          color: AppColors.primary,
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
                           Icons.edit_sharp,
-                          color: AppPalette.onPrimary,
+                          color: AppColors.onPrimary,
                           size: 16,
                         ),
                       ),
@@ -62,13 +62,13 @@ class ProfileHeaderSection extends StatelessWidget {
                   ? Text(
                       '@${state.user.githubUsername}',
                       style: AppTextStyles.body.copyWith(
-                        color: AppPalette.outline,
+                        color: AppColors.outline,
                       ),
                     )
                   : Text(
                       '@guest',
                       style: AppTextStyles.body.copyWith(
-                        color: AppPalette.outline,
+                        color: AppColors.outline,
                       ),
                     ),
             ),
@@ -84,7 +84,7 @@ class ProfileHeaderSection extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: AppPalette.primaryFixed,
+                    color: AppColors.primaryFixed,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -92,7 +92,7 @@ class ProfileHeaderSection extends StatelessWidget {
                       const Icon(
                         Icons.workspace_premium,
                         size: 16,
-                        color: AppPalette.primary,
+                        color: AppColors.primary,
                       ),
                       const SizedBox(width: 6),
                       Text(
@@ -102,7 +102,7 @@ class ProfileHeaderSection extends StatelessWidget {
                                   : "Workspace Member"
                             : "Guest",
                         style: AppTextStyles.caption.copyWith(
-                          color: AppPalette.primary,
+                          color: AppColors.primary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -117,7 +117,7 @@ class ProfileHeaderSection extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: AppPalette.successContainer,
+                    color: AppColors.successContainer,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -125,13 +125,13 @@ class ProfileHeaderSection extends StatelessWidget {
                       const Icon(
                         Icons.star,
                         size: 16,
-                        color: AppPalette.onSuccessContainer,
+                        color: AppColors.onSuccessContainer,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         'Premium Plan',
                         style: AppTextStyles.caption.copyWith(
-                          color: AppPalette.onSuccessContainer,
+                          color: AppColors.onSuccessContainer,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

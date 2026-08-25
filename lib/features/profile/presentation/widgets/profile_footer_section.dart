@@ -18,7 +18,7 @@ class ProfileFooterSection extends StatelessWidget {
     return Center(
       child: Text(
         'Member since $accountCreatedDate',
-        style: AppTextStyles.caption.copyWith(color: AppPalette.outline),
+        style: AppTextStyles.caption.copyWith(color: AppColors.outline),
       ),
     );
   }

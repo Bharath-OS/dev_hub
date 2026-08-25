@@ -15,15 +15,15 @@ class SubscriptionSection extends StatelessWidget {
           'Subscription',
           style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppPalette.onSurface,
+            color: AppColors.onSurface,
           ),
         ),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppPalette.surfaceContainerLowest,
+            color: AppColors.surfaceContainerLowest,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppPalette.border),
+            border: Border.all(color: AppColors.border),
           ),
           child: ProfileTileItem(
             icon: Icons.workspace_premium,
@@ -33,13 +33,13 @@ class SubscriptionSection extends StatelessWidget {
               margin: const EdgeInsets.only(right: 8),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: AppPalette.successContainer,
+                color: AppColors.successContainer,
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
                 'ACTIVE',
                 style: AppTextStyles.overline.copyWith(
-                  color: AppPalette.onSuccessContainer,
+                  color: AppColors.onSuccessContainer,
                 ),
               ),
             ),

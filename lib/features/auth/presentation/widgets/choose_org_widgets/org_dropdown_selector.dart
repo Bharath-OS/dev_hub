@@ -26,27 +26,27 @@ class OrgDropdownSelector extends StatelessWidget {
       itemHeight: 80, // This height will now be respected because isDense is false
       icon: const Icon(
         Icons.keyboard_arrow_down_rounded,
-        color: AppPalette.outline,
+        color: AppColors.outline,
         size: 24,
       ),
-      dropdownColor: AppPalette.surfaceContainerLowest,
+      dropdownColor: AppColors.surfaceContainerLowest,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         filled: true,
-        fillColor: AppPalette.surfaceContainerLowest,
+        fillColor: AppColors.surfaceContainerLowest,
         hintText: 'Select an organization',
-        hintStyle: AppTextStyles.body.copyWith(color: AppPalette.outline),
+        hintStyle: AppTextStyles.body.copyWith(color: AppColors.outline),
         border: OutlineInputBorder(
           borderRadius: AppRadius.mdBorderRadius,
-          borderSide: const BorderSide(color: AppPalette.border),
+          borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.mdBorderRadius,
-          borderSide: const BorderSide(color: AppPalette.border),
+          borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.mdBorderRadius,
-          borderSide: const BorderSide(color: AppPalette.primary, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
       ),
       selectedItemBuilder: (BuildContext context) {
@@ -64,7 +64,7 @@ class OrgDropdownSelector extends StatelessWidget {
                   padding: const EdgeInsets.all(2.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: AppPalette.border, width: 1),
+                    border: Border.all(color: AppColors.border, width: 1),
                   ),
                   child: ClipOval(
                     child: Image.network(
@@ -75,7 +75,7 @@ class OrgDropdownSelector extends StatelessWidget {
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.business_rounded,
                         size: 20,
-                        color: AppPalette.outline,
+                        color: AppColors.outline,
                       ),
                     ),
                   ),
@@ -92,7 +92,7 @@ class OrgDropdownSelector extends StatelessWidget {
                       Text(
                         org.login,
                         style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppPalette.onSurface,
+                          color: AppColors.onSurface,
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
@@ -102,7 +102,7 @@ class OrgDropdownSelector extends StatelessWidget {
                       Text(
                         'Role: ${org.role ?? 'Member'} Status: ${org.state ?? 'active'}',
                         style: AppTextStyles.caption.copyWith(
-                          color: AppPalette.onSurfaceVariant,
+                          color: AppColors.onSurfaceVariant,
                           fontSize: 12,
                         ),
                         maxLines: 1,
@@ -120,13 +120,13 @@ class OrgDropdownSelector extends StatelessWidget {
                       vertical: AppSpacing.xs / 2,
                     ),
                     decoration: BoxDecoration(
-                      color: AppPalette.surfaceContainerLow,
+                      color: AppColors.surfaceContainerLow,
                       borderRadius: AppRadius.smBorderRadius,
                     ),
                     child: Text(
                       org.role!.toUpperCase(),
                       style: AppTextStyles.overline.copyWith(
-                        color: AppPalette.primaryContainer,
+                        color: AppColors.primaryContainer,
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                       ),
@@ -153,7 +153,7 @@ class OrgDropdownSelector extends StatelessWidget {
                   padding: const EdgeInsets.all(2.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: AppPalette.border, width: 1),
+                    border: Border.all(color: AppColors.border, width: 1),
                   ),
                   child: ClipOval(
                     child: Image.network(
@@ -164,7 +164,7 @@ class OrgDropdownSelector extends StatelessWidget {
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.business_rounded,
                         size: 20,
-                        color: AppPalette.outline,
+                        color: AppColors.outline,
                       ),
                     ),
                   ),
@@ -180,7 +180,7 @@ class OrgDropdownSelector extends StatelessWidget {
                       Text(
                         org.login,
                         style: AppTextStyles.body.copyWith(
-                          color: AppPalette.onSurface,
+                          color: AppColors.onSurface,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -188,7 +188,7 @@ class OrgDropdownSelector extends StatelessWidget {
                       Text(
                         'Role: ${org.role ?? 'Member'} â€¢ Status: ${org.state ?? 'active'}',
                         style: AppTextStyles.caption.copyWith(
-                          color: AppPalette.onSurfaceVariant,
+                          color: AppColors.onSurfaceVariant,
                           fontSize: 12,
                         ),
                       ),
@@ -204,13 +204,13 @@ class OrgDropdownSelector extends StatelessWidget {
                       vertical: AppSpacing.xs / 2,
                     ),
                     decoration: BoxDecoration(
-                      color: AppPalette.surfaceContainerLow,
+                      color: AppColors.surfaceContainerLow,
                       borderRadius: AppRadius.smBorderRadius,
                     ),
                     child: Text(
                       org.role!.toUpperCase(),
                       style: AppTextStyles.overline.copyWith(
-                        color: AppPalette.primaryContainer,
+                        color: AppColors.primaryContainer,
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                       ),

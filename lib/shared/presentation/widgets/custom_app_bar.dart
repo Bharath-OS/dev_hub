@@ -16,17 +16,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppPalette.white,
+      backgroundColor: AppColors.white,
       elevation: 0,
       scrolledUnderElevation: 0,
       // leading: IconButton(
-      //   icon: const Icon(Icons.menu, color: AppPalette.black),
+      //   icon: const Icon(Icons.menu, color: AppColors.black),
       //   onPressed: onMenuPressed,
       // ),
       title: Text(
         'DevHub',
         style: AppTextStyles.title.copyWith(
-          color: AppPalette.surfaceTint,
+          color: AppColors.surfaceTint,
           fontWeight: FontWeight.bold,
           fontSize: 22,
         ),
@@ -34,7 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       // actions: [
       //   IconButton(
-      //     icon: const Icon(Icons.search, color: AppPalette.black),
+      //     icon: const Icon(Icons.search, color: AppColors.black),
       //     onPressed: onSearchPressed,
       //   ),
       // ],

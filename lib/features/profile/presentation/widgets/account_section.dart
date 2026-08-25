@@ -15,15 +15,15 @@ class AccountSection extends StatelessWidget {
           'Account',
           style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppPalette.onSurface,
+            color: AppColors.onSurface,
           ),
         ),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: AppPalette.surfaceContainerLowest,
+            color: AppColors.surfaceContainerLowest,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppPalette.border),
+            border: Border.all(color: AppColors.border),
           ),
           child: Column(
             children: [
@@ -36,7 +36,7 @@ class AccountSection extends StatelessWidget {
                   print('Clicked: Personal Information');
                 },
               ),
-              const Divider(height: 1, color: AppPalette.border),
+              const Divider(height: 1, color: AppColors.border),
               ProfileTileItem(
                 icon: Icons.code_rounded,
                 title: 'GitHub Account',
@@ -46,7 +46,7 @@ class AccountSection extends StatelessWidget {
                   print('Clicked: GitHub Account');
                 },
               ),
-              const Divider(height: 1, color: AppPalette.border),
+              const Divider(height: 1, color: AppColors.border),
               ProfileTileItem(
                 icon: Icons.mail_outline,
                 title: 'Email',
@@ -56,7 +56,7 @@ class AccountSection extends StatelessWidget {
                   print('Clicked: Email');
                 },
               ),
-              const Divider(height: 1, color: AppPalette.border),
+              const Divider(height: 1, color: AppColors.border),
               ProfileTileItem(
                 icon: Icons.shield_outlined,
                 title: 'Security',
@@ -66,7 +66,7 @@ class AccountSection extends StatelessWidget {
                   print('Clicked: Security');
                 },
               ),
-              const Divider(height: 1, color: AppPalette.border),
+              const Divider(height: 1, color: AppColors.border),
               ProfileTileItem(
                 icon: Icons.smartphone_outlined,
                 title: 'Devices',

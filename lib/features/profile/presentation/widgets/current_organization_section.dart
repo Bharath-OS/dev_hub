@@ -14,7 +14,7 @@ class CurrentOrganizationSection extends StatelessWidget {
           'Current Organization',
           style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppPalette.onSurface,
+            color: AppColors.onSurface,
           ),
         ),
         const SizedBox(height: 12),
@@ -27,19 +27,19 @@ class CurrentOrganizationSection extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppPalette.surfaceContainerLowest,
+              color: AppColors.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppPalette.border),
+              border: Border.all(color: AppColors.border),
             ),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 22,
-                  backgroundColor: AppPalette.primaryFixed,
+                  backgroundColor: AppColors.primaryFixed,
                   child: Text(
                     'O',
                     style: AppTextStyles.title.copyWith(
-                      color: AppPalette.primary,
+                      color: AppColors.primary,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -53,7 +53,7 @@ class CurrentOrganizationSection extends StatelessWidget {
                         'Organization1',
                         style: AppTextStyles.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppPalette.onSurface,
+                          color: AppColors.onSurface,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -67,7 +67,7 @@ class CurrentOrganizationSection extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppPalette.primaryFixed,
+                    color: AppColors.primaryFixed,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -76,13 +76,13 @@ class CurrentOrganizationSection extends StatelessWidget {
                       Text(
                         'ADMIN',
                         style: AppTextStyles.overline.copyWith(
-                          color: AppPalette.primary,
+                          color: AppColors.primary,
                         ),
                       ),
                       const Icon(
                         Icons.keyboard_arrow_down,
                         size: 16,
-                        color: AppPalette.primary,
+                        color: AppColors.primary,
                       ),
                     ],
                   ),

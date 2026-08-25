@@ -63,21 +63,21 @@ class _CreateWorkspaceBottomSheetState
                     'Create Workspace',
                     style: AppTextStyles.title.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppPalette.headingTextColor,
+                      color: AppColors.headingTextColor,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Set up your workspace and connect it with a project repository.',
                     style: AppTextStyles.caption.copyWith(
-                      color: AppPalette.mutedTextColor,
+                      color: AppColors.mutedTextColor,
                     ),
                   ),
                 ],
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.close, color: AppPalette.onSurfaceVariant),
+              icon: const Icon(Icons.close, color: AppColors.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
@@ -91,7 +91,7 @@ class _CreateWorkspaceBottomSheetState
           'Workspace Icon',
           style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.bold,
-            color: AppPalette.headingTextColor,
+            color: AppColors.headingTextColor,
             fontSize: 14,
           ),
         ),
@@ -108,21 +108,21 @@ class _CreateWorkspaceBottomSheetState
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppPalette.primaryContainer,
+                  color: AppColors.primaryContainer,
                   width: 2,
                 ),
               ),
               padding: const EdgeInsets.all(2),
               child: Container(
                 decoration: const BoxDecoration(
-                  color: AppPalette.primaryContainer,
+                  color: AppColors.primaryContainer,
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
                 child: const Text(
                   'D',
                   style: TextStyle(
-                    color: AppPalette.white,
+                    color: AppColors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -138,16 +138,16 @@ class _CreateWorkspaceBottomSheetState
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppPalette.surfaceContainerLow,
+                    color: AppColors.surfaceContainerLow,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: AppPalette.outlineVariant,
+                      color: AppColors.outlineVariant,
                       style: BorderStyle.solid,
                     ),
                   ),
                   child: const Icon(
                     Icons.upload,
-                    color: AppPalette.onSurfaceVariant,
+                    color: AppColors.onSurfaceVariant,
                     size: 20,
                   ),
                 ),
@@ -157,7 +157,7 @@ class _CreateWorkspaceBottomSheetState
                   style: AppTextStyles.caption.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
-                    color: AppPalette.mutedTextColor,
+                    color: AppColors.mutedTextColor,
                   ),
                 ),
               ],
@@ -171,7 +171,7 @@ class _CreateWorkspaceBottomSheetState
           'Workspace Name',
           style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.bold,
-            color: AppPalette.headingTextColor,
+            color: AppColors.headingTextColor,
             fontSize: 14,
           ),
         ),
@@ -181,7 +181,7 @@ class _CreateWorkspaceBottomSheetState
           decoration: InputDecoration(
             hintText: 'e.g. Next Dev Project',
             hintStyle: AppTextStyles.body.copyWith(
-              color: AppPalette.outline,
+              color: AppColors.outline,
               fontSize: 14,
             ),
             contentPadding: const EdgeInsets.symmetric(
@@ -190,15 +190,15 @@ class _CreateWorkspaceBottomSheetState
             ),
             border: OutlineInputBorder(
               borderRadius: AppRadius.mdBorderRadius,
-              borderSide: const BorderSide(color: AppPalette.border),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppRadius.mdBorderRadius,
-              borderSide: const BorderSide(color: AppPalette.border),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.mdBorderRadius,
-              borderSide: const BorderSide(color: AppPalette.primaryContainer),
+              borderSide: const BorderSide(color: AppColors.primaryContainer),
             ),
           ),
         ),
@@ -209,7 +209,7 @@ class _CreateWorkspaceBottomSheetState
           'Project Repository',
           style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.bold,
-            color: AppPalette.headingTextColor,
+            color: AppColors.headingTextColor,
             fontSize: 14,
           ),
         ),
@@ -238,16 +238,16 @@ class _CreateWorkspaceBottomSheetState
                     initialValue: _selectedRepo,
                     icon: const Icon(
                       Icons.keyboard_arrow_down,
-                      color: AppPalette.onSurfaceVariant,
+                      color: AppColors.onSurfaceVariant,
                     ),
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.code, color: AppPalette.black),
+                      prefixIcon: Icon(Icons.code, color: AppColors.black),
                       prefixIconConstraints: const BoxConstraints(minWidth: 40),
                       hintText: repos.isEmpty
                           ? 'No Repositories Found'
                           : 'Select Repository',
                       hintStyle: AppTextStyles.body.copyWith(
-                        color: AppPalette.mutedTextColor,
+                        color: AppColors.mutedTextColor,
                         fontSize: 14,
                       ),
                       contentPadding: const EdgeInsets.symmetric(
@@ -256,16 +256,16 @@ class _CreateWorkspaceBottomSheetState
                       ),
                       border: OutlineInputBorder(
                         borderRadius: AppRadius.mdBorderRadius,
-                        borderSide: const BorderSide(color: AppPalette.border),
+                        borderSide: const BorderSide(color: AppColors.border),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: AppRadius.mdBorderRadius,
-                        borderSide: const BorderSide(color: AppPalette.border),
+                        borderSide: const BorderSide(color: AppColors.border),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: AppRadius.mdBorderRadius,
                         borderSide: const BorderSide(
-                          color: AppPalette.primaryContainer,
+                          color: AppColors.primaryContainer,
                         ),
                       ),
                     ),
@@ -310,7 +310,7 @@ class _CreateWorkspaceBottomSheetState
           'If you don’t see the repository you’re looking for, please click the refresh button to reload the list.',
           style: AppTextStyles.caption.copyWith(
             fontSize: 12,
-            color: AppPalette.mutedTextColor,
+            color: AppColors.mutedTextColor,
           ),
         ),
         const SizedBox(height: AppSpacing.xl),
@@ -325,7 +325,7 @@ class _CreateWorkspaceBottomSheetState
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Workspace created successfully!'),
-                    backgroundColor: AppPalette.success,
+                    backgroundColor: AppColors.success,
                   ),
                 );
                 Navigator.of(context).pop();
@@ -333,7 +333,7 @@ class _CreateWorkspaceBottomSheetState
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(state.error),
-                    backgroundColor: AppPalette.error,
+                    backgroundColor: AppColors.error,
                   ),
                 );
               }
@@ -412,8 +412,8 @@ class _CreateWorkspaceBottomSheetState
                         );
                       },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppPalette.primaryContainer,
-                  foregroundColor: AppPalette.white,
+                  backgroundColor: AppColors.primaryContainer,
+                  foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: AppRadius.mdBorderRadius,
                   ),
@@ -424,7 +424,7 @@ class _CreateWorkspaceBottomSheetState
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
-                          color: AppPalette.white,
+                          color: AppColors.white,
                           strokeWidth: 2,
                         ),
                       )
