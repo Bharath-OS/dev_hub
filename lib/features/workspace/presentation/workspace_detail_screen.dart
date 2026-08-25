@@ -1,4 +1,6 @@
+import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/invite_member_sheet.dart';
 import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
+import 'package:dev_hub/shared/presentation/widgets/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -554,13 +556,28 @@ class _QuickActionsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const actions = [
-      _QuickActionData(icon: Icons.group_add_outlined, label: 'Create Team'),
-      _QuickActionData(icon: Icons.person_add_outlined, label: 'Invite Member'),
-      _QuickActionData(icon: Icons.add_task_outlined, label: 'Create Task'),
+    final actions = [
+      _QuickActionData(
+        icon: Icons.group_add_outlined,
+        label: 'Create Team',
+        onTap: () {},
+      ),
+      _QuickActionData(
+        icon: Icons.person_add_outlined,
+        label: 'Invite Member',
+        onTap: () {
+          CustomBottomSheet.show(context: context, child: InviteMemberSheet());
+        },
+      ),
+      _QuickActionData(
+        icon: Icons.add_task_outlined,
+        label: 'Create Task',
+        onTap: () {},
+      ),
       _QuickActionData(
         icon: Icons.settings_outlined,
         label: 'Workspace Settings',
+        onTap: () {},
       ),
     ];
 
@@ -586,8 +603,13 @@ class _QuickActionsGrid extends StatelessWidget {
 class _QuickActionData {
   final IconData icon;
   final String label;
+  final VoidCallback onTap;
 
-  const _QuickActionData({required this.icon, required this.label});
+  const _QuickActionData({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -602,7 +624,7 @@ class _QuickActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: data.onTap,
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
