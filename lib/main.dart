@@ -3,6 +3,10 @@ import 'package:dev_hub/core/constants/api_endpoints.dart';
 import 'package:dev_hub/core/constants/local_storage_keys.dart';
 import 'package:dev_hub/core/constants/theme.dart';
 import 'package:dev_hub/features/auth/domain/usecases/auth_usecases/auth_logout_usecase.dart';
+import 'package:dev_hub/features/membership/bloc/membership_bloc.dart';
+import 'package:dev_hub/features/membership/data/data%20source/remote/membership_github_datasource_impl.dart';
+import 'package:dev_hub/features/membership/data/repository/membership_repository_impl.dart';
+import 'package:dev_hub/features/membership/domain/usecases/search_users_usecase.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/github_workspace_datasource.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/workspace_datasource.dart';
@@ -59,6 +63,7 @@ void main() async {
   );
 
   final githubApiDataSource = GithubApiDataSource(client: apiClient);
+  final membershipGitHubDataSource = MembershipGithubDatasourceImpl(apiClient: apiClient, tokenManager: tokenManager, apiEndpoints: ApiEndpoints());
 
   final remoteDatabase = AuthRemoteDatabaseImpl(
     FirestoreService(firestoreInstance),
@@ -97,6 +102,8 @@ void main() async {
     tokenManager: tokenManager,
   );
 
+  final membershipRepository = MembershipRepositoryImpl(gitHubApiService: membershipGitHubDataSource);
+
   final authUseCase = AuthUseCase(authRepository);
   final fetchUserOrgsUseCase = FetchUserOrgsUseCase(orgRepository);
   final getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
@@ -106,6 +113,7 @@ void main() async {
   final logoutUseCase = AuthLogoutUseCase(authRepository);
   final getWorkspacesUseCase = GetWorkspaceUseCase(workspaceRepository);
   final getRepositoriesUseCase = GetRepositoriesUseCase(workspaceRepository);
+  final searchUserUseCase = SearchUsersUseCase(membershipRepository);
 
   runApp(
     MultiBlocProvider(
@@ -127,6 +135,7 @@ void main() async {
             getRepositoriesUseCase: getRepositoriesUseCase,
           ),
         ),
+        BlocProvider(create: (_)=>MembershipBloc(searchUsersUseCase: searchUserUseCase))
       ],
       child: MyApp(),
     ),

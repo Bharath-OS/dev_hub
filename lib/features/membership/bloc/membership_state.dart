@@ -9,6 +9,15 @@ final class MembershipInitial extends MembershipState {
   List<Object> get props => [];
 }
 
+final class SearchFailureState extends MembershipState{
+  final String error;
+  const SearchFailureState(this.error);
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [error];
+}
+
 final class SearchingUsersState extends MembershipState {
   const SearchingUsersState();
 
