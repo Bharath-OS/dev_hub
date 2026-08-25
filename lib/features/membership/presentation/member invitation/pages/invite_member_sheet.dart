@@ -1,6 +1,7 @@
 import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/search_user_tile.dart';
 import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/selected_user_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_constants.dart';
 import '../../../../../core/constants/app_text_styles.dart';
@@ -22,62 +23,26 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
   // List of members added to the invitation
   final List<InvitedUserEntity> _selectedUsers = [];
 
-  // Current search state (Replace with BlocBuilder/BlocListener integration)
-  MembershipState _currentSearchState = NoUsersFoundState();
-
   @override
   void initState() {
     super.initState();
-
-    // Initial dummy selected users to match design image
-    _selectedUsers.addAll([
-      InvitedUserEntity(
-        id: '1',
-        username: 'arjunpatel',
-        fullName: 'Arjun Patel',
-        avatarUrl:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=300&q=80',
-        role: 'Developer',
-      ),
-      InvitedUserEntity(
-        id: '2',
-        username: 'arjunpatel',
-        fullName: 'Arjun Patel',
-        avatarUrl:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=300&q=80',
-        role: 'Team Lead',
-      ),
-    ]);
   }
 
   @override
   void dispose() {
     _searchController.dispose();
     _messageController.dispose();
+    _selectedUsers.clear();
     super.dispose();
   }
 
   // Handle Search Input Change
   void _onSearchChanged(String query) {
-    // TODO: Add your BLoC Event dispatch logic here:
-    // context.read<UserSearchBloc>().add(SearchUsersEvent(query));
-
     setState(() {
       if (query.trim().isEmpty) {
-        _currentSearchState = NoUsersFoundState();
-      } else if (query.trim() == 'arjun') {
-        _currentSearchState = UsersFoundState([
-          InvitedUserEntity(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            username: 'arjunpatel',
-            fullName: 'Arjun Patel',
-            avatarUrl:
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=300&q=80',
-          ),
-        ]);
-      } else {
-        _currentSearchState = SearchingUsersState();
+        return;
       }
+      context.read<MembershipBloc>().add(SearchUserEvent(query.trim()));
     });
   }
 
@@ -86,7 +51,6 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
     setState(() {
       _selectedUsers.add(user);
       _searchController.clear();
-      _currentSearchState = NoUsersFoundState();
     });
   }
 
@@ -99,54 +63,57 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.marginMobile,
-        vertical: AppSpacing.md,
-      ),
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Drag handle bar
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.outlineVariant,
-                borderRadius: AppRadius.fullBorderRadius,
+    return BlocBuilder<MembershipBloc, MembershipState>(
+      builder: (context, state) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            const SizedBox(height: AppSpacing.lg),
+
+            // GitHub Search Field Section
+            _buildSearchSection(),
+
+            // Search Results - rendered in normal flow right below the search
+            // bar. Hidden (and taking no space) until a search is active.
+            Visibility(
+              visible: _showSearchResults(state),
+              child: Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(maxHeight: 250),
+                padding: const EdgeInsets.all(AppSpacing.xs),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceContainerLowest,
+                  borderRadius: AppRadius.mdBorderRadius,
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: _buildSearchResultsContent(),
               ),
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.lg),
 
-          // Header Title & Description
-          _buildHeader(context),
-          const SizedBox(height: AppSpacing.lg),
+            // Selected Users List
+            _buildSelectedUsersSection(),
+            const SizedBox(height: AppSpacing.lg),
 
-          // GitHub Search Field Section with Floating Pop-up / Overlay
-          _buildSearchSection(),
-          const SizedBox(height: AppSpacing.lg),
+            // Optional Personal Message Text Field
+            _buildMessageField(),
+            const SizedBox(height: AppSpacing.xl),
 
-          // Selected Users List
-          _buildSelectedUsersSection(),
-          const SizedBox(height: AppSpacing.lg),
-
-          // Optional Personal Message Text Field
-          _buildMessageField(),
-          const SizedBox(height: AppSpacing.xl),
-
-          // Send Invite Primary Button
-          _buildSendInviteButton(),
-          const SizedBox(height: AppSpacing.md),
-        ],
-      ),
+            // Send Invite Primary Button
+            _buildSendInviteButton(),
+          ],
+        );
+      },
     );
+  }
+
+  /// Results are visible only while a search is running or has results, and
+  /// only when the query is non-empty.
+  bool _showSearchResults(MembershipState state) {
+    return _searchController.text.trim().isNotEmpty &&
+        (state is SearchingUsersState || state is UsersFoundState);
   }
 
   /// Private function: Header layout
@@ -191,26 +158,25 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
 
   /// Private function: GitHub Search Field with Non-blocking Floating Popup Stack
   Widget _buildSearchSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'GitHub Username',
-          style: AppTextStyles.caption.copyWith(
-            fontWeight: FontWeight.w700,
-            color: AppColors.primary,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Stack(
-          clipBehavior: Clip.none,
+    return BlocBuilder<MembershipBloc, MembershipState>(
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Text Input Field
+            Text(
+              'GitHub Username',
+              style: AppTextStyles.caption.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
             SizedBox(
               height: AppHeights.inputHeight,
               child: TextField(
                 controller: _searchController,
                 onChanged: _onSearchChanged,
+                onSubmitted: _onSearchChanged,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.onSurface,
                 ),
@@ -221,7 +187,9 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
                   ),
                   prefixIcon: Padding(
                     padding: const EdgeInsets.only(
-                        left: AppSpacing.md, right: AppSpacing.xs),
+                      left: AppSpacing.md,
+                      right: AppSpacing.xs,
+                    ),
                     child: Center(
                       widthFactor: 1.0,
                       child: Text(
@@ -245,67 +213,48 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: AppRadius.mdBorderRadius,
-                    borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                    borderSide: const BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
+                    ),
                   ),
                 ),
               ),
             ),
-
-            // Pop-up Floating Overlay for Search Results
-            if (_currentSearchState is! NoUsersFoundState)
-              Positioned(
-                top: AppHeights.inputHeight + 4,
-                left: 0,
-                right: 0,
-                child: Material(
-                  elevation: 6,
-                  shadowColor: Colors.black12,
-                  borderRadius: AppRadius.mdBorderRadius,
-                  child: Container(
-                    height: 200,
-                    padding: const EdgeInsets.all(AppSpacing.xs),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLowest,
-                      borderRadius: AppRadius.mdBorderRadius,
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: _buildSearchResultsContent(),
-                  ),
-                ),
-              ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
   /// Search Results popup inner content based on Bloc state
   Widget _buildSearchResultsContent() {
-    if (_currentSearchState is SearchingUsersState) {
-      return const Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
-        child: Center(
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            color: AppColors.primary,
-          ),
-        ),
-      );
-    } else if (_currentSearchState is UsersFoundState) {
-      final users = (_currentSearchState as UsersFoundState).users;
-      return ListView.builder(
-        shrinkWrap: true,
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          final user = users[index];
-          return SearchUserTile(
-            user: user,
-            onAdd: () => _addUser(user),
+    return BlocBuilder<MembershipBloc, MembershipState>(
+      builder: (context, state) {
+        if (state is SearchingUsersState) {
+          return const Padding(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppColors.primary,
+              ),
+            ),
           );
-        },
-      );
-    }
-    return const SizedBox.shrink();
+        } else if (state is UsersFoundState) {
+          final users = state.users;
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: users.length,
+            itemBuilder: (context, index) {
+              final user = users[index];
+              return SearchUserTile(user: user, onAdd: () => _addUser(user));
+            },
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
   }
 
   /// Private function: Selected Users Section
@@ -381,14 +330,10 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
           onChanged: (text) {
             setState(() {});
           },
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.onSurface,
-          ),
+          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.onSurface),
           decoration: InputDecoration(
             hintText: 'Add a personal message...',
-            hintStyle: AppTextStyles.body.copyWith(
-              color: AppColors.outline,
-            ),
+            hintStyle: AppTextStyles.body.copyWith(color: AppColors.outline),
             contentPadding: const EdgeInsets.all(AppSpacing.md),
             filled: true,
             fillColor: AppColors.surfaceContainerLowest,
@@ -398,7 +343,10 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppRadius.mdBorderRadius,
-              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+              borderSide: const BorderSide(
+                color: AppColors.primary,
+                width: 1.5,
+              ),
             ),
             counterStyle: AppTextStyles.caption.copyWith(
               color: AppColors.outline,
@@ -418,7 +366,9 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
         onPressed: () {
           // TODO: Add backend logic to dispatch send invitation request
           print('Send Invite Clicked!');
-          print('Selected Users: ${_selectedUsers.map((u) => '${u.username} (${u.role})').toList()}');
+          print(
+            'Selected Users: ${_selectedUsers.map((u) => '${u.username} (${u.role})').toList()}',
+          );
           print('Message: ${_messageController.text}');
         },
         style: ElevatedButton.styleFrom(
@@ -434,10 +384,7 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
           size: 18,
           color: AppColors.onPrimary,
         ),
-        label: Text(
-          'Send Invite',
-          style: AppTextStyles.button,
-        ),
+        label: Text('Send Invite', style: AppTextStyles.button),
       ),
     );
   }

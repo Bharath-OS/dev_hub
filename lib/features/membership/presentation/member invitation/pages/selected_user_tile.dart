@@ -1,4 +1,3 @@
-import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/search_user_tile.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_constants.dart';
@@ -46,6 +45,8 @@ class SelectedUserTile extends StatelessWidget {
               children: [
                 Text(
                   user.username,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     color: AppColors.onSurface,
@@ -53,6 +54,8 @@ class SelectedUserTile extends StatelessWidget {
                 ),
                 Text(
                   user.fullName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.outline,
                   ),

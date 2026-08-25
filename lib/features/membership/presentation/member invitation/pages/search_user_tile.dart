@@ -43,6 +43,8 @@ class SearchUserTile extends StatelessWidget {
               children: [
                 Text(
                   user.username,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     color: AppColors.onSurface,
@@ -50,6 +52,8 @@ class SearchUserTile extends StatelessWidget {
                 ),
                 Text(
                   user.fullName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.outline,
                   ),
