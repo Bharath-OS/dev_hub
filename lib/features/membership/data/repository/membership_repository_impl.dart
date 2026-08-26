@@ -4,7 +4,6 @@ import 'package:dev_hub/features/membership/domain/entity/invited_user_entity.da
 import 'package:dev_hub/features/membership/domain/repository/membership_repository.dart';
 import 'package:fpdart/fpdart.dart';
 
-
 class MembershipRepositoryImpl implements MembershipRepository {
   final MembershipGithubDatasource _gitHubApiService;
 
@@ -13,10 +12,12 @@ class MembershipRepositoryImpl implements MembershipRepository {
   Future<Either<Failure, List<InvitedUserEntity>>> searchUser(
     String searchQuery,
   ) async {
-    try{
-      final response = await _gitHubApiService.searchUserFromGitHub(searchQuery);
+    try {
+      final response = await _gitHubApiService.searchUserFromGitHub(
+        searchQuery,
+      );
       return right(response);
-    }catch(error){
+    } catch (error) {
       return left(Failure(error.toString()));
     }
   }
@@ -28,20 +29,56 @@ class MembershipRepositoryImpl implements MembershipRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> addRepositoryCollaborator({required String repoName, required String ownerName, required String userName}) {
-    // TODO: implement addRepositoryCollaborator
-    throw UnimplementedError();
+  Future<Either<Failure, bool>> addRepositoryCollaborator({
+    required String repoName,
+    required String ownerName,
+    required String userName,
+    required String role,
+  }) async {
+    try {
+      final didAdded = await _gitHubApiService.giveRepoAccess(
+        username: userName,
+        role: role,
+        ownerName: ownerName,
+        repoName: repoName,
+      );
+      return right(didAdded);
+    } catch (error) {
+      return left(Failure(error.toString()));
+    }
   }
 
   @override
-  Future<Either<Failure, bool>> checkMembership() {
-    // TODO: implement checkMembership
-    throw UnimplementedError();
+  Future<Either<Failure, bool>> checkMembership({
+    required String orgName,
+    required String userName,
+  }) async {
+    try {
+      final isMember = await _gitHubApiService.checkOrgMembershipStatus(
+        orgName: orgName,
+        userName: userName,
+      );
+      return right(isMember);
+    } catch (error) {
+      return left(Failure(error.toString()));
+    }
   }
 
   @override
-  Future<Either<Failure, bool>> sendOrgInvitation({required String orgName, String? userId, String? email}) {
-    // TODO: implement sendOrgInvitation
-    throw UnimplementedError();
+  Future<Either<Failure, bool>> sendOrgInvitation({
+    required String orgName,
+    int? userId,
+    String? email,
+  }) async {
+    try {
+      final didSendInvitation = await _gitHubApiService.sendOrgInvitation(
+        orgName: orgName,
+        userId: userId,
+        email: email,
+      );
+      return right(didSendInvitation);
+    } catch (error) {
+      return left(Failure(error.toString()));
+    }
   }
 }

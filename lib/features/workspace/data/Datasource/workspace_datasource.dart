@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_hub/core/params/firestore_params.dart';
 import 'package:flutter/cupertino.dart';
 import '../../../../shared/data/datasources/remote/firestore_service.dart';
