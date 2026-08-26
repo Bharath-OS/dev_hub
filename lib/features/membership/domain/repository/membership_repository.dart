@@ -10,10 +10,10 @@ abstract interface class MembershipRepository {
 
   Future<Either<Failure, void>> inviteUser(String userId, String workspaceId);
 
-  Future<Either<Failure, bool>> checkMembership();
+  Future<Either<Failure, bool>> checkMembership({required String orgName,required String userName});
 
-  Future<Either<Failure, bool>> sendOrgInvitation({required String orgName, String? userId, String? email});
+  Future<Either<Failure, bool>> sendOrgInvitation({required String orgName, int? userId, String? email});
 
-  Future<Either<Failure, bool>> addRepositoryCollaborator({required String repoName, required String ownerName, required String userName});
+  Future<Either<Failure, bool>> addRepositoryCollaborator({required String role, required String repoName, required String ownerName, required String userName});
 
 }

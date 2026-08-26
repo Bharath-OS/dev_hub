@@ -1,5 +1,6 @@
 abstract class MemberEntity {
   final String uid;
+  final String workspaceId;
   final String memberName;
   final String githubUsername;
   final String memberAvatarUrl;
@@ -15,6 +16,6 @@ abstract class MemberEntity {
     required this.role,
     required this.joinedAt,
     required this.githubUsername,
-    this.invitedBy,
+    this.invitedBy, required this.workspaceId,
   });
 }

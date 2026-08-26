@@ -4,13 +4,17 @@ import 'package:dev_hub/features/membership/params/invitation_params.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/usecases/usecase.dart';
 
-class InviteMemberToWorkspaceUseCase implements UseCase<bool, InvitationParams> {
+class InviteMemberToWorkspaceUseCase
+    implements UseCase<bool, InvitationParams> {
   final MembershipRepository _repository;
   InviteMemberToWorkspaceUseCase(this._repository);
 
   @override
   Future<Either<Failure, bool>> call(InvitationParams params) async {
-    final checkMemberResult = await _repository.checkMembership();
+    final checkMemberResult = await _repository.checkMembership(
+      orgName: params.orgName!,
+      userName: params.userName!,
+    );
     final bool isMember = checkMemberResult.fold(
       (failure) => throw (Exception(failure.message)),
       (result) => result,
@@ -28,9 +32,10 @@ class InviteMemberToWorkspaceUseCase implements UseCase<bool, InvitationParams> 
     }
     final addRepoCollaboratorResult = await _repository
         .addRepositoryCollaborator(
-          repoName: '',
-          ownerName: 'ownerName',
-          userName: 'userName',
+          repoName: params.repoName!,
+          ownerName: params.ownerName!,
+          userName: params.userName!,
+          role: params.role!,
         );
     final bool didMadeCollaborator = addRepoCollaboratorResult.fold(
       (failure) => throw (Exception(failure.message)),

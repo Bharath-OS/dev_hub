@@ -1,4 +1,6 @@
 class InvitationEntity {
+  final String uid;
+  final String workspaceId;
   final String email;
   final String role;
   final String invitedBy;
@@ -9,6 +11,6 @@ class InvitationEntity {
     required this.role,
     required this.invitedBy,
     required this.sentAt,
-    required this.status,
+    required this.status, required this.uid, required this.workspaceId,
   });
 }
