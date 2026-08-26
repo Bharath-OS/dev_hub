@@ -4,5 +4,16 @@ import 'package:fpdart/fpdart.dart';
 import '../../../../core/errors/failures.dart';
 
 abstract interface class MembershipRepository {
-  Future<Either<Failure, List<InvitedUserEntity>>> searchUser(String searchQuery);
+  Future<Either<Failure, List<InvitedUserEntity>>> searchUser(
+    String searchQuery,
+  );
+
+  Future<Either<Failure, void>> inviteUser(String userId, String workspaceId);
+
+  Future<Either<Failure, bool>> checkMembership();
+
+  Future<Either<Failure, bool>> sendOrgInvitation({required String orgName, String? userId, String? email});
+
+  Future<Either<Failure, bool>> addRepositoryCollaborator({required String repoName, required String ownerName, required String userName});
+
 }
