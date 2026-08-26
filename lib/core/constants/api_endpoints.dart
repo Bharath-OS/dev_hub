@@ -6,4 +6,12 @@ class ApiEndpoints {
 
   String getOrganizationRepositoriesEndpoint({required String orgName}) =>
       "/orgs/$orgName/repos";
+
+  String checkOrgMembershipStatus({
+    required String orgName,
+    required String username,
+  }) => "/orgs/$orgName/members/$username";
+
+  String sendOrgInvitationEndpoint({required String orgName}) =>
+      '/orgs/$orgName/invitations';
 }
