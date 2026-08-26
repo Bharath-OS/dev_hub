@@ -20,4 +20,28 @@ class MembershipRepositoryImpl implements MembershipRepository {
       return left(Failure(error.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> inviteUser(String userId, String workspaceId) {
+    // TODO: implement inviteUser
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, bool>> addRepositoryCollaborator({required String repoName, required String ownerName, required String userName}) {
+    // TODO: implement addRepositoryCollaborator
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, bool>> checkMembership() {
+    // TODO: implement checkMembership
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, bool>> sendOrgInvitation({required String orgName, String? userId, String? email}) {
+    // TODO: implement sendOrgInvitation
+    throw UnimplementedError();
+  }
 }
