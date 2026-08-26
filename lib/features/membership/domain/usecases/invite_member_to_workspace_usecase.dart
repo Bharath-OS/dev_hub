@@ -15,34 +15,30 @@ class InviteMemberToWorkspaceUseCase
       orgName: params.orgName!,
       userName: params.userName!,
     );
-    final bool isMember = checkMemberResult.fold(
-      (failure) => throw (Exception(failure.message)),
-      (result) => result,
-    );
-
-    if (!isMember) {
-      final sendOrgInviteResult = await _repository.sendOrgInvitation(
-        orgName: params.orgName!,
-      );
-      final bool isSendOrgInvitation = sendOrgInviteResult.fold(
-        (failure) => throw (Exception(failure.message)),
-        (isSuccess) => isSuccess,
-      );
-      return right(isSendOrgInvitation);
-    }
-    final addRepoCollaboratorResult = await _repository
-        .addRepositoryCollaborator(
-          repoName: params.repoName!,
-          ownerName: params.ownerName!,
-          userName: params.userName!,
-          role: params.role!,
+    return checkMemberResult.fold((failure) => left(failure), (isMember) async {
+      if (!isMember) {
+        //here have to add the user id or user email.
+        final sendOrgInviteResult = await _repository.sendOrgInvitation(
+          orgName: params.orgName!,
         );
-    final bool didMadeCollaborator = addRepoCollaboratorResult.fold(
-      (failure) => throw (Exception(failure.message)),
-      (isSuccess) => isSuccess,
-    );
-
-    //returns if we made the user a collaborator.
-    return right(didMadeCollaborator);
+        return sendOrgInviteResult.fold(
+          (failure) => left(failure),
+          (didSendOrgInvitation) => right(didSendOrgInvitation),
+        );
+      }
+      final addRepoCollaboratorResult = await _repository
+          .addRepositoryCollaborator(
+            repoName: params.repoName!,
+            ownerName: params.ownerName!,
+            userName: params.userName!,
+            role: params.role!,
+          );
+      return addRepoCollaboratorResult.fold(
+        (failure) => left(failure),
+        (isSuccess) {
+          return right(isSuccess);
+        },
+      );
+    });
   }
 }
