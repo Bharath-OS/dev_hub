@@ -4,6 +4,7 @@ import 'package:dev_hub/core/constants/local_storage_keys.dart';
 import 'package:dev_hub/core/constants/theme.dart';
 import 'package:dev_hub/features/auth/domain/usecases/auth_usecases/auth_logout_usecase.dart';
 import 'package:dev_hub/features/membership/bloc/membership_bloc.dart';
+import 'package:dev_hub/features/membership/data/data%20source/remote/membership_firestore_datasource_impl.dart';
 import 'package:dev_hub/features/membership/data/data%20source/remote/membership_github_datasource_impl.dart';
 import 'package:dev_hub/features/membership/data/repository/membership_repository_impl.dart';
 import 'package:dev_hub/features/membership/domain/usecases/search_users_usecase.dart';
@@ -63,13 +64,21 @@ void main() async {
   );
 
   final githubApiDataSource = GithubApiDataSource(client: apiClient);
-  final membershipGitHubDataSource = MembershipGithubDatasourceImpl(apiClient: apiClient, tokenManager: tokenManager, apiEndpoints: ApiEndpoints());
+  final membershipGitHubDataSource = MembershipGithubDatasourceImpl(
+    apiClient: apiClient,
+    tokenManager: tokenManager,
+    apiEndpoints: ApiEndpoints(),
+  );
 
   final remoteDatabase = AuthRemoteDatabaseImpl(
     FirestoreService(firestoreInstance),
   );
 
   final workspaceRemoteDatabase = WorkspaceDatasourceImpl(
+    firestoreService: FirestoreService(firestoreInstance),
+  );
+
+  final membershipRemoteDatabase = MembershipFirestoreDatasourceImpl(
     firestoreService: FirestoreService(firestoreInstance),
   );
 
@@ -102,7 +111,10 @@ void main() async {
     tokenManager: tokenManager,
   );
 
-  final membershipRepository = MembershipRepositoryImpl(gitHubApiService: membershipGitHubDataSource);
+  final membershipRepository = MembershipRepositoryImpl(
+    gitHubApiService: membershipGitHubDataSource,
+    remoteDatabaseService: membershipRemoteDatabase,
+  );
 
   final authUseCase = AuthUseCase(authRepository);
   final fetchUserOrgsUseCase = FetchUserOrgsUseCase(orgRepository);
@@ -135,7 +147,9 @@ void main() async {
             getRepositoriesUseCase: getRepositoriesUseCase,
           ),
         ),
-        BlocProvider(create: (_)=>MembershipBloc(searchUsersUseCase: searchUserUseCase))
+        BlocProvider(
+          create: (_) => MembershipBloc(searchUsersUseCase: searchUserUseCase),
+        ),
       ],
       child: MyApp(),
     ),
