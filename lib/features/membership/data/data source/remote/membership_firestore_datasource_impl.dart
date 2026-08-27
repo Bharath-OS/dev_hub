@@ -11,30 +11,32 @@ class MembershipFirestoreDatasourceImpl
   MembershipFirestoreDatasourceImpl({required this._firestoreService});
 
   @override
-  Future<bool> addMember(MemberModel member) async{
+  Future<MemberModel> addMember(MemberModel member) async {
     try {
       final params = FirestoreParams(
-        collectionPath:
-        "Workspaces/${member.workspaceId}/Members",
-        data: member.toFirestore(),
+        collectionPath: "Workspaces/${member.workspaceId}/Members",
+        id: member.uid,
+        data: member.toMap(),
       );
       await _firestoreService.create(params);
-      return true;
+      return member.copyWith(joinedAt: DateTime.now());
     } catch (error) {
       throw Exception(error.toString());
     }
   }
 
   @override
-  Future<bool> createInvitation(InvitationModel invitationDocument) async {
+  Future<InvitationModel> createInvitation(
+    InvitationModel invitationDocument,
+  ) async {
     try {
       final params = FirestoreParams(
         collectionPath:
             "Workspaces/${invitationDocument.workspaceId}/Invitations",
-        data: invitationDocument.toFirestore(),
+        data: invitationDocument.toMap(),
       );
       await _firestoreService.create(params);
-      return true;
+      return invitationDocument.copyWith(sentAt: DateTime.now());
     } catch (error) {
       throw Exception(error.toString());
     }
