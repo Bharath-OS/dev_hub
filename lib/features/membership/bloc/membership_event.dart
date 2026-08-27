@@ -11,3 +11,11 @@ class SearchUserEvent extends MembershipEvent{
   @override
   List<Object?> get props => [searchQuery];
 }
+
+class InviteMembersEvent extends MembershipEvent{
+  final List<InvitedUserEntity> invitees;
+  const InviteMembersEvent(this.invitees);
+
+  @override
+  List<Object?> get props => [invitees];
+}
