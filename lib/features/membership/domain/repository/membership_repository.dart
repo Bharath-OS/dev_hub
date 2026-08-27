@@ -1,4 +1,7 @@
+import 'package:dev_hub/features/membership/domain/entity/invitation_entity.dart';
 import 'package:dev_hub/features/membership/domain/entity/invited_user_entity.dart';
+import 'package:dev_hub/features/membership/domain/entity/member_entity.dart';
+import 'package:dev_hub/features/membership/params/invitation_params.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/errors/failures.dart';
@@ -12,8 +15,8 @@ abstract interface class MembershipRepository {
 
   Future<Either<Failure, bool>> checkMembership({required String orgName,required String userName});
 
-  Future<Either<Failure, bool>> sendOrgInvitation({required String orgName, int? userId, String? email});
+  Future<Either<Failure, InvitationEntity>> sendOrgInvitation(InvitationParams params);
 
-  Future<Either<Failure, bool>> addRepositoryCollaborator({required String role, required String repoName, required String ownerName, required String userName});
+  Future<Either<Failure, MemberEntity>> addRepositoryCollaborator(InvitationParams params);
 
 }
