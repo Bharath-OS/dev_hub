@@ -33,7 +33,7 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
         FirestoreParams(
           collectionPath: collectionPath,
           id: workspace.id,
-          data: workspace.toFirestore(),
+          data: workspace.toMap(),
         ),
       );
       return workspace;
@@ -75,7 +75,7 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
         FirestoreParams(
           collectionPath: collectionPath,
           id: updatedWorkspaceModel.id,
-          data: updatedWorkspaceModel.toFirestore(),
+          data: updatedWorkspaceModel.toMap(),
         ),
       );
       return updatedWorkspaceModel;

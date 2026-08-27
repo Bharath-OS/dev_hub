@@ -27,7 +27,7 @@ class WorkspaceModel extends WorkspaceEntity {
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'Id': super.id,
       'Name': super.name,
