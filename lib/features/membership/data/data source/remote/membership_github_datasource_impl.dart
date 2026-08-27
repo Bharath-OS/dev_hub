@@ -1,5 +1,10 @@
 import 'package:dev_hub/core/constants/api_endpoints.dart';
+import 'package:dev_hub/core/constants/org_roles.dart';
 import 'package:dev_hub/core/params/api_params.dart';
+import 'package:dev_hub/features/membership/data/model/invitation_model.dart';
+import 'package:dev_hub/features/membership/data/model/member_model.dart';
+import 'package:dev_hub/features/membership/domain/entity/invitation_entity.dart';
+import 'package:dev_hub/features/membership/domain/entity/member_entity.dart';
 import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
 import 'package:dev_hub/shared/data/datasources/remote/api_client.dart';
 import '../../../../../core/utils/api_response_validator.dart';
@@ -13,14 +18,14 @@ abstract interface class MembershipGithubDatasource {
     required String userName,
   });
 
-  Future<bool> sendOrgInvitation({
-    int? userId,
-    String? email,
+  Future<InvitationEntity?> sendOrgInvitation({
+    required int inviteeId,
     required String orgName,
+    required OrgRoles role,
     List<int>? teamIds,
   });
 
-  Future<bool> giveRepoAccess({
+  Future<MemberEntity?> giveRepoAccess({
     required String username,
     required String role,
     required String ownerName,
@@ -111,20 +116,15 @@ class MembershipGithubDatasourceImpl implements MembershipGithubDatasource {
   }
 
   @override
-  Future<bool> sendOrgInvitation({
-    int? userId,
-    String? email,
+  Future<InvitationEntity?> sendOrgInvitation({
+    required int inviteeId,
+    required OrgRoles role,
     required String orgName,
     List<int>? teamIds,
   }) async {
-    if (userId == null && email == null) {
-      throw Exception(
-        'Both userId and email is null. Please provide either of them to send the invitation.',
-      );
-    }
     final Map<String, dynamic> data = {};
-    data[userId != null ? 'invitee_id' : 'email'] = (userId ?? email)!;
-    data['role'] = 'direct_member';
+    data['invitee_id'] = inviteeId;
+    data['role'] = role.apiValue;
     data['teams_ids'] = teamIds ?? [];
     final apiParams = ApiParams(
       endpoint: _apiEndpoints.sendOrgInvitationEndpoint(orgName: orgName),
@@ -132,15 +132,21 @@ class MembershipGithubDatasourceImpl implements MembershipGithubDatasource {
     );
 
     final result = await _apiClient.post(apiParams);
-
     return result.fold(
       (failure) => throw failure,
-      (response) => response.statusCode == 201,
+    (response) {
+        //GitHub returns 201 if the invitation is sent.
+        if(response.statusCode == 201){
+          return InvitationModel.fromMap(response.data);
+        }else{
+          return null;
+        }
+      },
     );
   }
 
   @override
-  Future<bool> giveRepoAccess({
+  Future<MemberEntity?> giveRepoAccess({
     required String username,
     required String role,
     required String ownerName,
@@ -165,9 +171,9 @@ class MembershipGithubDatasourceImpl implements MembershipGithubDatasource {
           validCodes: [201, 204],
         ).fold((failure) => throw failure, (success) {
           if (response.statusCode == 201) {
-            return true;
+            return MemberModel.fromMap(response.data);
           } else {
-            return false;
+            return null;
           }
         });
       });
