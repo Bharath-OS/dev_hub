@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_constants.dart';
 import '../../../../../core/constants/app_text_styles.dart';
+import '../../../../../core/constants/repo_roles.dart';
 import '../../../domain/entity/invited_user_entity.dart';
 
 /// Selected User Tile Widget with Role Dropdown
@@ -74,6 +75,7 @@ class SelectedUserTile extends StatelessWidget {
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
+                //TODO: do something about the repo role.
                 value: user.role,
                 icon: const Icon(
                   Icons.keyboard_arrow_down_rounded,
@@ -86,7 +88,7 @@ class SelectedUserTile extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 onChanged: onRoleChanged,
-                items: <String>['Developer', 'Team Lead']
+                items: <String>[RepoRoles.developer.apiValue, RepoRoles.teamLead.apiValue]
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
