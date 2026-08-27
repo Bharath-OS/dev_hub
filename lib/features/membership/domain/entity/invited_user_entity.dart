@@ -1,4 +1,5 @@
-/// User model for representation in search and selection
+import '../../../../core/constants/repo_roles.dart';
+
 class InvitedUserEntity {
   final String id;
   final String username;
@@ -11,6 +12,6 @@ class InvitedUserEntity {
     required this.username,
     required this.fullName,
     required this.avatarUrl,
-    this.role = 'Developer',
+    this.role = 'write',
   });
 }
