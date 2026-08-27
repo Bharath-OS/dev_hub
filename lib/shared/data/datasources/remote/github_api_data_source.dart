@@ -23,7 +23,7 @@ class GithubApiDataSource {
     return result.fold(
       (failure) => left(failure),
       (response) async {
-        final List<dynamic> orgList = response is List ? response : [];
+        final List<dynamic> orgList = response.data as List;
         if (orgList.isEmpty) return right([]);
 
         final List<GitHubOrgInfo> orgs = [];
@@ -69,7 +69,7 @@ class GithubApiDataSource {
       (failure) => left(failure),
       (response) {
         final Map<String, dynamic> roleMap =
-            response is Map ? Map.from(response) : {};
+            response is Map ? Map.from(response.data) : {};
         return right({
           'role': roleMap['role']?.toString() ?? '',
           'state': roleMap['state']?.toString() ?? '',
