@@ -1,5 +1,6 @@
 import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/search_user_tile.dart';
 import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/selected_user_tile.dart';
+import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
@@ -10,7 +11,8 @@ import '../../../domain/entity/invited_user_entity.dart';
 
 /// Main Sheet Content Widget to be passed to your global bottom sheet
 class InviteMemberSheet extends StatefulWidget {
-  const InviteMemberSheet({super.key});
+  final WorkspaceEntity _workspace;
+  const InviteMemberSheet({super.key, required this._workspace});
 
   @override
   State<InviteMemberSheet> createState() => _InviteMemberSheetState();
@@ -63,49 +65,85 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MembershipBloc, MembershipState>(
-      builder: (context, state) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context),
-            const SizedBox(height: AppSpacing.lg),
+    return Scaffold(
+      backgroundColor: AppColors.transparent,
+      body: Builder(
+        builder: (context) {
+          return BlocListener<MembershipBloc, MembershipState>(
+            listener: (context, state) {
+              if (state is InviteMemberSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Invitations sent successfully!'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+                Navigator.pop(context);
+              } else if (state is InviteFailureState) {
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+              } else if (state is SearchFailureState) {
+                ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(
+                  SnackBar(
+                    content: Text(state.error),
+                    backgroundColor: AppColors.error,
+                  ),
+                );
+              }
+            },
+            child: BlocBuilder<MembershipBloc, MembershipState>(
+              builder: (context, state) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(context),
+                    const SizedBox(height: AppSpacing.lg),
 
-            // GitHub Search Field Section
-            _buildSearchSection(),
+                    // GitHub Search Field Section
+                    _buildSearchSection(),
 
-            // Search Results - rendered in normal flow right below the search
-            // bar. Hidden (and taking no space) until a search is active.
-            Visibility(
-              visible: _showSearchResults(state),
-              child: Container(
-                width: double.infinity,
-                constraints: const BoxConstraints(maxHeight: 250),
-                padding: const EdgeInsets.all(AppSpacing.xs),
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceContainerLowest,
-                  borderRadius: AppRadius.mdBorderRadius,
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: _buildSearchResultsContent(),
-              ),
+                    // Search Results - rendered in normal flow right below the search
+                    // bar. Hidden (and taking no space) until a search is active.
+                    Visibility(
+                      visible: _showSearchResults(state),
+                      child: Container(
+                        width: double.infinity,
+                        constraints: const BoxConstraints(maxHeight: 250),
+                        padding: const EdgeInsets.all(AppSpacing.xs),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceContainerLowest,
+                          borderRadius: AppRadius.mdBorderRadius,
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: _buildSearchResultsContent(),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Selected Users List
+                    _buildSelectedUsersSection(),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Optional Personal Message Text Field
+                    _buildMessageField(),
+                    const SizedBox(height: AppSpacing.xl),
+
+                    // Send Invite Primary Button
+                    _buildSendInviteButton(),
+                  ],
+                );
+              },
             ),
-            const SizedBox(height: AppSpacing.lg),
-
-            // Selected Users List
-            _buildSelectedUsersSection(),
-            const SizedBox(height: AppSpacing.lg),
-
-            // Optional Personal Message Text Field
-            _buildMessageField(),
-            const SizedBox(height: AppSpacing.xl),
-
-            // Send Invite Primary Button
-            _buildSendInviteButton(),
-          ],
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -364,6 +402,12 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
       height: AppHeights.buttonHeight,
       child: ElevatedButton.icon(
         onPressed: () {
+          context.read<MembershipBloc>().add(
+            InviteMembersEvent(
+              invitees: _selectedUsers,
+              workspace: widget._workspace,
+            ),
+          );
           // TODO: Add backend logic to dispatch send invitation request
           print('Send Invite Clicked!');
           print(

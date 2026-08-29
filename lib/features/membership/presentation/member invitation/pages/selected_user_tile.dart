@@ -88,7 +88,7 @@ class SelectedUserTile extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 onChanged: onRoleChanged,
-                items: <String>[RepoRoles.developer.apiValue, RepoRoles.teamLead.apiValue]
+                items: <String>['Developer', 'Team Lead']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,

@@ -94,7 +94,7 @@ class _WorkspaceDetailScreenState extends State<WorkspaceDetailScreen> {
             // Quick Actions section
             _SectionHeader(title: 'Quick Actions'),
             SizedBox(height: AppSpacing.sm),
-            _QuickActionsGrid(),
+            _QuickActionsGrid(workspace),
             SizedBox(height: AppSpacing.md),
           ],
         ),
@@ -552,7 +552,8 @@ class _TeamCard extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _QuickActionsGrid extends StatelessWidget {
-  const _QuickActionsGrid();
+  final WorkspaceEntity workspace;
+  const _QuickActionsGrid(this.workspace);
 
   @override
   Widget build(BuildContext context) {
@@ -566,7 +567,7 @@ class _QuickActionsGrid extends StatelessWidget {
         icon: Icons.person_add_outlined,
         label: 'Invite Member',
         onTap: () {
-          CustomBottomSheet.show(context: context, child: InviteMemberSheet());
+          CustomBottomSheet.show(context: context, child: InviteMemberSheet(workspace: workspace,));
         },
       ),
       _QuickActionData(
