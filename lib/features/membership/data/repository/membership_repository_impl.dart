@@ -1,7 +1,6 @@
 import 'package:dev_hub/core/errors/failures.dart';
 import 'package:dev_hub/features/membership/data/data%20source/remote/membership_firestore_datasource.dart';
 import 'package:dev_hub/features/membership/data/data%20source/remote/membership_github_datasource_impl.dart';
-import 'package:dev_hub/features/membership/data/model/invitation_model.dart';
 import 'package:dev_hub/features/membership/domain/entity/invitation_entity.dart';
 import 'package:dev_hub/features/membership/domain/entity/invited_user_entity.dart';
 import 'package:dev_hub/features/membership/domain/entity/member_entity.dart';

@@ -10,23 +10,21 @@ class InvitationParams {
   final int? inviteeId;
   final String? workspaceId;
   final String? repoRole;
-  final OrgRoles? orgRole;
+  final OrgRoles orgRole;
   final String? ownerName;
   final String? userName;
   final String? orgName;
   final String? repoName;
-  final InviteMemberResult? invitationData;
   InvitationParams({
     this.uid,
     this.userName,
     this.orgName,
     this.repoName,
     this.workspaceId,
-    this.orgRole,
+    this.orgRole = OrgRoles.member,
     this.ownerName,
     this.inviteeId,
     this.repoRole,
-    required this.invitationData,
   });
 
   static InvitationModel toInvitationModel(InvitationEntity invitation) {
