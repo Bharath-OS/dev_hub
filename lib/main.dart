@@ -7,6 +7,7 @@ import 'package:dev_hub/features/membership/bloc/membership_bloc.dart';
 import 'package:dev_hub/features/membership/data/data%20source/remote/membership_firestore_datasource_impl.dart';
 import 'package:dev_hub/features/membership/data/data%20source/remote/membership_github_datasource_impl.dart';
 import 'package:dev_hub/features/membership/data/repository/membership_repository_impl.dart';
+import 'package:dev_hub/features/membership/domain/usecases/invite_member_to_workspace_usecase.dart';
 import 'package:dev_hub/features/membership/domain/usecases/search_users_usecase.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/github_workspace_datasource.dart';
@@ -126,6 +127,7 @@ void main() async {
   final getWorkspacesUseCase = GetWorkspaceUseCase(workspaceRepository);
   final getRepositoriesUseCase = GetRepositoriesUseCase(workspaceRepository);
   final searchUserUseCase = SearchUsersUseCase(membershipRepository);
+  final inviteMemberToWorkspaceUseCase = InviteMemberToWorkspaceUseCase(membershipRepository);
 
   runApp(
     MultiBlocProvider(
@@ -148,7 +150,7 @@ void main() async {
           ),
         ),
         BlocProvider(
-          create: (_) => MembershipBloc(searchUsersUseCase: searchUserUseCase),
+          create: (_) => MembershipBloc(searchUsersUseCase: searchUserUseCase, inviteMemberToWorkspaceUseCase: inviteMemberToWorkspaceUseCase),
         ),
       ],
       child: MyApp(),
