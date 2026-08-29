@@ -1,17 +1,17 @@
 import '../../../../core/constants/repo_roles.dart';
 
 class InvitedUserEntity {
-  final String id;
+  final int inviteeId;
   final String username;
   final String fullName;
   final String avatarUrl;
   String role; // e.g. 'Developer', 'Team Lead'
 
   InvitedUserEntity({
-    required this.id,
+    required this.inviteeId,
     required this.username,
     required this.fullName,
     required this.avatarUrl,
-    this.role = 'write',
+    this.role = 'Developer',
   });
 }
