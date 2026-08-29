@@ -132,17 +132,15 @@ class MembershipGithubDatasourceImpl implements MembershipGithubDatasource {
     );
 
     final result = await _apiClient.post(apiParams);
-    return result.fold(
-      (failure) => throw failure,
-    (response) {
-        //GitHub returns 201 if the invitation is sent.
-        if(response.statusCode == 201){
-          return InvitationModel.fromMap(response.data);
-        }else{
-          return null;
+    return result.fold((failure) => throw failure, (response) {
+      final apiResponse = ApiResponseValidator.validate(response);
+      return apiResponse.fold((error) => throw error, (response) {
+        if (response.statusCode == 201) {
+          return InvitationModel.fromMap(response.data as Map<String, dynamic>);
         }
-      },
-    );
+        return null;
+      });
+    });
   }
 
   @override
