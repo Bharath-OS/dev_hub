@@ -4,7 +4,7 @@ sealed class MembershipEvent extends Equatable {
   const MembershipEvent();
 }
 
-class SearchUserEvent extends MembershipEvent{
+class SearchUserEvent extends MembershipEvent {
   final String searchQuery;
   const SearchUserEvent(this.searchQuery);
 
@@ -12,9 +12,10 @@ class SearchUserEvent extends MembershipEvent{
   List<Object?> get props => [searchQuery];
 }
 
-class InviteMembersEvent extends MembershipEvent{
+class InviteMembersEvent extends MembershipEvent {
   final List<InvitedUserEntity> invitees;
-  const InviteMembersEvent(this.invitees);
+  final WorkspaceEntity workspace;
+  const InviteMembersEvent({required this.invitees, required this.workspace});
 
   @override
   List<Object?> get props => [invitees];

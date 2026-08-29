@@ -40,3 +40,23 @@ final class UsersFoundState extends MembershipState {
   // TODO: implement props
   List<Object?> get props => [users];
 }
+
+abstract class InvitationStates extends MembershipState{}
+
+class InvitingMembersState extends InvitationStates{
+  @override
+  List<Object?> get props => [];
+}
+
+class InviteFailureState extends MembershipState{
+  final String message;
+  const InviteFailureState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class InviteMemberSuccess extends MembershipState{
+  @override
+  List<Object?> get props => [];
+}
