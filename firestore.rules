@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Read the adminUids of the workspace that owns the current subcollection doc.
+    function workspaceAdminUids(workspaceId) {
+      return get(/databases/$(database)/documents/Workspaces/$(workspaceId))
+          .data.adminUids;
+    }
+
+    // Read the memberUids of the workspace that owns the current subcollection doc.
+    function workspaceMemberUids(workspaceId) {
+      return get(/databases/$(database)/documents/Workspaces/$(workspaceId))
+          .data.memberUids;
+    }
+
+    // ----- Users -----
+    // Each user may only read/write their own doc.
+    match /Users/{uid} {
+      allow read, write: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ----- Workspaces -----
+    // Membership is denormalized onto the workspace doc:
+    //   memberUids: array of every uid that can read the workspace (admins + members)
+    //   adminUids : array of uids with write access
+    // This lets list queries be authorized from the query filter itself
+    // (Firestore list-query rules cannot call get()/exists()).
+    match /Workspaces/{workspaceId} {
+      function canReadWorkspace() {
+        return isSignedIn()
+            && (request.auth.uid in resource.data.memberUids
+                || request.auth.uid in resource.data.adminUids);
+      }
+
+      function canWriteWorkspace() {
+        return isSignedIn()
+            && request.auth.uid in resource.data.adminUids;
+      }
+
+      // Reading a single workspace document.
+      allow get: if canReadWorkspace();
+
+      // Listing / querying workspaces. The client must query with
+      // `where('memberUids', array-contains: <uid>)`. Constraint satisfiability:
+      // any doc returned by that query is guaranteed to have the caller's uid
+      // in memberUids, so this rule is safe and needs no get()/exists() calls.
+      allow list: if isSignedIn()
+          && resource.data.memberUids.hasAny([request.auth.uid]);
+
+      // Creating a workspace: the creator must be its own admin.
+      allow create: if isSignedIn()
+          && request.resource.data.adminUids.size() == 1
+          && request.resource.data.adminUids[0] == request.auth.uid
+          && request.auth.uid in request.resource.data.memberUids;
+
+      // Updating / deleting requires admin.
+      allow update, delete: if canWriteWorkspace();
+
+      // ----- Members (nested) -----
+      match /Members/{memberId} {
+        function memberIsAdmin() {
+          return isSignedIn()
+              && request.auth.uid in workspaceAdminUids(workspaceId);
+        }
+
+        function memberIsPartOfWorkspace() {
+          return isSignedIn()
+              && request.auth.uid in workspaceMemberUids(workspaceId);
+        }
+
+        // Admins always; a member can read their own entry.
+        allow read: if memberIsAdmin()
+            || memberIsPartOfWorkspace()
+            || (isSignedIn() && request.auth.uid == memberId);
+        // Only admins add members (or the member themselves on accept).
+        allow create: if memberIsAdmin()
+            || request.auth.uid == memberId;
+        allow update, delete: if memberIsAdmin();
+      }
+
+      // ----- Invitations (nested) -----
+      match /Invitations/{invitationId} {
+        function invitationIsAdmin() {
+          return isSignedIn()
+              && request.auth.uid in workspaceAdminUids(workspaceId);
+        }
+
+        // Admins, or the invitee whose uid is stored in the document.
+        allow read: if invitationIsAdmin()
+            || (isSignedIn() && request.auth.uid == resource.data.uid);
+        allow create: if invitationIsAdmin();
+        allow update, delete: if invitationIsAdmin();
+      }
+    }
+  }
+}
