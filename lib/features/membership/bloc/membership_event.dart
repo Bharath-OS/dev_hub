@@ -18,5 +18,5 @@ class InviteMembersEvent extends MembershipEvent {
   const InviteMembersEvent({required this.invitees, required this.workspace});
 
   @override
-  List<Object?> get props => [invitees];
+  List<Object?> get props => [invitees,workspace];
 }

@@ -8,6 +8,9 @@ import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dev_hub/features/membership/domain/entity/invited_user_entity.dart';
 import 'package:equatable/equatable.dart';
+import 'package:get/get.dart';
+
+import '../domain/entity/invtee_invite_result.dart';
 
 part 'membership_event.dart';
 part 'membership_state.dart';
@@ -33,6 +36,9 @@ class MembershipBloc extends Bloc<MembershipEvent, MembershipState> {
 
     on<InviteMembersEvent>((event, emit) async {
       emit(InvitingMembersState());
+      //for storing the invitation results for handling multiple invitations as a batch.
+      final results = <InviteeInviteResult>[];
+
       for (final user in event.invitees) {
         final result = await _inviteMemberToWorkspaceUseCase.call(
           InvitationParams(
@@ -48,11 +54,38 @@ class MembershipBloc extends Bloc<MembershipEvent, MembershipState> {
         result.fold(
           (failure) {
             print(failure.message);
-            emit(InviteFailureState(failure.message));
+            results.add(
+              InviteeInviteResult(
+                username: user.username,
+                success: false,
+                message: failure.message,
+              ),
+            );
           },
           (invitation) {
-            emit(InviteMemberSuccess());
+            results.add(
+              InviteeInviteResult(
+                username: user.username,
+                success: true,
+                message: invitation is MemberAddedSuccess
+                    ? "Member added."
+                    : "Invitation sent.",
+              ),
+            );
           },
+        );
+        final successCount = results.where((r) => r.success).length;
+        final failureCount = results.length - successCount;
+        if (successCount == 0) {
+          emit(InviteFailureState('All of the invitations failed.'));
+          return;
+        }
+        emit(
+          InviteMemberSuccess(
+            results: results,
+            successCount: successCount,
+            failureCount: failureCount,
+          ),
         );
       }
     });
