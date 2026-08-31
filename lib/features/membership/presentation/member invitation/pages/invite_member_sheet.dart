@@ -1,8 +1,10 @@
 import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/search_user_tile.dart';
 import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/selected_user_tile.dart';
 import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
+import 'package:dev_hub/shared/presentation/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_constants.dart';
 import '../../../../../core/constants/app_text_styles.dart';
@@ -71,29 +73,42 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
         builder: (context) {
           return BlocListener<MembershipBloc, MembershipState>(
             listener: (context, state) {
+              String message = "";
               if (state is InviteMemberSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Invitations sent successfully!'),
-                    backgroundColor: AppColors.success,
-                  ),
-                );
-                Navigator.pop(context);
-              } else if (state is InviteFailureState) {
-                ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    SnackBar(
-                      content: Text(state.message),
-                      backgroundColor: AppColors.error,
-                    ),
+                if (state.failureCount == 0) {
+                  message = "All invitations sent successfully!";
+                  CustomSnackBar.show(
+                    context: context,
+                    message: message,
+                    color: AppColors.success,
                   );
+                  Navigator.pop(context);
+                } else {
+                  _selectedUsers.removeWhere(
+                    (user) => state.results
+                        .firstWhere((r) => r.username == user.username)
+                        .success,
+                  );
+                  message = "${state.failureCount} invitations failed.";
+                  CustomSnackBar.show(
+                    context: context,
+                    message: message,
+                    color: AppColors.error,
+                  );
+                }
+              } else if (state is InviteFailureState) {
+                message = state.message;
+                CustomSnackBar.show(
+                  context: context,
+                  message: message,
+                  color: AppColors.error,
+                );
               } else if (state is SearchFailureState) {
-                ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(
-                  SnackBar(
-                    content: Text(state.error),
-                    backgroundColor: AppColors.error,
-                  ),
+                message = state.error;
+                CustomSnackBar.show(
+                  context: context,
+                  message: message,
+                  color: AppColors.error,
                 );
               }
             },
@@ -108,9 +123,6 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
 
                     // GitHub Search Field Section
                     _buildSearchSection(),
-
-                    // Search Results - rendered in normal flow right below the search
-                    // bar. Hidden (and taking no space) until a search is active.
                     Visibility(
                       visible: _showSearchResults(state),
                       child: Container(
