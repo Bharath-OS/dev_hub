@@ -11,6 +11,7 @@ class UserEntity {
   final List<GitHubOrgInfo>? ownOrganizations;
   final String? currentOrganizationId; // selected org ID
   final String? currentOrganizationLogin; // selected org login
+  final List<String> workspaces; // ids of workspaces the user can access
   final SubscriptionInfo? subscription; // subscription state
   final String? fcmToken; // device push token
   // final String? githubAccessToken; // GitHub OAuth access token
@@ -26,6 +27,7 @@ class UserEntity {
     this.ownOrganizations,
     this.currentOrganizationId,
     this.currentOrganizationLogin,
+    this.workspaces = const [],
     required this.subscription,
     this.fcmToken,
     // this.githubAccessToken,
@@ -45,6 +47,7 @@ class UserEntity {
     List<GitHubOrgInfo>? ownOrganizations,
     String? currentOrganizationId,
     String? currentOrganizationLogin,
+    List<String>? workspaces,
     SubscriptionInfo? subscription,
     String? fcmToken,
     // String? githubAccessToken,
@@ -62,6 +65,7 @@ class UserEntity {
       ownOrganizations: ownOrganizations ?? this.ownOrganizations,
       currentOrganizationId: currentOrganizationId ?? this.currentOrganizationId,
       currentOrganizationLogin: currentOrganizationLogin ?? this.currentOrganizationLogin,
+      workspaces: workspaces ?? this.workspaces,
       subscription: subscription ?? this.subscription,
       fcmToken: fcmToken ?? this.fcmToken,
       // githubAccessToken: githubAccessToken ?? this.githubAccessToken,

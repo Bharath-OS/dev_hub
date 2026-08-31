@@ -15,6 +15,7 @@ class UserModel extends UserEntity {
     super.ownOrganizations,
     super.currentOrganizationId,
     super.currentOrganizationLogin,
+    super.workspaces,
     super.subscription,
     super.fcmToken,
     // super.githubAccessToken,
@@ -47,6 +48,7 @@ class UserModel extends UserEntity {
     List<GitHubOrgInfo>? ownOrganizations,
     String? currentOrganizationId,
     String? currentOrganizationLogin,
+    List<String>? workspaces,
     SubscriptionInfo? subscription,
     String? fcmToken,
     // String? githubAccessToken,
@@ -64,6 +66,7 @@ class UserModel extends UserEntity {
       ownOrganizations: ownOrganizations ?? super.ownOrganizations,
       currentOrganizationId: currentOrganizationId ?? super.currentOrganizationId,
       currentOrganizationLogin: currentOrganizationLogin ?? super.currentOrganizationLogin,
+      workspaces: workspaces ?? super.workspaces,
       subscription: subscription ?? super.subscription,
       fcmToken: fcmToken ?? super.fcmToken,
       // githubAccessToken: githubAccessToken ?? super.githubAccessToken,
@@ -84,6 +87,7 @@ class UserModel extends UserEntity {
       'ownOrganizations': ownOrganizations?.map((org) => org.toMap()).toList(),
       'currentOrganizationId': currentOrganizationId,
       'currentOrganizationLogin': currentOrganizationLogin,
+      'workspaces': workspaces,
       'subscription': subscription?.toMap(),
       'fcmToken': fcmToken,
       // 'githubAccessToken': githubAccessToken,
@@ -108,6 +112,10 @@ class UserModel extends UserEntity {
           .toList(),
       currentOrganizationId: map['currentOrganizationId']?.toString(),
       currentOrganizationLogin: map['currentOrganizationLogin']?.toString(),
+      workspaces: (map['workspaces'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ??
+          const [],
       subscription: map['subscription'] != null
           ? SubscriptionInfo.fromMap(map['subscription'] as Map<String, dynamic>)
           : null,
