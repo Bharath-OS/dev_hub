@@ -43,7 +43,7 @@ class MembershipRepositoryImpl implements MembershipRepository {
     try {
       final didAdded = await _gitHubApiService.giveRepoAccess(
         username: params.userName!,
-        role: params.repoRole!,
+        role: params.repoRole!.apiValue,
         ownerName: params.ownerName!,
         repoName: params.repoName!,
       );

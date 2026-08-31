@@ -8,7 +8,7 @@ import '../../../domain/entity/invited_user_entity.dart';
 /// Selected User Tile Widget with Role Dropdown
 class SelectedUserTile extends StatelessWidget {
   final InvitedUserEntity user;
-  final Function(String?) onRoleChanged;
+  final Function(RepoRoles?) onRoleChanged;
   final VoidCallback onRemove;
 
   const SelectedUserTile({
@@ -74,8 +74,7 @@ class SelectedUserTile extends StatelessWidget {
               border: Border.all(color: AppColors.primaryContainer),
             ),
             child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                //TODO: do something about the repo role.
+              child: DropdownButton<RepoRoles>(
                 value: user.role,
                 icon: const Icon(
                   Icons.keyboard_arrow_down_rounded,
@@ -88,19 +87,20 @@ class SelectedUserTile extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 onChanged: onRoleChanged,
-                items: <String>['Developer', 'Team Lead']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  );
-                }).toList(),
+                items: <RepoRoles>[RepoRoles.developer, RepoRoles.teamLead]
+                    .map<DropdownMenuItem<RepoRoles>>((RepoRoles role) {
+                      return DropdownMenuItem<RepoRoles>(
+                        value: role,
+                        child: Text(
+                          role.apiValue,
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      );
+                    })
+                    .toList(),
               ),
             ),
           ),

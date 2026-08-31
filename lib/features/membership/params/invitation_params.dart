@@ -2,6 +2,7 @@ import 'package:dev_hub/core/constants/org_roles.dart';
 import 'package:dev_hub/features/membership/data/model/member_model.dart';
 import 'package:dev_hub/features/membership/domain/entity/invite_member_result.dart';
 import 'package:dev_hub/features/membership/domain/entity/member_entity.dart';
+import '../../../core/constants/repo_roles.dart';
 import '../data/model/invitation_model.dart';
 import '../domain/entity/invitation_entity.dart';
 
@@ -9,7 +10,7 @@ class InvitationParams {
   final String? uid;
   final int? inviteeId;
   final String? workspaceId;
-  final String? repoRole;
+  final RepoRoles? repoRole;
   final OrgRoles orgRole;
   final String? ownerName;
   final String? userName;

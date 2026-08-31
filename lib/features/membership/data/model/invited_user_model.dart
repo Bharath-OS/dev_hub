@@ -7,7 +7,7 @@ class InvitedUserModel extends InvitedUserEntity {
     required super.username,
     required super.fullName,
     required super.avatarUrl,
-    super.role = 'Developer',
+    super.role,
   });
 
   /// Factory constructor to parse GitHub Search API response or standard map
