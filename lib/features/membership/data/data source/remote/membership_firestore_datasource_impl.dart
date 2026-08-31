@@ -19,6 +19,16 @@ class MembershipFirestoreDatasourceImpl
         data: member.toMap(),
       );
       await _firestoreService.create(params);
+      // Keep the workspace's memberUids index in sync so the new member can
+      // list the workspace via the memberUids array-contains query.
+      await _firestoreService.addToArray(
+        FirestoreParams(
+          collectionPath: "Workspaces",
+          id: member.workspaceId,
+        ),
+        array: 'memberUids',
+        value: member.uid,
+      );
       return member.copyWith(joinedAt: DateTime.now());
     } catch (error) {
       throw Exception(error.toString());
