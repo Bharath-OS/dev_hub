@@ -66,92 +66,85 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.transparent,
-      body: Builder(
-        builder: (context) {
-          return BlocListener<MembershipBloc, MembershipState>(
-            listener: (context, state) {
-              String message = "";
-              if (state is InviteMemberSuccess) {
-                if (state.failureCount == 0) {
-                  message = "All invitations sent successfully!";
-                  CustomSnackBar.show(
-                    context: context,
-                    message: message,
-                    color: AppColors.success,
-                  );
-                  Navigator.pop(context);
-                } else {
-                  _selectedUsers.removeWhere(
-                    (user) => state.results
-                        .firstWhere((r) => r.username == user.username)
-                        .success,
-                  );
-                  message = "${state.failureCount} invitations failed.";
-                  CustomSnackBar.show(
-                    context: context,
-                    message: message,
-                    color: AppColors.error,
-                  );
-                }
-              } else if (state is InviteFailureState) {
-                message = state.message;
-                CustomSnackBar.show(
-                  context: context,
-                  message: message,
-                  color: AppColors.error,
-                );
-              } else if (state is SearchFailureState) {
-                message = state.error;
-                CustomSnackBar.show(
-                  context: context,
-                  message: message,
-                  color: AppColors.error,
-                );
-              }
-            },
-            child: BlocBuilder<MembershipBloc, MembershipState>(
-              builder: (context, state) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeader(context),
-                    const SizedBox(height: AppSpacing.lg),
+    return BlocListener<MembershipBloc, MembershipState>(
+      listener: (context, state) {
+        String message = "";
+        if (state is InviteMemberSuccess) {
+          if (state.failureCount == 0) {
+            message = "All invitations sent successfully!";
+            CustomSnackBar.show(
+              context: context,
+              message: message,
+              color: AppColors.success,
+            );
+            Navigator.pop(context);
+          } else {
+            _selectedUsers.removeWhere(
+              (user) => state.results
+                  .firstWhere((r) => r.username == user.username)
+                  .success,
+            );
+            message = "${state.failureCount} invitations failed.";
+            CustomSnackBar.show(
+              context: context,
+              message: message,
+              color: AppColors.error,
+            );
+          }
+        } else if (state is InviteFailureState) {
+          message = state.message;
+          CustomSnackBar.show(
+            context: context,
+            message: message,
+            color: AppColors.error,
+          );
+        } else if (state is SearchFailureState) {
+          message = state.error;
+          CustomSnackBar.show(
+            context: context,
+            message: message,
+            color: AppColors.error,
+          );
+        }
+      },
+      child: BlocBuilder<MembershipBloc, MembershipState>(
+        builder: (context, state) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(context),
+              const SizedBox(height: AppSpacing.lg),
 
-                    // GitHub Search Field Section
-                    _buildSearchSection(),
-                    Visibility(
-                      visible: _showSearchResults(state),
-                      child: Container(
-                        width: double.infinity,
-                        constraints: const BoxConstraints(maxHeight: 250),
-                        padding: const EdgeInsets.all(AppSpacing.xs),
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceContainerLowest,
-                          borderRadius: AppRadius.mdBorderRadius,
-                          border: Border.all(color: AppColors.border),
-                        ),
-                        child: _buildSearchResultsContent(),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
+              // GitHub Search Field Section
+              _buildSearchSection(),
+              Visibility(
+                visible: _showSearchResults(state),
+                child: Container(
+                  width: double.infinity,
+                  constraints: const BoxConstraints(maxHeight: 250),
+                  padding: const EdgeInsets.all(AppSpacing.xs),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceContainerLowest,
+                    borderRadius: AppRadius.mdBorderRadius,
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: _buildSearchResultsContent(),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
 
-                    // Selected Users List
-                    _buildSelectedUsersSection(),
-                    const SizedBox(height: AppSpacing.lg),
+              // Selected Users List
+              _buildSelectedUsersSection(),
+              const SizedBox(height: AppSpacing.lg),
 
-                    // Optional Personal Message Text Field
-                    _buildMessageField(),
-                    const SizedBox(height: AppSpacing.xl),
+              // Optional Personal Message Text Field
+              _buildMessageField(),
+              const SizedBox(height: AppSpacing.xl),
 
-                    // Send Invite Primary Button
-                    _buildSendInviteButton(),
-                  ],
-                );
-              },
-            ),
+              // Send Invite Primary Button
+              _buildSendInviteButton(),
+            ],
           );
         },
       ),
