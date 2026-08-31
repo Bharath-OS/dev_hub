@@ -8,6 +8,8 @@ class WorkspaceModel extends WorkspaceEntity {
     required super.githubOrgLogin,
     required super.repositoryName,
     required super.adminId,
+    super.adminUids,
+    super.memberUids,
     super.description,
     super.createdAt,
     super.updatedAt,
@@ -22,6 +24,8 @@ class WorkspaceModel extends WorkspaceEntity {
       githubOrgLogin: data['Organization Name'],
       repositoryName: data['Repository Name'] ?? '',
       adminId: data['Admin Id'],
+      adminUids: (data['adminUids'] as List<dynamic>?)?.cast<String>() ?? [],
+      memberUids: (data['memberUids'] as List<dynamic>?)?.cast<String>() ?? [],
       createdAt: data['Created At'] != null ? DateTime.parse(data['Created At']) : null,
       updatedAt: data['Updated At'] != null ? DateTime.parse(data['Updated At']) : null,
     );
@@ -36,6 +40,8 @@ class WorkspaceModel extends WorkspaceEntity {
       'Organization Name': super.githubOrgLogin,
       'Repository Name': super.repositoryName,
       'Admin Id': super.adminId,
+      'adminUids': super.adminUids,
+      'memberUids': super.memberUids,
       'Created At': super.createdAt.toIso8601String(),
       'Updated At': super.updatedAt.toIso8601String(),
     };

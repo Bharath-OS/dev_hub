@@ -27,6 +27,8 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
       githubOrgLogin: params.githubOrgLogin,
       repositoryName: params.repositoryName,
       adminId: params.adminId,
+      adminUids: params.adminUids,
+      memberUids: params.memberUids,
     );
     try {
       await _firestoreService.create(
@@ -48,8 +50,8 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
         .readAll(
           FirestoreParams(
             collectionPath: collectionPath,
-            queryField: 'Admin Id',
-            queryValue: userId,
+            arrayContainsField: 'memberUids',
+            arrayContainsValue: userId,
           ),
         )
         .map((snapshot) {
