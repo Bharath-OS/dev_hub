@@ -4,7 +4,6 @@ import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import 'package:dev_hub/shared/presentation/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_constants.dart';
 import '../../../../../core/constants/app_text_styles.dart';

@@ -87,7 +87,7 @@ class MembershipRepositoryImpl implements MembershipRepository {
       final githubInvitationResult = await _gitHubApiService.sendOrgInvitation(
         orgName: params.orgName!,
         inviteeId: params.inviteeId!,
-        role: params.orgRole!,
+        role: params.orgRole,
       );
       if (githubInvitationResult == null) {
         return left(Failure('Couldn\'t send invitation'));
