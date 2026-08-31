@@ -3,23 +3,19 @@ import 'package:dev_hub/features/workspace/domain/usecases/workspace_usecases.da
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../core/errors/failures.dart';
-import '../domain/entity/github_repository_entity.dart';
 part 'workspace_event.dart';
 part 'workspace_state.dart';
 
 class WorkspaceBloc extends Bloc<WorkspaceEvent, WorkspaceState> {
   final CreateWorkspaceUsecase _createWorkspaceUsecase;
   final GetWorkspaceUseCase _getWorkspaceUseCase;
-  final GetRepositoriesUseCase _getRepositoriesUseCase;
   List<WorkspaceEntity> _currentWorkspaces = [];
 
   WorkspaceBloc({
     required CreateWorkspaceUsecase createWorkspaceUsecase,
     required GetWorkspaceUseCase getWorkspaceUseCase,
-    required GetRepositoriesUseCase getRepositoriesUseCase,
   }) : _createWorkspaceUsecase = createWorkspaceUsecase,
        _getWorkspaceUseCase = getWorkspaceUseCase,
-       _getRepositoriesUseCase = getRepositoriesUseCase,
        super(WorkspaceInitial()) {
     on<CreateWorkspaceEvent>((event, emit) async {
       try {
@@ -51,15 +47,6 @@ class WorkspaceBloc extends Bloc<WorkspaceEvent, WorkspaceState> {
             onError: (error, stackTrace) => WorkspaceFailure(error.toString()),
           );
         },
-      );
-    });
-
-    on<GetRepositoriesEvent>((event, emit) async {
-      emit(RepositoriesLoading());
-      final result = await _getRepositoriesUseCase.call(event.orgName);
-      result.fold(
-        (failure) => emit(RepositoriesFailure(failure.message)),
-        (repositories) => emit(RepositoriesLoaded(repositories)),
       );
     });
   }

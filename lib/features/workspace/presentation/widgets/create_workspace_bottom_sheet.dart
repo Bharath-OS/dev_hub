@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../bloc/repository_bloc.dart';
 import '../../bloc/workspace_bloc.dart';
 import '../../domain/entity/workspace_entity.dart';
 
@@ -32,8 +33,8 @@ class _CreateWorkspaceBottomSheetState
     }
 
     if (_orgName != null) {
-      if (context.read<WorkspaceBloc>().state is! RepositoriesLoaded) {
-        context.read<WorkspaceBloc>().add(GetRepositoriesEvent(_orgName!));
+      if (context.read<RepositoryBloc>().state is! RepositoriesLoaded) {
+        context.read<RepositoryBloc>().add(GetRepositoriesEvent(_orgName!));
       }
     }
   }
@@ -214,7 +215,7 @@ class _CreateWorkspaceBottomSheetState
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        BlocBuilder<WorkspaceBloc, WorkspaceState>(
+        BlocBuilder<RepositoryBloc, RepositoryState>(
           buildWhen: (previous, current) =>
               current is RepositoriesLoading ||
               current is RepositoriesLoaded ||
@@ -294,7 +295,7 @@ class _CreateWorkspaceBottomSheetState
                         _orgName = state.user.currentOrganizationLogin;
                       }
                     } else if (_orgName != null) {
-                      context.read<WorkspaceBloc>().add(
+                      context.read<RepositoryBloc>().add(
                         GetRepositoriesEvent(_orgName!),
                       );
                     }
@@ -339,9 +340,10 @@ class _CreateWorkspaceBottomSheetState
               }
             },
             builder: (context, state) {
+              final repoState = context.read<RepositoryBloc>().state;
               final isLoading =
                   state is WorkspaceLoadingState ||
-                  state is RepositoriesLoading;
+                  repoState is RepositoriesLoading;
 
               return ElevatedButton(
                 onPressed: isLoading

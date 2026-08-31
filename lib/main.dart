@@ -9,6 +9,7 @@ import 'package:dev_hub/features/membership/data/data%20source/remote/membership
 import 'package:dev_hub/features/membership/data/repository/membership_repository_impl.dart';
 import 'package:dev_hub/features/membership/domain/usecases/invite_member_to_workspace_usecase.dart';
 import 'package:dev_hub/features/membership/domain/usecases/search_users_usecase.dart';
+import 'package:dev_hub/features/workspace/bloc/repository_bloc.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/github_workspace_datasource.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/workspace_datasource.dart';
@@ -146,8 +147,11 @@ void main() async {
           create: (_) => WorkspaceBloc(
             createWorkspaceUsecase: createWorkspaceUseCase,
             getWorkspaceUseCase: getWorkspacesUseCase,
-            getRepositoriesUseCase: getRepositoriesUseCase,
           ),
+        ),
+        BlocProvider(
+          create: (_) =>
+              RepositoryBloc(getRepositoriesUseCase: getRepositoriesUseCase),
         ),
         BlocProvider(
           create: (_) => MembershipBloc(searchUsersUseCase: searchUserUseCase, inviteMemberToWorkspaceUseCase: inviteMemberToWorkspaceUseCase),
