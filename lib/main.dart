@@ -9,6 +9,10 @@ import 'package:dev_hub/features/membership/data/data%20source/remote/membership
 import 'package:dev_hub/features/membership/data/repository/membership_repository_impl.dart';
 import 'package:dev_hub/features/membership/domain/usecases/invite_member_to_workspace_usecase.dart';
 import 'package:dev_hub/features/membership/domain/usecases/search_users_usecase.dart';
+import 'package:dev_hub/features/profile/bloc/profile_bloc.dart';
+import 'package:dev_hub/features/profile/data/datasource/profile_remote_datasource.dart';
+import 'package:dev_hub/features/profile/data/repository/user_profile_repository_impl.dart';
+import 'package:dev_hub/features/profile/domain/usecase/edit_user_details_usecase.dart';
 import 'package:dev_hub/features/workspace/bloc/repository_bloc.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/github_workspace_datasource.dart';
@@ -118,6 +122,11 @@ void main() async {
     remoteDatabaseService: membershipRemoteDatabase,
   );
 
+  final profileRepository = UserProfileRepositoryImpl(
+    remoteDataSource: ProfileRemoteDataSourceImpl(FirebaseAuth.instance),
+    remoteDatabase: remoteDatabase,
+  );
+
   final authUseCase = AuthUseCase(authRepository);
   final fetchUserOrgsUseCase = FetchUserOrgsUseCase(orgRepository);
   final getCurrentUserUseCase = GetCurrentUserUseCase(authRepository);
@@ -129,6 +138,7 @@ void main() async {
   final getRepositoriesUseCase = GetRepositoriesUseCase(workspaceRepository);
   final searchUserUseCase = SearchUsersUseCase(membershipRepository);
   final inviteMemberToWorkspaceUseCase = InviteMemberToWorkspaceUseCase(membershipRepository);
+  final editUserDetailsUseCase = EditUserDetailsUsecase(profileRepository);
 
   runApp(
     MultiBlocProvider(
@@ -155,6 +165,11 @@ void main() async {
         ),
         BlocProvider(
           create: (_) => MembershipBloc(searchUsersUseCase: searchUserUseCase, inviteMemberToWorkspaceUseCase: inviteMemberToWorkspaceUseCase),
+        ),
+        BlocProvider(
+          create: (_) => ProfileBloc(
+            editUserDetailsUsecase: editUserDetailsUseCase,
+          ),
         ),
       ],
       child: MyApp(),

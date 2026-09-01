@@ -14,3 +14,7 @@ class AuthFailure extends Failure{
 class LogFailure extends Failure{
   LogFailure(super.message);
 }
+
+class ProfileFailure extends Failure{
+  ProfileFailure(super.message);
+}

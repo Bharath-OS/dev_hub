@@ -1,5 +1,9 @@
+import 'package:dev_hub/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:dev_hub/features/profile/presentation/widgets/edit_username_bottom_sheet_content.dart';
 import 'package:dev_hub/features/profile/presentation/widgets/profile_tile_item.dart';
+import 'package:dev_hub/shared/presentation/widgets/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_text_styles.dart';
 
@@ -32,8 +36,16 @@ class AccountSection extends StatelessWidget {
                 title: 'Personal Information',
                 subtitle: 'View and edit your profile',
                 onTap: () {
-                  // TODO: Add backend logic to navigate to Personal Information screen
-                  print('Clicked: Personal Information');
+                  final authState = context.read<AuthBloc>().state;
+                  final currentUsername = authState is AuthenticatedState
+                      ? authState.user.githubUsername
+                      : '';
+                  CustomBottomSheet.show<String>(
+                    context: context,
+                    child: EditUsernameBottomSheetContent(
+                      currentUsername: currentUsername,
+                    ),
+                  );
                 },
               ),
               const Divider(height: 1, color: AppColors.border),
