@@ -19,5 +19,10 @@ class ApiEndpoints {
     required String ownerName,
     required String username,
     required String repoName,
-  }) => '/repos/$ownerName/$repoName/collaborators/$username';
+  }) {
+    // repositoryName may be a GitHub full name like "owner/repo";
+    // the endpoint needs the bare repo name with the owner supplied separately.
+    final bareRepoName = repoName.split('/').last;
+    return '/repos/$ownerName/$bareRepoName/collaborators/$username';
+  }
 }

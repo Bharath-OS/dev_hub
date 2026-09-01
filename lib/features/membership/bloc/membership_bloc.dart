@@ -50,7 +50,6 @@ class MembershipBloc extends Bloc<MembershipEvent, MembershipState> {
         );
         result.fold(
           (failure) {
-            print(failure.message);
             results.add(
               InviteeInviteResult(
                 username: user.username,
@@ -71,20 +70,26 @@ class MembershipBloc extends Bloc<MembershipEvent, MembershipState> {
             );
           },
         );
-        final successCount = results.where((r) => r.success).length;
-        final failureCount = results.length - successCount;
-        if (successCount == 0) {
-          emit(InviteFailureState('All of the invitations failed.'));
-          return;
-        }
-        emit(
-          InviteMemberSuccess(
-            results: results,
-            successCount: successCount,
-            failureCount: failureCount,
-          ),
-        );
       }
+
+      final successCount = results.where((r) => r.success).length;
+      final failureCount = results.length - successCount;
+
+      if (failureCount > 0 && successCount == 0) {
+        final errorMessages = results
+            .map((r) => '${r.username}: ${r.message}')
+            .join('\n');
+        emit(InviteFailureState(errorMessages));
+        return;
+      }
+
+      emit(
+        InviteMemberSuccess(
+          results: results,
+          successCount: successCount,
+          failureCount: failureCount,
+        ),
+      );
     });
   }
 }

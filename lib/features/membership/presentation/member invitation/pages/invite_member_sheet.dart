@@ -81,10 +81,13 @@ class _InviteMemberSheetState extends State<InviteMemberSheet> {
           } else {
             _selectedUsers.removeWhere(
               (user) => state.results
-                  .firstWhere((r) => r.username == user.username)
-                  .success,
+                  .any((r) => r.username == user.username && r.success),
             );
-            message = "${state.failureCount} invitations failed.";
+            final failedMessages = state.results
+                .where((r) => !r.success)
+                .map((r) => '${r.username}: ${r.message}')
+                .join('\n');
+            message = "${state.failureCount} invitation(s) failed.\n$failedMessages";
             CustomSnackBar.show(
               context: context,
               message: message,
