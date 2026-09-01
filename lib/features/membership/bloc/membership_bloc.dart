@@ -1,5 +1,3 @@
-import 'package:dev_hub/core/constants/org_roles.dart';
-import 'package:dev_hub/features/membership/domain/entity/invitation_entity.dart';
 import 'package:dev_hub/features/membership/domain/entity/invite_member_result.dart';
 import 'package:dev_hub/features/membership/domain/usecases/invite_member_to_workspace_usecase.dart';
 import 'package:dev_hub/features/membership/domain/usecases/search_users_usecase.dart';
@@ -8,8 +6,6 @@ import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dev_hub/features/membership/domain/entity/invited_user_entity.dart';
 import 'package:equatable/equatable.dart';
-import 'package:get/get.dart';
-
 import '../domain/entity/invtee_invite_result.dart';
 
 part 'membership_event.dart';
@@ -49,6 +45,7 @@ class MembershipBloc extends Bloc<MembershipEvent, MembershipState> {
             orgName: event.workspace.githubOrgLogin,
             ownerName: event.workspace.githubOrgLogin,
             userName: user.username,
+            invitedBy: event.workspace.adminId,
           ),
         );
         result.fold(

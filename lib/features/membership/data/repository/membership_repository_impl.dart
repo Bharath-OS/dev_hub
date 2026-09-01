@@ -46,6 +46,8 @@ class MembershipRepositoryImpl implements MembershipRepository {
         role: params.repoRole!.apiValue,
         ownerName: params.ownerName!,
         repoName: params.repoName!,
+        workspaceId: params.workspaceId!,
+        invitedBy: params.invitedBy ?? '',
       );
       if (didAdded == null) {
         return left(
@@ -88,6 +90,8 @@ class MembershipRepositoryImpl implements MembershipRepository {
         orgName: params.orgName!,
         inviteeId: params.inviteeId!,
         role: params.orgRole,
+        workspaceId: params.workspaceId!,
+        invitedBy: params.invitedBy ?? '',
       );
       if (githubInvitationResult == null) {
         return left(Failure('Couldn\'t send invitation'));

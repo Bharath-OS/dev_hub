@@ -27,17 +27,23 @@ class MemberModel extends MemberEntity {
     };
   }
 
-  factory MemberModel.fromMap(Map<String, dynamic> map) {
+  factory MemberModel.fromMap({
+    required Map<String, dynamic> map,
+    String workspaceId = '',
+    String role = '',
+    String invitedBy = '',
+    DateTime? joinedAt,
+  }) {
     return MemberModel(
-      uid: map['id'],
-      memberName: map['member_name'],
-      memberEmail: map['email'],
-      memberAvatarUrl: map['avatar_url'],
-      role: map['role'] ?? '',
-      joinedAt: map['joined_at'] ?? '',
-      githubUsername: map['login'],
-      workspaceId: map['workspace_id'] ?? '',
-      invitedBy: map['invited_by'] ?? '',
+      uid: map['id']?.toString() ?? '',
+      memberName: (map['name'] ?? map['login'] ?? '') as String,
+      memberEmail: (map['email'] ?? '') as String,
+      memberAvatarUrl: (map['avatar_url'] ?? '') as String,
+      role: role.isNotEmpty ? role : ((map['role'] ?? '') as String),
+      joinedAt: joinedAt ?? DateTime.now(),
+      githubUsername: (map['login'] ?? '') as String,
+      workspaceId: (map['workspace_id'] ?? workspaceId) as String,
+      invitedBy: (map['invited_by'] ?? invitedBy) as String,
     );
   }
 

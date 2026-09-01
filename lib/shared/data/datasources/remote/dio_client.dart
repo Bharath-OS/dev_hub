@@ -63,7 +63,11 @@ class DioClient implements ApiClientInterface {
   @override
   Future<Either<Failure, Response<dynamic>>> put(ApiParams params) async {
     try {
-      final response = await _dio.put(params.endpoint, data: params.data);
+      final response = await _dio.put(
+        params.endpoint,
+        data: params.data,
+        options: Options(validateStatus: (status) => true),
+      );
       return right(response);
     } on DioException catch (error) {
       return left(Failure(error.message ?? "Connection error"));

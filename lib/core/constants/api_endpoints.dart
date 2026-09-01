@@ -15,5 +15,9 @@ class ApiEndpoints {
   String sendOrgInvitationEndpoint({required String orgName}) =>
       '/orgs/$orgName/invitations';
 
-  String giveRepositoryAccessEndpoint({required String ownerName, required String username,required String repoName}) => '/repos/$ownerName/$repoName/collaborators/$username';
+  String giveRepositoryAccessEndpoint({
+    required String ownerName,
+    required String username,
+    required String repoName,
+  }) => '/repos/$ownerName/$repoName/collaborators/$username';
 }

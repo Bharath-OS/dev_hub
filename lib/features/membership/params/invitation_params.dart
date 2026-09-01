@@ -15,6 +15,7 @@ class InvitationParams {
   final String? userName;
   final String? orgName;
   final String? repoName;
+  final String? invitedBy;
   InvitationParams({
     this.uid,
     this.userName,
@@ -25,6 +26,7 @@ class InvitationParams {
     this.ownerName,
     this.inviteeId,
     this.repoRole,
+    this.invitedBy,
   });
 
   static InvitationModel toInvitationModel(InvitationEntity invitation) {

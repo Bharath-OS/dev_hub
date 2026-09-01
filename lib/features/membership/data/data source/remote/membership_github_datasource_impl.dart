@@ -22,6 +22,8 @@ abstract interface class MembershipGithubDatasource {
     required int inviteeId,
     required String orgName,
     required OrgRoles role,
+    required String workspaceId,
+    required String invitedBy,
     List<int>? teamIds,
   });
 
@@ -30,6 +32,8 @@ abstract interface class MembershipGithubDatasource {
     required String role,
     required String ownerName,
     required String repoName,
+    required String workspaceId,
+    required String invitedBy,
   });
 }
 
@@ -120,6 +124,8 @@ class MembershipGithubDatasourceImpl implements MembershipGithubDatasource {
     required int inviteeId,
     required OrgRoles role,
     required String orgName,
+    required String workspaceId,
+    required String invitedBy,
     List<int>? teamIds,
   }) async {
     final Map<String, dynamic> data = {};
@@ -136,7 +142,13 @@ class MembershipGithubDatasourceImpl implements MembershipGithubDatasource {
       final apiResponse = ApiResponseValidator.validate(response);
       return apiResponse.fold((error) => throw error, (response) {
         if (response.statusCode == 201) {
-          return InvitationModel.fromMap(response.data as Map<String, dynamic>);
+          return InvitationModel.fromMap(
+            map: response.data as Map<String, dynamic>,
+            workspaceId: workspaceId,
+            orgName: orgName,
+            inviteeId: inviteeId,
+            invitedBy: invitedBy,
+          );
         }
         return null;
       });
@@ -149,6 +161,8 @@ class MembershipGithubDatasourceImpl implements MembershipGithubDatasource {
     required String role,
     required String ownerName,
     required String repoName,
+    required String workspaceId,
+    required String invitedBy,
   }) async {
     try {
       final Map<String, String> data = {'role': role};
@@ -169,7 +183,12 @@ class MembershipGithubDatasourceImpl implements MembershipGithubDatasource {
           validCodes: [201, 204],
         ).fold((failure) => throw failure, (success) {
           if (response.statusCode == 201) {
-            return MemberModel.fromMap(response.data);
+            return MemberModel.fromMap(
+              map: response.data,
+              workspaceId: workspaceId,
+              role: role,
+              invitedBy: invitedBy,
+            );
           } else {
             return null;
           }

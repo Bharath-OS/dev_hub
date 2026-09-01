@@ -13,17 +13,29 @@ class InvitationModel extends InvitationEntity {
     required super.inviteeId,
   });
 
-  factory InvitationModel.fromMap(Map<String, dynamic> map) {
+  factory InvitationModel.fromMap({
+    required Map<String, dynamic> map,
+    String workspaceId = '',
+    String orgName = '',
+    int inviteeId = 0,
+    String invitedBy = '',
+  }) {
+    final createdAt = map['created_at'];
+    final inviter = map['inviter'];
     return InvitationModel(
-      email: map['email'],
-      role: map['role'],
-      invitedBy: map['inviter']['login'],
-      sentAt: DateTime.parse(map['created_at']),
-      status: map['invitation_status'] ?? '',
-      uid: map['uid'] ?? '',
-      workspaceId: map['Workspace Id'],
-      orgName: map['org_name'],
-      inviteeId: map['id'],
+      email: (map['email'] ?? map['login'] ?? '') as String,
+      role: (map['role'] ?? '') as String,
+      invitedBy: invitedBy.isNotEmpty
+          ? invitedBy
+          : (inviter is Map ? ((inviter['login'] ?? '') as String) : ''),
+      sentAt: createdAt != null
+          ? DateTime.parse(createdAt as String)
+          : DateTime.now(),
+      status: (map['invitation_status'] ?? 'pending') as String,
+      uid: (map['uid'] ?? map['login'] ?? inviteeId.toString()) as String,
+      workspaceId: (map['workspace_id'] ?? workspaceId) as String,
+      orgName: (map['org_name'] ?? orgName) as String,
+      inviteeId: (map['invitee_id'] as int?) ?? inviteeId,
     );
   }
 
@@ -31,11 +43,11 @@ class InvitationModel extends InvitationEntity {
     return <String, dynamic>{
       'uid': uid,
       'id': inviteeId,
-      'Workspace_id': workspaceId,
+      'workspace_id': workspaceId,
       'org_name': orgName,
       'email': email,
       'role': role,
-      'inviter': invitedBy,
+      'invited_by': invitedBy,
       'created_at': sentAt.toIso8601String(),
       'invitation_status': status,
     };
