@@ -9,4 +9,6 @@ abstract interface class ApiClientInterface {
   Future<Either<Failure, Response<dynamic>>> post(ApiParams params);
 
   Future<Either<Failure, Response<dynamic>>> put(ApiParams params);
+
+  Future<Either<Failure, Response<dynamic>>> delete(ApiParams params);
 }

@@ -11,4 +11,6 @@ abstract interface class WorkspaceRepository {
   Future<Either<Failure, List<GitHubRepositoryEntity>>> getRepositories(String orgName);
 
   Stream<List<WorkspaceEntity>> getWorkspaces(String userId);
+
+  Future<Either<Failure, bool>> deleteWorkspace(WorkspaceEntity workspace);
 }

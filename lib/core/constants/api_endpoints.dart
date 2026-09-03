@@ -25,4 +25,13 @@ class ApiEndpoints {
     final bareRepoName = repoName.split('/').last;
     return '/repos/$ownerName/$bareRepoName/collaborators/$username';
   }
+
+  String getRepoCollaboratorsEndpoint({
+    required String ownerNameWithRepoName,
+  }) => '/repos/$ownerNameWithRepoName/collaborators';
+
+  String invokeRepoAccessEndpoint({
+    required String ownerNameWithRepoName,
+    required String username,
+  }) => '/repos/$ownerNameWithRepoName/collaborators/$username';
 }

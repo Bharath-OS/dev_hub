@@ -15,6 +15,13 @@ abstract interface class GithubWorkspaceDataSource {
     required String username,
     required String accessToken,
   });
+
+  Future<List<UserModel>> getRepoCollaborators(String repoNameWithOwnerName);
+
+  Future<void> revokeRepoAccess(
+    String repositoryName,
+    String githubUsername,
+  ) async {}
 }
 
 class GithubWorkspaceDataSourceImpl implements GithubWorkspaceDataSource {
@@ -38,23 +45,19 @@ class GithubWorkspaceDataSourceImpl implements GithubWorkspaceDataSource {
 
     final result = await _apiClient.get(params);
 
-    return result.fold(
-      (failure) => throw failure,
-      (response) {
-        final validated = ApiResponseValidator.validate(response);
-        return validated.fold(
-          (failure) => throw failure,
-          (res) {
-            if (res.data is List) {
-              return (res.data as List)
-                  .map((repo) => RepositoryModel.fromMap(repo as Map<String, dynamic>))
-                  .toList();
-            }
-            return [];
-          },
-        );
-      },
-    );
+    return result.fold((failure) => throw failure, (response) {
+      final validated = ApiResponseValidator.validate(response);
+      return validated.fold((failure) => throw failure, (res) {
+        if (res.data is List) {
+          return (res.data as List)
+              .map(
+                (repo) => RepositoryModel.fromMap(repo as Map<String, dynamic>),
+              )
+              .toList();
+        }
+        return [];
+      });
+    });
   }
 
   @override
@@ -68,20 +71,62 @@ class GithubWorkspaceDataSourceImpl implements GithubWorkspaceDataSource {
     final apiParams = ApiParams(accessToken: accessToken, endpoint: endpoint);
 
     final result = await _apiClient.get(apiParams);
-    
+
+    return result.fold((failure) => throw failure, (response) {
+      final validated = ApiResponseValidator.validate(response);
+      return validated.fold((failure) => throw failure, (res) {
+        return (res.data['items'] as List)
+            .map((user) => UserModel.fromMap(user as Map<String, dynamic>))
+            .toList();
+      });
+    });
+  }
+
+  @override
+  Future<List<UserModel>> getRepoCollaborators(
+    String ownerNameWithRepoName,
+  ) async {
+    final String endpoint = _apiEndpoints.getRepoCollaboratorsEndpoint(
+      ownerNameWithRepoName: ownerNameWithRepoName,
+    );
+    final apiParams = ApiParams(endpoint: endpoint);
+
+    final result = await _apiClient.get(apiParams);
     return result.fold(
       (failure) => throw failure,
-      (response) {
-        final validated = ApiResponseValidator.validate(response);
-        return validated.fold(
-          (failure) => throw failure,
-          (res) {
-            return (res.data['items'] as List)
-                .map((user) => UserModel.fromMap(user as Map<String, dynamic>))
-                .toList();
-          },
-        );
-      },
+      (collaborators) => collaborators.data
+          .map(
+            (collaborator) =>
+                UserModel.fromMap(collaborator as Map<String, dynamic>),
+          )
+          .toList(),
     );
+  }
+
+  @override
+  Future<void> revokeRepoAccess(
+    String repositoryName,
+    String githubUsername,
+  ) async {
+    final String endpoint = _apiEndpoints.invokeRepoAccessEndpoint(
+      ownerNameWithRepoName: repositoryName,
+      username: githubUsername,
+    );
+    final params = ApiParams(endpoint: endpoint);
+
+    //Todo: Implement the network error exception.
+    final result = await _apiClient.delete(params);
+    return result.fold((failure) => throw Exception(failure.message), (
+      response,
+    ) {
+      final finalResponse = ApiResponseValidator.validate(
+        response,
+        validCodes: [204],
+      );
+      return finalResponse.fold(
+        (failure) => throw Exception(failure.message),
+        (response) => null,
+      );
+    });
   }
 }

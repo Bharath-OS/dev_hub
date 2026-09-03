@@ -1,4 +1,5 @@
 import 'package:dev_hub/core/errors/failures.dart';
+import 'package:dev_hub/features/auth/domain/entities/user_entity.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/github_workspace_datasource.dart';
 import 'package:dev_hub/features/workspace/domain/entity/github_repository_entity.dart';
 import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
@@ -78,6 +79,42 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       return _dataSource.getWorkspaceStream(userId);
     } catch (error) {
       throw (Failure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> deleteWorkspace(
+    WorkspaceEntity workspace,
+  ) async {
+    try {
+      final failedUsers = <String>[];
+      final repoCollaborators = await _githubApiService.getRepoCollaborators(
+        workspace.repositoryName,
+      );
+      if (repoCollaborators.isEmpty) return right(true);
+      for (UserEntity collaborator in repoCollaborators) {
+        try {
+          await _githubApiService.revokeRepoAccess(
+            workspace.repositoryName,
+            collaborator.githubUsername,
+          );
+        } catch (e) {
+          debugPrint('Failed to remove ${collaborator.githubUsername}: $e');
+          failedUsers.add(collaborator.githubUsername);
+        }
+      }
+      if (failedUsers.isEmpty) {
+        await _dataSource.deleteWorkspace(workspace.id);
+        return right(true);
+      } else {
+        return left(
+          Failure(
+            "Workspace could not be deleted because the app failed to remove these GitHub collaborators: ${failedUsers.join(', ')}",
+          ),
+        );
+      }
+    } catch (e) {
+      return left(Failure(e.toString()));
     }
   }
 }

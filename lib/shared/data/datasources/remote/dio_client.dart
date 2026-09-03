@@ -75,4 +75,20 @@ class DioClient implements ApiClientInterface {
       return left(Failure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Response<dynamic>>> delete(ApiParams params) async {
+    try {
+      final response = await _dio.delete(
+        params.endpoint,
+        queryParameters: params.queryParams,
+        options: Options(validateStatus: (status) => true),
+      );
+      return right(response);
+    } on DioException catch (error) {
+      return left(Failure(error.message ?? "Connection error"));
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }

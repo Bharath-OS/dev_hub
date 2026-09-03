@@ -11,6 +11,8 @@ abstract interface class WorkspaceDataSource {
   Stream<List<WorkspaceEntity>> getWorkspaceStream(String userId);
 
   Future<WorkspaceModel> updateWorkspace(WorkspaceParams params);
+
+  Future<void> deleteWorkspace(String workspaceId) async {}
 }
 
 class WorkspaceDatasourceImpl implements WorkspaceDataSource {
@@ -84,5 +86,12 @@ class WorkspaceDatasourceImpl implements WorkspaceDataSource {
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  @override
+  Future<void> deleteWorkspace(String workspaceId) async {
+    await _firestoreService.delete(
+      FirestoreParams(collectionPath: collectionPath, id: workspaceId),
+    );
   }
 }
