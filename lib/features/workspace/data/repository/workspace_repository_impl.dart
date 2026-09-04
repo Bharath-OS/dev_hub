@@ -91,7 +91,10 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       final repoCollaborators = await _githubApiService.getRepoCollaborators(
         workspace.repositoryName,
       );
-      if (repoCollaborators.isEmpty) return right(true);
+      if (repoCollaborators.isEmpty) {
+        await _dataSource.deleteWorkspace(workspace.id);
+        return right(true);
+      }
       for (UserEntity collaborator in repoCollaborators) {
         try {
           await _githubApiService.revokeRepoAccess(

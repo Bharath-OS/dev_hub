@@ -1,11 +1,17 @@
+import 'package:dev_hub/core/utils/show_alert_dialog.dart';
+import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
+import 'package:dev_hub/features/workspace/presentation/pages/edit_workspace_content.dart';
+import 'package:dev_hub/shared/presentation/widgets/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../bloc/workspace_action_bloc/workspace_action_bloc.dart';
+import '../workspace_detail_screen.dart';
 
 class WorkspaceCard extends StatelessWidget {
-  final String title;
-  final String repositoryUrl;
+  final WorkspaceEntity workspace;
   final int teamCount;
   final int memberCount;
   final bool isActive;
@@ -13,13 +19,9 @@ class WorkspaceCard extends StatelessWidget {
   final String dueDate;
   final String badgeText;
   final int badgeCount;
-  final VoidCallback? onOptionsTap;
-  final VoidCallback? onTap;
 
   const WorkspaceCard({
     super.key,
-    this.title = 'Next dev project',
-    this.repositoryUrl = 'github.com/devhub-org',
     this.teamCount = 12,
     this.memberCount = 45,
     this.isActive = true,
@@ -27,14 +29,20 @@ class WorkspaceCard extends StatelessWidget {
     this.dueDate = 'Aug 15, 2026',
     this.badgeText = 'MVP Release',
     this.badgeCount = 3,
-    this.onOptionsTap,
-    this.onTap,
+    required this.workspace,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => WorkspaceDetailScreen(workspaceId: workspace.id),
+          ),
+        );
+      },
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -84,7 +92,7 @@ class WorkspaceCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              title,
+                              workspace.name,
                               style: AppTextStyles.title.copyWith(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -94,13 +102,36 @@ class WorkspaceCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: onOptionsTap,
-                            child: const Icon(
-                              Icons.more_vert,
-                              size: 18,
-                              color: AppColors.black,
-                            ),
+                          PopupMenuButton<String>(
+                            onSelected: (option) async {
+                              if (option == 'edit') {
+                                CustomBottomSheet.show(
+                                  context: context,
+                                  child: EditWorkspaceContent(
+                                    workspace: workspace,
+                                  ),
+                                );
+                              } else if (option == 'delete') {
+                                final result = await showAlertDialog(
+                                  context: context,
+                                  title: 'Delete Workspace.',
+                                  description:
+                                      "Do you really want to delete the workspace permanently?\nBy deleting the workspace you will revoke the repository access of the members of the workspace.",
+                                );
+                                if (result != null && result) {
+                                  context.read<WorkspaceActionBloc>().add(
+                                    DeleteWorkspaceEvent(workspace),
+                                  );
+                                }
+                              }
+                            },
+                            itemBuilder: (BuildContext context) => [
+                              PopupMenuItem(value: 'edit', child: Text("Edit")),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Text("Delete"),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -115,7 +146,7 @@ class WorkspaceCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
-                              repositoryUrl,
+                              workspace.repositoryName,
                               style: AppTextStyles.caption.copyWith(
                                 fontSize: 13,
                                 color: AppColors.mutedTextColor,

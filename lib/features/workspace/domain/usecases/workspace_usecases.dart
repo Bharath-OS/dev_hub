@@ -26,8 +26,12 @@ class UpdateWorkspaceUseCase
   UpdateWorkspaceUseCase(this._repository);
 
   @override
-  Future<Either<Failure, WorkspaceEntity>> call(WorkspaceParams params) {
-    throw UnimplementedError();
+  Future<Either<Failure, WorkspaceEntity>> call(WorkspaceParams params) async {
+    try {
+      return await _repository.updateWorkspace(params);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
   }
 }
 

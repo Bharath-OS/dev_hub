@@ -37,9 +37,19 @@ final class WorkspaceActionFailure extends WorkspaceActionState{
   List<Object?> get props => [error];
 }
 
+final class WorkspaceDeletingState extends WorkspaceActionState{
+  @override
+  List<Object?> get props => [];
+}
+
 final class WorkspaceDeletedState extends WorkspaceActionState{
   const WorkspaceDeletedState();
 
+  @override
+  List<Object?> get props => [];
+}
+
+final class WorkspaceEditingState extends WorkspaceActionState{
   @override
   List<Object?> get props => [];
 }

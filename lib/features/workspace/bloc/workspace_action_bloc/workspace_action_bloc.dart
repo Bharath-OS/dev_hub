@@ -33,6 +33,7 @@ class WorkspaceActionBloc
       }
     });
     on<DeleteWorkspaceEvent>((event, emit) async {
+      emit(WorkspaceDeletingState());
       try {
         final response = await _deleteWorkspaceUseCase.call(event.workspace);
         response.fold(
@@ -48,6 +49,7 @@ class WorkspaceActionBloc
       }
     });
     on<ModifyWorkspaceEvent>((event, emit) async {
+      emit(WorkspaceEditingState());
       try {
         final response = await _editWorkspaceUseCase.call(event.params);
         response.fold(
