@@ -4,21 +4,6 @@ sealed class WorkspaceEvent extends Equatable {
   const WorkspaceEvent();
 }
 
-class CreateWorkspaceEvent extends WorkspaceEvent {
-  final WorkspaceParams params;
-  const CreateWorkspaceEvent(this.params);
-  @override
-  List<Object?> get props => [params];
-}
-
-class UpdateWorkspaceEvent extends WorkspaceEvent {
-  final WorkspaceParams params;
-  const UpdateWorkspaceEvent(this.params);
-
-  @override
-  List<Object?> get props => [params];
-}
-
 class WatchWorkspacesEvent extends WorkspaceEvent {
   final String userId;
   const WatchWorkspacesEvent(this.userId);

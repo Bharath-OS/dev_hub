@@ -14,6 +14,7 @@ import 'package:dev_hub/features/profile/data/datasource/profile_remote_datasour
 import 'package:dev_hub/features/profile/data/repository/user_profile_repository_impl.dart';
 import 'package:dev_hub/features/profile/domain/usecase/edit_user_details_usecase.dart';
 import 'package:dev_hub/features/workspace/bloc/repository_bloc.dart';
+import 'package:dev_hub/features/workspace/bloc/workspace_action_bloc/workspace_action_bloc.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/github_workspace_datasource.dart';
 import 'package:dev_hub/features/workspace/data/Datasource/workspace_datasource.dart';
@@ -32,7 +33,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'features/auth/data/datasource/local/auth_local_database_impl.dart';
 import 'features/auth/data/datasource/remote/auth_remote_data_source.dart';
 import 'features/auth/data/datasource/remote/auth_remote_database_impl.dart';
@@ -139,10 +139,17 @@ void main() async {
   final searchUserUseCase = SearchUsersUseCase(membershipRepository);
   final inviteMemberToWorkspaceUseCase = InviteMemberToWorkspaceUseCase(membershipRepository);
   final editUserDetailsUseCase = EditUserDetailsUsecase(profileRepository);
+  final deleteWorkspaceUseCase = DeleteWorkspaceUseCase(workspaceRepository);
+  final updateWorkspaceUseCase = UpdateWorkspaceUseCase(workspaceRepository);
 
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_)=>WorkspaceActionBloc(
+          createWorkspaceUseCase: createWorkspaceUseCase,
+          deleteWorkspaceUseCase: deleteWorkspaceUseCase,
+          editWorkspaceUseCase: updateWorkspaceUseCase,
+        )),
         BlocProvider(
           create: (_) => AuthBloc(
             authUseCase,
@@ -155,7 +162,6 @@ void main() async {
         ),
         BlocProvider(
           create: (_) => WorkspaceBloc(
-            createWorkspaceUsecase: createWorkspaceUseCase,
             getWorkspaceUseCase: getWorkspacesUseCase,
           ),
         ),

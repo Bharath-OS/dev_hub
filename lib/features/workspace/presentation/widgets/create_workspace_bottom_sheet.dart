@@ -1,3 +1,4 @@
+import 'package:dev_hub/features/workspace/bloc/workspace_action_bloc/workspace_action_bloc.dart' hide WorkspaceCreated;
 import 'package:dev_hub/features/workspace/domain/entity/github_repository_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -320,7 +321,7 @@ class _CreateWorkspaceBottomSheetState
         SizedBox(
           width: double.infinity,
           height: AppHeights.buttonHeight,
-          child: BlocConsumer<WorkspaceBloc, WorkspaceState>(
+          child: BlocConsumer<WorkspaceActionBloc, WorkspaceActionState>(
             listener: (context, state) {
               if (state is WorkspaceCreated) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -330,7 +331,7 @@ class _CreateWorkspaceBottomSheetState
                   ),
                 );
                 Navigator.of(context).pop();
-              } else if (state is WorkspaceFailure) {
+              } else if (state is WorkspaceActionFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(state.error),
@@ -397,7 +398,7 @@ class _CreateWorkspaceBottomSheetState
                           return;
                         }
 
-                        context.read<WorkspaceBloc>().add(
+                        context.read<WorkspaceActionBloc>().add(
                           CreateWorkspaceEvent(
                             WorkspaceParams(
                               name: _nameController.text,

@@ -20,14 +20,13 @@ class CreateWorkspaceUsecase
   }
 }
 
-class UpdateWorkspaceUsecase
+class UpdateWorkspaceUseCase
     implements UseCase<WorkspaceEntity, WorkspaceParams> {
   final WorkspaceRepository _repository;
-  UpdateWorkspaceUsecase(this._repository);
+  UpdateWorkspaceUseCase(this._repository);
 
   @override
   Future<Either<Failure, WorkspaceEntity>> call(WorkspaceParams params) {
-    // TODO: implement call
     throw UnimplementedError();
   }
 }
@@ -69,7 +68,7 @@ class DeleteWorkspaceUseCase implements UseCase<bool, WorkspaceEntity> {
   DeleteWorkspaceUseCase(this._repository);
 
   @override
-  Future<Either<Failure, bool>> call(WorkspaceEntity workspace) async{
+  Future<Either<Failure, bool>> call(WorkspaceEntity workspace) async {
     return await _repository.deleteWorkspace(workspace);
   }
 }
