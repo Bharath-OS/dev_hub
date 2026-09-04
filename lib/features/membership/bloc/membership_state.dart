@@ -14,7 +14,6 @@ final class SearchFailureState extends MembershipState {
   const SearchFailureState(this.error);
 
   @override
-  // TODO: implement props
   List<Object?> get props => [error];
 }
 
@@ -27,7 +26,6 @@ final class SearchingUsersState extends MembershipState {
 
 final class NoUsersFoundState extends MembershipState {
   @override
-  // TODO: implement props
   List<Object?> get props => [];
 }
 
@@ -37,7 +35,6 @@ final class UsersFoundState extends MembershipState {
   const UsersFoundState(this.users);
 
   @override
-  // TODO: implement props
   List<Object?> get props => [users];
 }
 

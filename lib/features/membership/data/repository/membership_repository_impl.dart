@@ -32,7 +32,6 @@ class MembershipRepositoryImpl implements MembershipRepository {
 
   @override
   Future<Either<Failure, void>> inviteUser(String userId, String workspaceId) {
-    // TODO: implement inviteUser
     throw UnimplementedError();
   }
 

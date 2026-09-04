@@ -35,6 +35,8 @@ class MembershipBloc extends Bloc<MembershipEvent, MembershipState> {
       //for storing the invitation results for handling multiple invitations as a batch.
       final results = <InviteeInviteResult>[];
 
+      //Todo: check the if any users already a collaborator of the repository before sending invitation to all the users.
+
       for (final user in event.invitees) {
         final result = await _inviteMemberToWorkspaceUseCase.call(
           InvitationParams(
@@ -75,21 +77,20 @@ class MembershipBloc extends Bloc<MembershipEvent, MembershipState> {
       final successCount = results.where((r) => r.success).length;
       final failureCount = results.length - successCount;
 
-      if (failureCount > 0 && successCount == 0) {
+      if (successCount == 0) {
         final errorMessages = results
             .map((r) => '${r.username}: ${r.message}')
             .join('\n');
         emit(InviteFailureState(errorMessages));
-        return;
+      } else {
+        emit(
+          InviteMemberSuccess(
+            results: results,
+            successCount: successCount,
+            failureCount: failureCount,
+          ),
+        );
       }
-
-      emit(
-        InviteMemberSuccess(
-          results: results,
-          successCount: successCount,
-          failureCount: failureCount,
-        ),
-      );
     });
   }
 }
