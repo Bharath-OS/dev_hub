@@ -83,6 +83,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
                                 padding: const EdgeInsets.only(bottom: 12.0),
                                 child: WorkspaceCard(
                                   title: workspace.name,
+                                  memberCount: workspace.members.length,
                                   repositoryUrl: workspace.repositoryName,
                                   onTap: () {
                                     Navigator.push(
