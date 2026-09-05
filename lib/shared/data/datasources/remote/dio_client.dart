@@ -1,18 +1,21 @@
-import 'dart:convert';
 import 'package:dev_hub/core/params/api_params.dart';
+import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../features/auth/data/datasource/local/auth_local_database_interface.dart';
 import 'api_client.dart';
 import 'api_interceptor.dart';
 
 class DioClient implements ApiClientInterface {
   final Dio _dio;
   final String _baseURL;
-  final AuthLocalDatabaseInterface _localDB;
+  final TokenManager _tokenManager;
 
-  DioClient({required this._dio, required this._baseURL,required this._localDB}) {
+  DioClient({
+    required this._dio,
+    required this._baseURL,
+    required this._tokenManager,
+  }) {
     _configureDio();
   }
 
@@ -20,26 +23,21 @@ class DioClient implements ApiClientInterface {
     _dio.options.baseUrl = _baseURL;
     _dio.options.connectTimeout = Duration(seconds: 5);
     _dio.options.receiveTimeout = Duration(seconds: 3);
-    _dio.interceptors.add(ApiInterceptor(_localDB));
+    _dio.interceptors.add(ApiInterceptor(_tokenManager));
   }
 
   @override
-  Future<Either<Failure, dynamic>> get(ApiParams params) async {
+  Future<Either<Failure, Response<dynamic>>> get(ApiParams params) async {
     try {
       final response = await _dio.get(
         params.endpoint,
         queryParameters: params.queryParams,
         options: Options(
-          headers: params.accessToken.isNotEmpty
-              ? {"Authorization": "token ${params.accessToken}"}
-              : null,
+          validateStatus: (status) => true, // Don't throw for 404, etc.
         ),
       );
-      return _verifyResponse(response);
+      return right(response);
     } on DioException catch (error) {
-      if (error.response != null) {
-        return _verifyResponse(error.response!);
-      }
       return left(Failure(error.message ?? "Connection error"));
     } catch (e) {
       return left(Failure(e.toString()));
@@ -47,75 +45,50 @@ class DioClient implements ApiClientInterface {
   }
 
   @override
-  Future<Either<Failure, dynamic>> post(ApiParams params) async {
+  Future<Either<Failure, Response<dynamic>>> post(ApiParams params) async {
     try {
       final response = await _dio.post(
         params.endpoint,
         data: params.data,
-        options: Options(
-          headers: params.accessToken.isNotEmpty
-              ? {"Authorization": "token ${params.accessToken}"}
-              : null,
-        ),
+        options: Options(validateStatus: (status) => true),
       );
-      return _verifyResponse(response);
+      return right(response);
     } on DioException catch (error) {
-      if (error.response != null) {
-        return _verifyResponse(error.response!);
-      }
       return left(Failure(error.message ?? "Connection error"));
     } catch (e) {
       return left(Failure(e.toString()));
     }
   }
 
-  Either<Failure, dynamic> _verifyResponse(Response response) {
-    final statusCode = response.statusCode;
-    final data = response.data;
-
-    if (statusCode == 200 || statusCode == 201) {
-      if (data is String && data.isNotEmpty) {
-        try {
-          return right(jsonDecode(data));
-        } catch (_) {
-          return right(data);
-        }
-      }
-      return right(data);
+  @override
+  Future<Either<Failure, Response<dynamic>>> put(ApiParams params) async {
+    try {
+      final response = await _dio.put(
+        params.endpoint,
+        data: params.data,
+        options: Options(validateStatus: (status) => true),
+      );
+      return right(response);
+    } on DioException catch (error) {
+      return left(Failure(error.message ?? "Connection error"));
+    } catch (e) {
+      return left(Failure(e.toString()));
     }
+  }
 
-    Failure failure;
-    switch (statusCode) {
-      case 400:
-        failure = Failure("Bad request. Please check your input parameters.");
-        break;
-      case 401:
-        failure = Failure("Unauthorized. Please check your access token.");
-        break;
-      case 403:
-        failure = Failure("Forbidden. You might have hit the GitHub rate limit.");
-        break;
-      case 404:
-        failure = Failure("The requested resource was not found.");
-        break;
-      case 422:
-        failure = Failure("Validation failed. Check your data format.");
-        break;
-      case 500:
-        failure = Failure("Internal server error. GitHub might be having issues.");
-        break;
-      case 503:
-        failure = Failure("Service unavailable. Please try again later.");
-        break;
-      default:
-        if (statusCode != null && statusCode >= 500) {
-          failure = Failure("Server error ($statusCode). Please try again later.");
-        } else {
-          failure = Failure(
-            response.statusMessage ?? "Unexpected error occurred ($statusCode)",
-          );
-        }
+  @override
+  Future<Either<Failure, Response<dynamic>>> delete(ApiParams params) async {
+    try {
+      final response = await _dio.delete(
+        params.endpoint,
+        queryParameters: params.queryParams,
+        options: Options(validateStatus: (status) => true),
+      );
+      return right(response);
+    } on DioException catch (error) {
+      return left(Failure(error.message ?? "Connection error"));
+    } catch (e) {
+      return left(Failure(e.toString()));
     }
-    return left(failure);
   }
 }

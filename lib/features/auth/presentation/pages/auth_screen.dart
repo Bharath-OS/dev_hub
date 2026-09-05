@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_constants.dart';
-import '../../../../core/widgets/app_logo_header.dart';
+import '../../../../shared/presentation/widgets/app_logo_header.dart';
 import '../bloc/auth_bloc.dart';
 import '../widgets/register_screen_widgets/app_logo.dart';
 import '../widgets/register_screen_widgets/authentication_button.dart';
@@ -48,7 +48,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.background,
+      backgroundColor: AppColors.background,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
@@ -57,7 +57,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Organization verified successfully!'),
-                backgroundColor: AppPalette.success,
+                backgroundColor: AppColors.success,
               ),
             );
             Navigator.of(context).pushReplacement(
@@ -81,14 +81,14 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: AppPalette.error,
+                backgroundColor: AppColors.error,
               ),
             );
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: AppPalette.error,
+                backgroundColor: AppColors.error,
               ),
             );
           }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_text_styles.dart';
+
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_text_styles.dart';
 
 class CustomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -16,10 +17,10 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: AppPalette.white,
+        color: AppColors.white,
         border: Border(
           top: BorderSide(
-            color: AppPalette.border,
+            color: AppColors.border,
             width: 1.0,
           ),
         ),
@@ -28,9 +29,9 @@ class CustomNavBar extends StatelessWidget {
         currentIndex: currentIndex,
         onTap: onTap,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: AppPalette.white,
-        selectedItemColor: AppPalette.surfaceTint,
-        unselectedItemColor: AppPalette.secondary,
+        backgroundColor: AppColors.white,
+        selectedItemColor: AppColors.surfaceTint,
+        unselectedItemColor: AppColors.secondary,
         selectedLabelStyle: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600, fontSize: 12),
         unselectedLabelStyle: AppTextStyles.caption.copyWith(fontWeight: FontWeight.normal, fontSize: 12),
         elevation: 0,

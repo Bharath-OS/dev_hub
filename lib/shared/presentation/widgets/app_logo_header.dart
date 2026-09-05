@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_constants.dart';
+
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_constants.dart';
 
 /// Reusable branded logo header with subtle depth, smooth border, and shadow.
 class AppLogoHeader extends StatelessWidget {
@@ -19,15 +20,15 @@ class AppLogoHeader extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: AppPalette.surfaceContainerLowest,
+        color: AppColors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppRadius.primary),
         border: Border.all(
-          color: AppPalette.border,
+          color: AppColors.border,
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppPalette.primary.withAlpha(20),
+            color: AppColors.primary.withAlpha(20),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -44,7 +45,7 @@ class AppLogoHeader extends StatelessWidget {
               return Icon(
                 Icons.code_rounded,
                 size: size * 0.5,
-                color: AppPalette.primaryContainer,
+                color: AppColors.primaryContainer,
               );
             },
           ),

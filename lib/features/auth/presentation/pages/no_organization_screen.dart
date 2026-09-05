@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_constants.dart';
 import '../../../../../core/constants/app_text_styles.dart';
-import '../../../../core/widgets/primary_button.dart';
+import '../../../../shared/presentation/widgets/primary_button.dart';
 import '../../domain/entities/user_entity.dart';
 import '../bloc/auth_bloc.dart';
 import 'choose_org_screen.dart';
@@ -17,7 +17,7 @@ class NoOrganizationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.background,
+      backgroundColor: AppColors.background,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthOrgAdminSuccess) {
@@ -30,7 +30,7 @@ class NoOrganizationScreen extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Still no organizations found. Try again later.'),
-                backgroundColor: AppPalette.warning,
+                backgroundColor: AppColors.warning,
               ),
             );
           } else if (state is AuthMemberOnly) {
@@ -43,7 +43,7 @@ class NoOrganizationScreen extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: AppPalette.error,
+                backgroundColor: AppColors.error,
               ),
             );
           }
@@ -63,12 +63,12 @@ class NoOrganizationScreen extends StatelessWidget {
                     height: 100,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppPalette.warningContainer,
+                      color: AppColors.warningContainer,
                     ),
                     child: const Icon(
                       Icons.group_off_rounded,
                       size: 48,
-                      color: AppPalette.warning,
+                      color: AppColors.warning,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -76,7 +76,7 @@ class NoOrganizationScreen extends StatelessWidget {
                   Text(
                     'No Organizations Found',
                     style: AppTextStyles.heading.copyWith(
-                      color: AppPalette.onSurface,
+                      color: AppColors.onSurface,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -86,7 +86,7 @@ class NoOrganizationScreen extends StatelessWidget {
                     'Your GitHub account (${user.githubUsername}) isn\'t a member of any organizations yet. '
                     'Ask an organization admin or team lead to invite you, then come back and check again.',
                     style: AppTextStyles.body.copyWith(
-                      color: AppPalette.onSurfaceVariant,
+                      color: AppColors.onSurfaceVariant,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -102,7 +102,7 @@ class NoOrganizationScreen extends StatelessWidget {
                     icon: const Icon(
                       Icons.refresh_rounded,
                       size: 20,
-                      color: AppPalette.onPrimary,
+                      color: AppColors.onPrimary,
                     ),
                   ),
                 ],

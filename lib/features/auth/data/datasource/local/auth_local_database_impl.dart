@@ -8,32 +8,32 @@ class AuthLocalDatabaseImpl implements AuthLocalDatabaseInterface {
   final LocalStorageKeys _keys;
   AuthLocalDatabaseImpl({required this._db, required this._keys});
 
-  @override
-  Future<void> storeUserToken({required String userToken}) async {
-    final params = SecureStorageParams(
-      key: _keys.accessTokenKey,
-      value: userToken,
-    );
-    await _db.create(params);
-  }
-
-  @override
-  Future<String?> getToken() async {
-    return await _db.read(SecureStorageParams(key: _keys.accessTokenKey));
-  }
-
-  @override
-  Future<bool> isTokenContains() async {
-    final data = await _db.read(SecureStorageParams(key: _keys.accessTokenKey));
-    return data != null;
-  }
-
-  @override
-  Future<void> updateToken({required String accessToken}) async {
-    await _db.create(
-      SecureStorageParams(key: _keys.accessTokenKey, value: accessToken),
-    );
-  }
+  // @override
+  // Future<void> storeUserToken({required String userToken}) async {
+  //   final params = SecureStorageParams(
+  //     key: _keys.accessTokenKey,
+  //     value: userToken,
+  //   );
+  //   await _db.create(params);
+  // }
+  //
+  // @override
+  // Future<String?> getToken() async {
+  //   return await _db.read(SecureStorageParams(key: _keys.accessTokenKey));
+  // }
+  //
+  // @override
+  // Future<bool> isTokenContains() async {
+  //   final data = await _db.read(SecureStorageParams(key: _keys.accessTokenKey));
+  //   return data != null;
+  // }
+  //
+  // @override
+  // Future<void> updateToken({required String accessToken}) async {
+  //   await _db.create(
+  //     SecureStorageParams(key: _keys.accessTokenKey, value: accessToken),
+  //   );
+  // }
 
   @override
   Future<void> setData({required String key, required dynamic value}) async {

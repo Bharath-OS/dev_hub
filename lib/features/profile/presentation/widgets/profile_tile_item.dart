@@ -37,12 +37,12 @@ class ProfileTileItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: iconBackgroundColor ?? AppPalette.surfaceContainerLow,
+                color: iconBackgroundColor ?? AppColors.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 icon,
-                color: iconColor ?? AppPalette.primary,
+                color: iconColor ?? AppColors.primary,
                 size: 20,
               ),
             ),
@@ -55,7 +55,7 @@ class ProfileTileItem extends StatelessWidget {
                     title,
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: titleColor ?? AppPalette.onSurface,
+                      color: titleColor ?? AppColors.onSurface,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -69,7 +69,7 @@ class ProfileTileItem extends StatelessWidget {
             if (trailingWidget != null) trailingWidget!,
             const Icon(
               Icons.chevron_right_rounded,
-              color: AppPalette.outline,
+              color: AppColors.outline,
               size: 20,
             ),
           ],
