@@ -1,5 +1,20 @@
-class Failures {
+class Failure implements Exception{
   final String message;
 
-  Failures([this.message = "Unexpected error occured"]);
+  Failure([this.message = "Unexpected error occurred"]);
+
+  @override
+  String toString() => message;
+}
+
+class AuthFailure extends Failure{
+  AuthFailure(super.message);
+}
+
+class LogFailure extends Failure{
+  LogFailure(super.message);
+}
+
+class ProfileFailure extends Failure{
+  ProfileFailure(super.message);
 }
