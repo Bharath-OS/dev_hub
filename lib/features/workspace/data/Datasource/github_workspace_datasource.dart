@@ -16,7 +16,7 @@ abstract interface class GithubWorkspaceDataSource {
     required String accessToken,
   });
 
-  Future<List<UserModel>> getRepoCollaborators(String repoNameWithOwnerName);
+  Future<List<UserModel>> getRepoCollaborators(String ownerNameWithRepoName);
 
   Future<void> revokeRepoAccess(
     String repositoryName,
@@ -94,12 +94,13 @@ class GithubWorkspaceDataSourceImpl implements GithubWorkspaceDataSource {
     final result = await _apiClient.get(apiParams);
     return result.fold(
       (failure) => throw failure,
-      (collaborators) => collaborators.data
-          .map(
-            (collaborator) =>
-                UserModel.fromMap(collaborator as Map<String, dynamic>),
-          )
-          .toList(),
+      (collaborators) {
+        final List<UserModel> collaboratorsList = [];
+        for(Map<String, dynamic> collaborator in collaborators.data as List<dynamic>){
+          collaboratorsList.add(UserModel.fromMap(collaborator));
+        }
+        return collaboratorsList;
+        }
     );
   }
 
