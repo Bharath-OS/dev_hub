@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.primary,
+      backgroundColor: AppColors.primary,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSessionNotFound) {
@@ -80,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen> {
               SizedBox(
                 width: 150,
                 child: LinearProgressIndicator(
-                  color: AppPalette.white,
+                  color: AppColors.white,
                   minHeight: 6,
                   borderRadius: BorderRadius.circular(3),
                 ),

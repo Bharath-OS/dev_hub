@@ -17,3 +17,8 @@ final class AuthUpdateOrganization extends AuthEvent {
   final   GitHubOrgInfo selectedOrg;
   AuthUpdateOrganization({required this.user, required this.selectedOrg});
 }
+
+final class AuthLogOut extends AuthEvent{
+  // final UserEntity user;
+  // AuthLogOut({required this.user});
+}

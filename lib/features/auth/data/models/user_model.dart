@@ -15,9 +15,10 @@ class UserModel extends UserEntity {
     super.ownOrganizations,
     super.currentOrganizationId,
     super.currentOrganizationLogin,
+    super.workspaces,
     super.subscription,
     super.fcmToken,
-    super.githubAccessToken,
+    // super.githubAccessToken,
   });
 
   factory UserModel.fromRemoteSource(
@@ -29,7 +30,7 @@ class UserModel extends UserEntity {
       displayName: credential.additionalUserInfo!.username!,
       avatarUrl: credential.user!.photoURL!,
       email: credential.user!.email!,
-      githubAccessToken: credential.credential?.accessToken,
+      // githubAccessToken: credential.credential?.accessToken,
       createdAt: DateTime.now(),
       lastSeen: DateTime.now(),
     );
@@ -47,9 +48,10 @@ class UserModel extends UserEntity {
     List<GitHubOrgInfo>? ownOrganizations,
     String? currentOrganizationId,
     String? currentOrganizationLogin,
+    List<String>? workspaces,
     SubscriptionInfo? subscription,
     String? fcmToken,
-    String? githubAccessToken,
+    // String? githubAccessToken,
   }) {
     return UserModel(
       id: id ?? super.id,
@@ -64,9 +66,10 @@ class UserModel extends UserEntity {
       ownOrganizations: ownOrganizations ?? super.ownOrganizations,
       currentOrganizationId: currentOrganizationId ?? super.currentOrganizationId,
       currentOrganizationLogin: currentOrganizationLogin ?? super.currentOrganizationLogin,
+      workspaces: workspaces ?? super.workspaces,
       subscription: subscription ?? super.subscription,
       fcmToken: fcmToken ?? super.fcmToken,
-      githubAccessToken: githubAccessToken ?? super.githubAccessToken,
+      // githubAccessToken: githubAccessToken ?? super.githubAccessToken,
     );
   }
 
@@ -84,35 +87,39 @@ class UserModel extends UserEntity {
       'ownOrganizations': ownOrganizations?.map((org) => org.toMap()).toList(),
       'currentOrganizationId': currentOrganizationId,
       'currentOrganizationLogin': currentOrganizationLogin,
+      'workspaces': workspaces,
       'subscription': subscription?.toMap(),
       'fcmToken': fcmToken,
-      'githubAccessToken': githubAccessToken,
+      // 'githubAccessToken': githubAccessToken,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'] as String,
-      githubId: map['githubId'] as int,
-      githubUsername: map['githubUsername'] as String,
-      displayName: map['displayName'] as String,
-      email: map['email'] as String,
-      createdAt: DateTime.parse(map['createdAt'] as String),
-      lastSeen: DateTime.parse(map['lastSeen'] as String),
-      avatarUrl: map['avatarUrl'] as String?,
+      id: map['id']?.toString() ?? '',
+      githubId: map['githubId'] is int ? map['githubId'] : (int.tryParse(map['githubId']?.toString() ?? '0') ?? 0),
+      githubUsername: map['githubUsername'] ?? map['login'] ?? '',
+      displayName: map['displayName'] ?? map['login'] ?? '',
+      email: map['email'] ?? '',
+      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt'] as String) : DateTime.now(),
+      lastSeen: map['lastSeen'] != null ? DateTime.parse(map['lastSeen'] as String) : DateTime.now(),
+      avatarUrl: map['avatarUrl'] ?? map['avatar_url'],
       allOrganizations: (map['allOrganizations'] as List<dynamic>?)
           ?.map((org) => GitHubOrgInfo.fromMap(org as Map<String, dynamic>))
           .toList(),
       ownOrganizations: (map['ownOrganizations'] as List<dynamic>?)
           ?.map((org) => GitHubOrgInfo.fromMap(org as Map<String, dynamic>))
           .toList(),
-      currentOrganizationId: map['currentOrganizationId'] as String?,
-      currentOrganizationLogin: map['currentOrganizationLogin'] as String?,
+      currentOrganizationId: map['currentOrganizationId']?.toString(),
+      currentOrganizationLogin: map['currentOrganizationLogin']?.toString(),
+      workspaces: (map['workspaces'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ??
+          const [],
       subscription: map['subscription'] != null
           ? SubscriptionInfo.fromMap(map['subscription'] as Map<String, dynamic>)
           : null,
       fcmToken: map['fcmToken'] as String?,
-      githubAccessToken: map['githubAccessToken'] as String?,
     );
   }
 }

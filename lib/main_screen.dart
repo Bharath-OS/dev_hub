@@ -1,9 +1,9 @@
+import 'package:dev_hub/shared/presentation/widgets/custom_app_bar.dart';
+import 'package:dev_hub/shared/presentation/widgets/custom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'core/constants/app_colors.dart';
 import 'core/constants/app_text_styles.dart';
-import 'core/widgets/custom_app_bar.dart';
-import 'core/widgets/custom_nav_bar.dart';
-import 'features/user_profile/presentation/profile_screen.dart';
+import 'features/profile/presentation/profile_screen.dart';
 import 'features/workspace/presentation/workspace.dart';
 
 class MainClass extends StatefulWidget {
@@ -42,7 +42,7 @@ class _MainClassState extends State<MainClass> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPalette.background,
+      backgroundColor: AppColors.background,
       appBar: CustomAppBar(
         onMenuPressed: () {},
         onSearchPressed: () {},
@@ -78,20 +78,20 @@ class _PlaceholderTab extends StatelessWidget {
             Icon(
               icon,
               size: 48,
-              color: AppPalette.secondary,
+              color: AppColors.secondary,
             ),
             const SizedBox(height: 16),
             Text(
               title,
               style: AppTextStyles.title.copyWith(
-                color: AppPalette.secondary,
+                color: AppColors.secondary,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Coming soon',
               style: AppTextStyles.body.copyWith(
-                color: AppPalette.secondary,
+                color: AppColors.secondary,
               ),
             ),
           ],

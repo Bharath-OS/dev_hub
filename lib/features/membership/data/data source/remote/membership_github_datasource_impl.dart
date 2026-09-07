@@ -1,0 +1,201 @@
+import 'package:dev_hub/core/constants/api_endpoints.dart';
+import 'package:dev_hub/core/constants/org_roles.dart';
+import 'package:dev_hub/core/params/api_params.dart';
+import 'package:dev_hub/features/membership/data/model/invitation_model.dart';
+import 'package:dev_hub/features/membership/data/model/member_model.dart';
+import 'package:dev_hub/features/membership/domain/entity/invitation_entity.dart';
+import 'package:dev_hub/features/membership/domain/entity/member_entity.dart';
+import 'package:dev_hub/shared/data/datasources/local/token_manager.dart';
+import 'package:dev_hub/shared/data/datasources/remote/api_client.dart';
+import '../../../../../core/utils/api_response_validator.dart';
+import '../../model/invited_user_model.dart';
+
+abstract interface class MembershipGithubDatasource {
+  Future<List<InvitedUserModel>> searchUserFromGitHub(String searchQuery);
+
+  Future<bool> checkOrgMembershipStatus({
+    required String orgName,
+    required String userName,
+  });
+
+  Future<InvitationEntity?> sendOrgInvitation({
+    required int inviteeId,
+    required String orgName,
+    required OrgRoles role,
+    required String workspaceId,
+    required String invitedBy,
+    List<int>? teamIds,
+  });
+
+  Future<MemberEntity?> giveRepoAccess({
+    required String username,
+    required String role,
+    required String ownerName,
+    required String repoName,
+    required String workspaceId,
+    required String invitedBy,
+  });
+}
+
+class MembershipGithubDatasourceImpl implements MembershipGithubDatasource {
+  final ApiClientInterface _apiClient;
+  final TokenManager _tokenManager;
+  final ApiEndpoints _apiEndpoints;
+  MembershipGithubDatasourceImpl({
+    required this._apiClient,
+    required this._tokenManager,
+    required this._apiEndpoints,
+  });
+
+  @override
+  Future<List<InvitedUserModel>> searchUserFromGitHub(
+    String searchQuery,
+  ) async {
+    final String? accessToken = await _tokenManager.getToken();
+    try {
+      if (accessToken == null) {
+        throw Exception('Could not find a valid access token');
+      }
+      final params = ApiParams(
+        accessToken: accessToken,
+        endpoint: _apiEndpoints.searchUserEndpoint(userName: searchQuery),
+      );
+
+      final result = await _apiClient.get(params);
+
+      return result.fold((failure) => throw Exception(failure.message), (
+        response,
+      ) {
+        // Use the utility for standard 200/201 validation
+        final validated = ApiResponseValidator.validate(response);
+
+        return validated.fold((failure) => throw Exception(failure.message), (
+          res,
+        ) {
+          final Map<String, dynamic> data = res.data as Map<String, dynamic>;
+          return (data['items'] as List)
+              .map(
+                (user) =>
+                    InvitedUserModel.fromMap(user as Map<String, dynamic>),
+              )
+              .toList();
+        });
+      });
+    } catch (error) {
+      throw Exception(error.toString());
+    }
+  }
+
+  @override
+  Future<bool> checkOrgMembershipStatus({
+    required String orgName,
+    required String userName,
+  }) async {
+    try {
+      final params = ApiParams(
+        endpoint: _apiEndpoints.checkOrgMembershipStatusEndpoint(
+          orgName: orgName,
+          username: userName,
+        ),
+      );
+      final result = await _apiClient.get(params);
+
+      return result.fold((error) => throw (Exception(error.message)), (
+        response,
+      ) {
+        // GitHub returns 204 if the user is a member, 404 if not.
+        // Since we set validateStatus to true in DioClient, we handle these manually here.
+        final apiResponse = ApiResponseValidator.validate(
+          response,
+          validCodes: [204, 404],
+        );
+        return apiResponse.fold((error) => throw error, (response) {
+          if (response.statusCode == 204) return true;
+          return false;
+        });
+      });
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<InvitationEntity?> sendOrgInvitation({
+    required int inviteeId,
+    required OrgRoles role,
+    required String orgName,
+    required String workspaceId,
+    required String invitedBy,
+    List<int>? teamIds,
+  }) async {
+    final Map<String, dynamic> data = {};
+    data['invitee_id'] = inviteeId;
+    data['role'] = role.apiValue;
+    data['teams_ids'] = teamIds ?? [];
+    final apiParams = ApiParams(
+      endpoint: _apiEndpoints.sendOrgInvitationEndpoint(orgName: orgName),
+      data: data,
+    );
+
+    final result = await _apiClient.post(apiParams);
+    return result.fold((failure) => throw failure, (response) {
+      final apiResponse = ApiResponseValidator.validate(response);
+      return apiResponse.fold((error) => throw error, (response) {
+        if (response.statusCode == 201) {
+          return InvitationModel.fromMap(
+            map: response.data as Map<String, dynamic>,
+            workspaceId: workspaceId,
+            orgName: orgName,
+            inviteeId: inviteeId,
+            invitedBy: invitedBy,
+          );
+        }
+        return null;
+      });
+    });
+  }
+
+  @override
+  Future<MemberEntity?> giveRepoAccess({
+    required String username,
+    required String role,
+    required String ownerName,
+    required String repoName,
+    required String workspaceId,
+    required String invitedBy,
+  }) async {
+    try {
+      final Map<String, String> data = {'role': role};
+      final params = ApiParams(
+        endpoint: _apiEndpoints.giveRepositoryAccessEndpoint(
+          ownerName: ownerName,
+          username: username,
+          repoName: repoName,
+        ),
+        data: data,
+      );
+      final result = await _apiClient.put(params);
+      return result.fold((failure) => throw Exception(failure.message), (
+        response,
+      ) {
+        return ApiResponseValidator.validate(
+          response,
+          validCodes: [201, 204],
+        ).fold((failure) => throw failure, (success) {
+          if (response.statusCode == 201) {
+            return MemberModel.fromMap(
+              map: response.data,
+              workspaceId: workspaceId,
+              role: role,
+              invitedBy: invitedBy,
+            );
+          } else {
+            return null;
+          }
+        });
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+}

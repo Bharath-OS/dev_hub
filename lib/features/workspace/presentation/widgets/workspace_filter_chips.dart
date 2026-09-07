@@ -44,17 +44,17 @@ class _WorkspaceFilterChipsState extends State<WorkspaceFilterChips> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
               decoration: BoxDecoration(
-                color: isSelected ? AppPalette.primaryContainer : AppPalette.white,
+                color: isSelected ? AppColors.primaryContainer : AppColors.white,
                 borderRadius: BorderRadius.circular(AppRadius.lg),
                 border: Border.all(
-                  color: isSelected ? AppPalette.primaryContainer : AppPalette.border,
+                  color: isSelected ? AppColors.primaryContainer : AppColors.border,
                 ),
               ),
               child: Center(
                 child: Text(
                   filter,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: isSelected ? AppPalette.white : AppPalette.headingTextColor,
+                    color: isSelected ? AppColors.white : AppColors.headingTextColor,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     fontSize: 14,
                   ),

@@ -23,7 +23,7 @@ class GithubApiDataSource {
     return result.fold(
       (failure) => left(failure),
       (response) async {
-        final List<dynamic> orgList = response is List ? response : [];
+        final List<dynamic> orgList = response.data as List;
         if (orgList.isEmpty) return right([]);
 
         final List<GitHubOrgInfo> orgs = [];
@@ -69,20 +69,12 @@ class GithubApiDataSource {
       (failure) => left(failure),
       (response) {
         final Map<String, dynamic> roleMap =
-            response is Map ? Map.from(response) : {};
+            (response.data is Map) ? Map.from(response.data as Map) : {};
         return right({
           'role': roleMap['role']?.toString() ?? '',
           'state': roleMap['state']?.toString() ?? '',
         });
       },
     );
-  }
-
-  Future<Either<Failure, void>> inviteMember({
-    required String memberName,
-    required String accessToken,
-  }) async {
-    // Implementation for invitation
-    return left(Failure("Not implemented yet"));
   }
 }

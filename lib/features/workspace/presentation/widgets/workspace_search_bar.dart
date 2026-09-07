@@ -21,23 +21,23 @@ class WorkspaceSearchBar extends StatelessWidget {
       decoration: InputDecoration(
         hintText: 'Search workspaces...',
         hintStyle: AppTextStyles.body.copyWith(
-          color: AppPalette.outline,
+          color: AppColors.outline,
           fontSize: 15,
         ),
         prefixIcon: const Icon(
           Icons.search,
-          color: AppPalette.secondary,
+          color: AppColors.secondary,
         ),
         filled: true,
-        fillColor: AppPalette.white,
+        fillColor: AppColors.white,
         contentPadding: const EdgeInsets.symmetric(vertical: 12),
         enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.mdBorderRadius,
-          borderSide: const BorderSide(color: AppPalette.border),
+          borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.mdBorderRadius,
-          borderSide: const BorderSide(color: AppPalette.primaryContainer),
+          borderSide: const BorderSide(color: AppColors.primaryContainer),
         ),
       ),
     );

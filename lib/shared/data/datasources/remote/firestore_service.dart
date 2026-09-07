@@ -48,7 +48,36 @@ class FirestoreService implements DatabaseInterface<FirestoreParams, dynamic> {
 
   @override
   Stream<QuerySnapshot<Map<String, dynamic>>> readAll(FirestoreParams params) {
-    return _firestore.collection(params.collectionPath).snapshots();
+    CollectionReference<Map<String, dynamic>> collection =
+        _firestore.collection(params.collectionPath);
+
+    if (params.arrayContainsField != null && params.arrayContainsValue != null) {
+      return collection
+          .where(params.arrayContainsField!, arrayContains: params.arrayContainsValue)
+          .snapshots();
+    }
+
+    if (params.queryField != null && params.queryValue != null) {
+      return collection
+          .where(params.queryField!, isEqualTo: params.queryValue)
+          .snapshots();
+    }
+
+    return collection.snapshots();
+  }
+
+  /// Atomically adds [value] to an array field on a document using
+  /// `arrayUnion`. If the document does not exist it is created.
+  Future<void> addToArray(
+    FirestoreParams params, {
+    required String array,
+    required dynamic value,
+  }) async {
+    await _firestore
+        .collection(params.collectionPath)
+        .doc(params.id)
+        .set({array: FieldValue.arrayUnion([value])}, SetOptions(merge: true))
+        .onError((error, _) => throw Exception(error.toString()));
   }
 
   @override

@@ -18,12 +18,12 @@ class AdminSuccessIllustration extends StatelessWidget {
           height: 100,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: AppPalette.primaryFixed,
+            color: AppColors.primaryFixed,
           ),
           child: const Icon(
             Icons.admin_panel_settings_rounded,
             size: 56,
-            color: AppPalette.primaryContainer,
+            color: AppColors.primaryContainer,
           ),
         ),
       ),

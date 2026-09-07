@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/constants/app_colors.dart';
-import '../../../../../core/widgets/primary_button.dart';
+import '../../../../../shared/presentation/widgets/primary_button.dart';
 import '../../bloc/auth_bloc.dart';
 
 class AuthenticationButton extends StatelessWidget {
@@ -28,7 +28,7 @@ class AuthenticationButton extends StatelessWidget {
             const Icon(
               Icons.code,
               size: 22,
-              color: AppPalette.onPrimary,
+              color: AppColors.onPrimary,
             ),
           ),
         );
