@@ -1,4 +1,5 @@
 import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/invite_member_sheet.dart';
+import 'package:dev_hub/features/teams_management/presentation/widgets/team_management_bottom_sheet.dart';
 import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import 'package:dev_hub/shared/presentation/widgets/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -561,13 +562,28 @@ class _QuickActionsGrid extends StatelessWidget {
       _QuickActionData(
         icon: Icons.group_add_outlined,
         label: 'Create Team',
-        onTap: () {},
+        onTap: () {
+          CustomBottomSheet.show(
+            context: context,
+            child: TeamManagementBottomSheet(
+              title: "Create Team",
+              description:
+                  "Create a new team inside this workspace and connect it with a repository.",
+              orgName: workspace.githubOrgLogin,
+              workspaceId: workspace.id,
+              repoFullName: workspace.repositoryName,
+            ),
+          );
+        },
       ),
       _QuickActionData(
         icon: Icons.person_add_outlined,
         label: 'Invite Member',
         onTap: () {
-          CustomBottomSheet.show(context: context, child: InviteMemberSheet(workspace: workspace,));
+          CustomBottomSheet.show(
+            context: context,
+            child: InviteMemberSheet(workspace: workspace),
+          );
         },
       ),
       _QuickActionData(
