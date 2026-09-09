@@ -37,3 +37,13 @@ class TeamSuccess extends TeamsState{
   @override
   List<Object?> get props => [team];
 }
+
+class TeamDeletedState extends TeamsState{
+  @override
+  List<Object?> get props => [];
+}
+
+class TeamUpdatedState extends TeamsState{
+  @override
+  List<Object?> get props => [];
+}
