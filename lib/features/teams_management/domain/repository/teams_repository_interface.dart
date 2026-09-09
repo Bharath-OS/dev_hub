@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import '../../../../core/errors/failures.dart';
 
 abstract interface class TeamsRepositoryInterface {
-  Future<Either<Failure, List<TeamEntity>>> getTeams(TeamParams teamParams);
+  Future<Either<Failure, Stream<List<TeamEntity>>>> getTeams(String workspaceId);
 
   Future<Either<Failure, TeamEntity>> createTeam({required TeamParams teamParams});
 

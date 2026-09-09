@@ -96,6 +96,11 @@ service cloud.firestore {
         allow create: if invitationIsAdmin();
         allow update, delete: if invitationIsAdmin();
       }
+
+      // ----- Teams (nested) -----
+      match /Teams/{teamId} {
+        allow read, write: if true;
+      }
     }
   }
 }

@@ -14,8 +14,12 @@ import 'package:dev_hub/features/profile/data/datasource/profile_remote_datasour
 import 'package:dev_hub/features/profile/data/repository/user_profile_repository_impl.dart';
 import 'package:dev_hub/features/profile/domain/usecase/edit_user_details_usecase.dart';
 import 'package:dev_hub/features/teams_management/bloc/teams_bloc.dart';
+import 'package:dev_hub/features/teams_management/bloc/watch_teams_bloc/watch_team_bloc.dart';
 import 'package:dev_hub/features/teams_management/data/datasource/teams_github_datasource.dart';
+import 'package:dev_hub/features/teams_management/data/datasource/teams_remote_data_source_impl.dart';
 import 'package:dev_hub/features/teams_management/data/repository/teams_repository_impl.dart';
+import 'package:dev_hub/features/teams_management/domain/usecases/delete_team_use_case.dart';
+import 'package:dev_hub/features/teams_management/domain/usecases/get_teams_use_case.dart';
 import 'package:dev_hub/features/workspace/bloc/repository_bloc.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_action_bloc/workspace_action_bloc.dart';
 import 'package:dev_hub/features/workspace/bloc/workspace_bloc.dart';
@@ -49,6 +53,7 @@ import 'features/auth/domain/usecases/org_usecases/update_organization_usecase.d
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/pages/splash_screen.dart';
 import 'features/teams_management/domain/usecases/create_team_usecase.dart';
+import 'features/teams_management/domain/usecases/update_team_use_case.dart';
 
 void main() async {
   final storage = FlutterSecureStorage(
@@ -136,7 +141,12 @@ void main() async {
     remoteDatabase: remoteDatabase,
   );
 
-  final teamsRepository = TeamsRepositoryImpl(teamGithubDataSource);
+  final teamsRepository = TeamsRepositoryImpl(
+    gitHubDataSource: teamGithubDataSource,
+    remoteDataSource: TeamsRemoteDataSourceImpl(
+      FirestoreService(firestoreInstance),
+    ),
+  );
 
   final authUseCase = AuthUseCase(authRepository);
   final fetchUserOrgsUseCase = FetchUserOrgsUseCase(orgRepository);
@@ -155,6 +165,9 @@ void main() async {
   final deleteWorkspaceUseCase = DeleteWorkspaceUseCase(workspaceRepository);
   final updateWorkspaceUseCase = UpdateWorkspaceUseCase(workspaceRepository);
   final createTeamUseCase = CreateTeamUseCase(teamsRepository);
+  final deleteTeamUseCase = DeleteTeamUseCase(teamsRepository);
+  final updateTeamUseCase = UpdateTeamUseCase(teamsRepository);
+  final getTeamsUseCase = GetTeamsUseCase(teamsRepository);
 
   runApp(
     MultiBlocProvider(
@@ -195,8 +208,13 @@ void main() async {
               ProfileBloc(editUserDetailsUsecase: editUserDetailsUseCase),
         ),
         BlocProvider(
-          create: (_) => TeamsBloc(createTeamUseCase: createTeamUseCase),
+          create: (_) => TeamsBloc(
+            createTeamUseCase: createTeamUseCase,
+            deleteTeamUseCase: deleteTeamUseCase,
+            updateTeamUseCase: updateTeamUseCase,
+          ),
         ),
+        BlocProvider(create: (_) => WatchTeamBloc(getTeamsUseCase)),
       ],
       child: MyApp(),
     ),

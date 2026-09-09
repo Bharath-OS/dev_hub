@@ -1,4 +1,6 @@
 import 'package:dev_hub/features/membership/presentation/member%20invitation/pages/invite_member_sheet.dart';
+import 'package:dev_hub/features/teams_management/bloc/watch_teams_bloc/watch_team_bloc.dart';
+import 'package:dev_hub/features/teams_management/domain/entity/team_entity.dart';
 import 'package:dev_hub/features/teams_management/presentation/widgets/team_management_bottom_sheet.dart';
 import 'package:dev_hub/features/workspace/domain/entity/workspace_entity.dart';
 import 'package:dev_hub/shared/presentation/widgets/custom_bottom_sheet.dart';
@@ -18,6 +20,12 @@ class WorkspaceDetailScreen extends StatefulWidget {
 }
 
 class _WorkspaceDetailScreenState extends State<WorkspaceDetailScreen> {
+  @override
+  void didChangeDependencies() {
+    context.read<WatchTeamBloc>().add(WatchAllTeamsEvent(widget.workspaceId));
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.read<WorkspaceBloc>().state as WorkspaceDisplayState;
@@ -53,44 +61,36 @@ class _WorkspaceDetailScreenState extends State<WorkspaceDetailScreen> {
 
             // Teams section (grid layout)
             _SectionHeader(title: 'Teams', actionLabel: 'View All'),
-            SizedBox(height: AppSpacing.sm),
-            _TeamsGrid(
-              teams: [
-                _TeamData(
-                  acronym: 'FE',
-                  name: 'Frontend',
-                  memberCount: 8,
-                  completedTasks: 16,
-                  totalTasks: 20,
-                  color: Color(0xFF3525CD),
-                ),
-                _TeamData(
-                  acronym: 'BE',
-                  name: 'Backend',
-                  memberCount: 8,
-                  completedTasks: 6,
-                  totalTasks: 15,
-                  color: Color(0xFF892200),
-                ),
-                _TeamData(
-                  acronym: 'DS',
-                  name: 'Design',
-                  memberCount: 4,
-                  completedTasks: 9,
-                  totalTasks: 12,
-                  color: Color(0xFF10B981),
-                ),
-                _TeamData(
-                  acronym: 'QA',
-                  name: 'QA',
-                  memberCount: 3,
-                  completedTasks: 5,
-                  totalTasks: 8,
-                  color: Color(0xFFF59E0B),
-                ),
-              ],
+            const SizedBox(height: AppSpacing.sm),
+            BlocBuilder<WatchTeamBloc, WatchTeamState>(
+              builder: (context, state) {
+                if (state is TeamsLoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is WatchTeamsFailure) {
+                  return Center(
+                    child: Text(
+                      state.message,
+                      style: const TextStyle(color: AppColors.error),
+                    ),
+                  );
+                } else if (state is TeamLoaded) {
+                  if (state.teams.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                        child: Text(
+                          'No teams found',
+                          style: TextStyle(color: AppColors.mutedTextColor),
+                        ),
+                      ),
+                    );
+                  }
+                  return _TeamsGrid(teams: state.teams);
+                }
+                return const SizedBox.shrink();
+              },
             ),
-            SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
             // Quick Actions section
             _SectionHeader(title: 'Quick Actions'),
@@ -391,33 +391,11 @@ class _StatItem extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Team Data model
-// ---------------------------------------------------------------------------
-
-class _TeamData {
-  final String acronym;
-  final String name;
-  final int memberCount;
-  final int completedTasks;
-  final int totalTasks;
-  final Color color;
-
-  const _TeamData({
-    required this.acronym,
-    required this.name,
-    required this.memberCount,
-    required this.completedTasks,
-    required this.totalTasks,
-    required this.color,
-  });
-}
-
-// ---------------------------------------------------------------------------
 // Teams Grid
 // ---------------------------------------------------------------------------
 
 class _TeamsGrid extends StatelessWidget {
-  final List<_TeamData> teams;
+  final List<TeamEntity> teams;
 
   const _TeamsGrid({required this.teams});
 
@@ -443,15 +421,17 @@ class _TeamsGrid extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _TeamCard extends StatelessWidget {
-  final _TeamData team;
+  final TeamEntity team;
 
   const _TeamCard({required this.team});
 
   @override
   Widget build(BuildContext context) {
-    final taskProgress = team.totalTasks > 0
-        ? team.completedTasks / team.totalTasks
-        : 0.0;
+    // For now, we'll use a placeholder for task progress since TeamEntity doesn't have it yet
+    const taskProgress = 0.0;
+    final teamColor = Color(
+      (team.name.hashCode & 0x00FFFFFF) | 0xFF000000,
+    ).withOpacity(0.8);
 
     return Container(
       decoration: BoxDecoration(
@@ -478,12 +458,14 @@ class _TeamCard extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: team.color,
+                  color: teamColor,
                   borderRadius: AppRadius.smBorderRadius,
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  team.acronym,
+                  team.name.length >= 2
+                      ? team.name.substring(0, 2).toUpperCase()
+                      : team.name.toUpperCase(),
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.white,
                     fontWeight: FontWeight.bold,
@@ -523,7 +505,7 @@ class _TeamCard extends StatelessWidget {
             children: [
               // Tasks label
               Text(
-                '${team.completedTasks}/${team.totalTasks} Tasks',
+                '0/0 Tasks', // Placeholder
                 style: AppTextStyles.caption.copyWith(
                   fontSize: 11,
                   color: AppColors.mutedTextColor,
@@ -537,7 +519,7 @@ class _TeamCard extends StatelessWidget {
                   value: taskProgress,
                   minHeight: 5,
                   backgroundColor: AppColors.outlineVariant,
-                  valueColor: AlwaysStoppedAnimation<Color>(team.color),
+                  valueColor: AlwaysStoppedAnimation<Color>(teamColor),
                 ),
               ),
             ],
