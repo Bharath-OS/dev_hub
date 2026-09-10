@@ -35,6 +35,8 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
           final teamWithWorkspace = teamModel.copyWith(
             workspaceId: teamParams.workspaceId,
             id: teamModel.githubTeamId.toString(),
+            githubRepoFullName: teamParams.githubRepoFullName,
+            githubRepoName: teamParams.githubRepoFullName!.split('/').last
           );
           final savedTeam = await _remoteDataSource.createTeam(teamWithWorkspace);
           return right(savedTeam);
@@ -71,7 +73,7 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
   }
 
   @override
-  Future<Either<Failure, String>> updateTeam({
+  Future<Either<Failure, void>> updateTeam({
     required TeamParams params,
   }) async {
     try {
@@ -81,7 +83,7 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
       final response = ApiResponseValidator.validate(result);
       return response.fold(
         (failure) => left(failure),
-        (apiResponse) => right("Team updated successfully"),
+        (apiResponse) => right(null),
       );
     } catch (e) {
       return left(Failure(e.toString()));

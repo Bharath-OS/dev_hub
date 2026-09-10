@@ -221,7 +221,7 @@ class _TeamsManagementBottomSheetState
                           CreateTeamEvent(
                             orgName: widget.orgName,
                             teamName: _teamNameController.text.trim(),
-                            repoName: widget.repoFullName,
+                            repoFullName: widget.repoFullName,
                             workspaceId: widget.workspaceId,
                             description:
                                 _teamDescriptionController.text.trim().isEmpty

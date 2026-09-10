@@ -8,7 +8,7 @@ abstract interface class TeamsRepositoryInterface {
 
   Future<Either<Failure, TeamEntity>> createTeam({required TeamParams teamParams});
 
-  Future<Either<Failure, String>> updateTeam({required TeamParams params});
+  Future<Either<Failure, void>> updateTeam({required TeamParams params});
 
   Future<Either<Failure, String>> deleteTeam(TeamParams params);
 }

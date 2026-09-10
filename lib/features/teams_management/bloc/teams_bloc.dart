@@ -28,7 +28,7 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
             workspaceId: event.workspaceId,
             name: event.teamName,
             description: event.description,
-            githubRepoFullName: event.repoName,
+            githubRepoFullName: event.repoFullName,
           ),
         );
         result.fold(

@@ -9,13 +9,13 @@ final class CreateTeamEvent extends TeamsEvent {
   final String orgName;
   final String teamName;
   final String? description;
-  final String repoName;
+  final String repoFullName;
   final Privacy? privacy;
   final Permission? permission;
   const CreateTeamEvent({
     required this.orgName,
     required this.teamName,
-    required this.repoName,
+    required this.repoFullName,
     this.description,
     this.privacy,
     this.permission, required this.workspaceId,
@@ -25,7 +25,7 @@ final class CreateTeamEvent extends TeamsEvent {
   List<Object?> get props => [
     orgName,
     teamName,
-    repoName,
+    repoFullName,
     privacy,
     permission,
     description,
