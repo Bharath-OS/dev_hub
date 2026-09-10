@@ -3,10 +3,13 @@ import 'package:dev_hub/features/teams_management/data/model/team_model.dart';
 import 'package:dev_hub/features/teams_management/domain/entity/team_entity.dart';
 import 'package:dev_hub/shared/data/datasources/remote/firestore_service.dart';
 
-import '../../params/team_params.dart';
-
 abstract interface class TeamsRemoteDataSource {
   Future<TeamModel> createTeam(TeamModel team);
+
+  Future<void> deleteTeam({
+    required String workspaceId,
+    required String teamId,
+  });
 
   Future<Stream<List<TeamEntity>>> getTeams(String workspaceId);
 }
@@ -45,5 +48,17 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
             return TeamModel.fromMap(doc.data());
           }).toList();
         });
+  }
+
+  @override
+  Future<void> deleteTeam({
+    required String workspaceId,
+    required String teamId,
+  }) async {
+    return await _remoteDatabaseService.delete(
+      FirestoreParams(
+        collectionPath: 'Workspaces/$workspaceId/$_teamCollectionName/$teamId',
+      ),
+    );
   }
 }
