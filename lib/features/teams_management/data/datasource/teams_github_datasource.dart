@@ -19,7 +19,11 @@ abstract interface class TeamsGitHubDataSource {
 
   Future<void> deleteTeam({required String orgName, required String teamSlug});
 
-  Future<Response<dynamic>> modifyTeamDetails({required TeamParams teamParams});
+  Future<Response<dynamic>> modifyTeamDetails({
+    required String orgName,
+    required String teamSlug,
+    required Map<String, dynamic> data,
+  });
 }
 
 class TeamsGitHubDataSourceImpl implements TeamsGitHubDataSource {
@@ -98,19 +102,14 @@ class TeamsGitHubDataSourceImpl implements TeamsGitHubDataSource {
 
   @override
   Future<Response<dynamic>> modifyTeamDetails({
-    required TeamParams teamParams,
+    required String orgName,
+    required String teamSlug,
+    required Map<String, dynamic> data,
   }) async {
-    final data = <String, dynamic>{
-      if (teamParams.name != null) 'name': teamParams.name,
-      if (teamParams.description != null) 'description': teamParams.description,
-      if (teamParams.privacy != null) 'privacy': teamParams.privacy!.name,
-      if (teamParams.permission != null) 'permission': teamParams.permission!.name,
-    };
-
     final params = ApiParams(
       endpoint: _endpoints.updateTeamEndpoint(
-        orgName: teamParams.orgName!,
-        teamSlug: teamParams.githubTeamSlug!,
+        orgName: orgName,
+        teamSlug: teamSlug,
       ),
       data: data,
     );

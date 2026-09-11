@@ -12,6 +12,8 @@ abstract interface class TeamsRemoteDataSource {
   });
 
   Future<Stream<List<TeamEntity>>> getTeams(String workspaceId);
+
+  Future<void> updateTeam(TeamModel team);
 }
 
 class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
@@ -25,7 +27,7 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
       await _remoteDatabaseService.create(
         FirestoreParams(
           collectionPath: "Workspaces/${team.workspaceId}/Teams",
-          id: team.id,
+          id: team.id.toString(),
           data: team.toMap(),
         ),
       );
@@ -57,7 +59,19 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
   }) async {
     return await _remoteDatabaseService.delete(
       FirestoreParams(
-        collectionPath: 'Workspaces/$workspaceId/$_teamCollectionName/$teamId',
+        collectionPath: 'Workspaces/$workspaceId/$_teamCollectionName',
+        id: teamId,
+      ),
+    );
+  }
+
+  @override
+  Future<void> updateTeam(TeamModel team) async {
+    await _remoteDatabaseService.update(
+      FirestoreParams(
+        collectionPath: 'Workspaces/${team.workspaceId}/$_teamCollectionName',
+        id: team.id.toString(),
+        data: team.toMap(),
       ),
     );
   }
