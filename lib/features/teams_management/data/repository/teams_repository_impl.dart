@@ -27,21 +27,20 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
         teamParams: teamParams,
       );
       final response = ApiResponseValidator.validate(result);
-      return await response.fold(
-        (failure) async => left(failure),
-        (apiResponse) async {
-          final teamModel = TeamModel.fromMap(apiResponse.data);
-          // Inject workspaceId and use GitHub ID as document ID
-          final teamWithWorkspace = teamModel.copyWith(
-            workspaceId: teamParams.workspaceId,
-            id: teamModel.githubTeamId.toString(),
-            githubRepoFullName: teamParams.githubRepoFullName,
-            githubRepoName: teamParams.githubRepoFullName!.split('/').last
-          );
-          final savedTeam = await _remoteDataSource.createTeam(teamWithWorkspace);
-          return right(savedTeam);
-        },
-      );
+      return await response.fold((failure) async => left(failure), (
+        apiResponse,
+      ) async {
+        final teamModel = TeamModel.fromMap(apiResponse.data);
+        // Inject workspaceId and use GitHub ID as document ID
+        final teamWithWorkspace = teamModel.copyWith(
+          workspaceId: teamParams.workspaceId,
+          id: teamModel.id,
+          githubRepoFullName: teamParams.githubRepoFullName,
+          githubRepoName: teamParams.githubRepoFullName!.split('/').last,
+        );
+        final savedTeam = await _remoteDataSource.createTeam(teamWithWorkspace);
+        return right(savedTeam);
+      });
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -73,20 +72,49 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
   }
 
   @override
-  Future<Either<Failure, void>> updateTeam({
-    required TeamParams params,
-  }) async {
+  Future<Either<Failure, void>> updateTeam({required TeamParams params}) async {
     try {
+      final dataMap = getUpdatedDataMap(params.originalTeamEntity!, params);
+      if (dataMap.isEmpty) {
+        return left(Failure("No changes detected."));
+      }
       final result = await _gitHubDataSource.modifyTeamDetails(
-        teamParams: params,
+        orgName: params.orgName!,
+        teamSlug: params.githubTeamSlug!,
+        data: dataMap,
       );
       final response = ApiResponseValidator.validate(result);
-      return response.fold(
-        (failure) => left(failure),
-        (apiResponse) => right(null),
-      );
+      return response.fold((failure) => left(failure), (apiResponse) async {
+        final team = TeamModel.fromMap(apiResponse.data);
+        final teamData = team.copyWith(
+          orgName: params.orgName,
+          githubRepoFullName: params.githubRepoFullName,
+          githubRepoName: params.githubRepoName,
+          workspaceId: params.workspaceId,
+          avatarUrl: params.avatarUrl,
+        );
+        await _remoteDataSource.updateTeam(teamData);
+        return right(null);
+      });
     } catch (e) {
       return left(Failure(e.toString()));
     }
+  }
+
+  Map<String, dynamic> getUpdatedDataMap(
+    TeamEntity originalTeamEntity,
+    TeamParams teamUpdates,
+  ) {
+    //In future, decided to add more fields for editing.
+    Map<String, dynamic> map = {
+      if (originalTeamEntity.name != teamUpdates.name) "name": teamUpdates.name,
+      if (originalTeamEntity.description != teamUpdates.description)
+        "description": teamUpdates.description,
+      if (originalTeamEntity.privacy != teamUpdates.privacy!.name)
+        "privacy": teamUpdates.privacy,
+      if (originalTeamEntity.permission != teamUpdates.permission!.name)
+        "permission": teamUpdates.permission!.name,
+    };
+    return map;
   }
 }

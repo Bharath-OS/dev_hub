@@ -1,3 +1,5 @@
+import 'package:dev_hub/features/teams_management/domain/entity/team_entity.dart';
+
 class TeamParams {
   final String? id;
   final String? workspaceId;
@@ -15,6 +17,7 @@ class TeamParams {
   final List<String>? maintainers;
   final Privacy? privacy;
   final Permission? permission;
+  final TeamEntity? originalTeamEntity;
   TeamParams({
     this.id,
     this.workspaceId,
@@ -32,6 +35,7 @@ class TeamParams {
     this.maintainers = const <String>[],
     this.orgName,
     this.permission = Permission.push,
+    this.originalTeamEntity,
   });
 }
 
