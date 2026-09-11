@@ -13,7 +13,6 @@ GitHub-native task management, and real-time project tracking in a single app.
 [![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=flat-square&logo=dart)](https://dart.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=flat-square&logo=firebase)](https://firebase.google.com)
 [![Supabase](https://img.shields.io/badge/Supabase-Edge_Functions-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 
 [Features](#-features) · [Architecture](#-architecture) · [Getting Started](#-getting-started) · [Configuration](#-configuration) · [Screenshots](#-screenshots) · [Roadmap](#-roadmap)
@@ -599,12 +598,6 @@ develop     ← integration branch, all PRs merge here
 feature/*   ← individual feature branches (e.g. feature/agora-calls)
 fix/*       ← bug fix branches (e.g. fix/chat-scroll-jump)
 ```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
