@@ -18,7 +18,8 @@ final class CreateTeamEvent extends TeamsEvent {
     required this.repoFullName,
     this.description,
     this.privacy,
-    this.permission, required this.workspaceId,
+    this.permission,
+    required this.workspaceId,
   });
 
   @override
@@ -29,7 +30,7 @@ final class CreateTeamEvent extends TeamsEvent {
     privacy,
     permission,
     description,
-    workspaceId
+    workspaceId,
   ];
 }
 
@@ -49,15 +50,17 @@ final class UpdateTeamEvent extends TeamsEvent {
   final String? teamDescription;
   final Privacy? privacy;
   final Permission? permission;
+  final TeamEntity originalTeamEntity;
 
-  const UpdateTeamEvent(
+  const UpdateTeamEvent({
     this.orgName,
     this.teamSlug,
     this.teamName,
     this.teamDescription,
     this.privacy,
     this.permission,
-  );
+    required this.originalTeamEntity,
+  });
 
   @override
   List<Object?> get props => [
@@ -70,7 +73,7 @@ final class UpdateTeamEvent extends TeamsEvent {
   ];
 }
 
-final class GetATeamByName extends TeamsEvent{
+final class GetATeamByName extends TeamsEvent {
   final String orgName;
   final String teamSlug;
   const GetATeamByName({required this.orgName, required this.teamSlug});

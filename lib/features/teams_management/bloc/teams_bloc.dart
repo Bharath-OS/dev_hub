@@ -55,18 +55,41 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
       }
     });
 
+    bool _checkForUpdates(
+      TeamEntity originalTeamEntity,
+      TeamParams teamUpdates,
+    ) {
+      //In future, decided to add more fields for editing.
+      Map<String, dynamic> map = {
+        if (originalTeamEntity.name != teamUpdates.name)
+          "name": teamUpdates.name,
+        if (originalTeamEntity.description != teamUpdates.description)
+          "description": teamUpdates.description,
+        if (originalTeamEntity.privacy != teamUpdates.privacy!.name)
+          "privacy": teamUpdates.privacy,
+        if (originalTeamEntity.permission != teamUpdates.permission!.name)
+          "permission": teamUpdates.permission!.name,
+      };
+      return map.isEmpty;
+    }
+
     //updating team event
     on<UpdateTeamEvent>((event, emit) async {
+      final teamParams = TeamParams(
+        name: event.teamName,
+        description: event.teamDescription,
+        orgName: event.orgName,
+        githubTeamSlug: event.teamSlug,
+        originalTeamEntity: event.originalTeamEntity,
+      );
+      final didTeamDataChanged = _checkForUpdates(event.originalTeamEntity, teamParams);
+      if (didTeamDataChanged) {
+        emit(TeamFailure('No changes detected.'));
+        return;
+      }
       emit(LoadingState());
       try {
-        final result = await _updateTeamUseCase.call(
-          TeamParams(
-            name: event.teamName,
-            description: event.teamDescription,
-            orgName: event.orgName,
-            githubTeamSlug: event.teamSlug,
-          ),
-        );
+        final result = await _updateTeamUseCase.call(teamParams);
         result.fold(
           (failure) => emit(TeamFailure(failure.message)),
           (updatedTeam) => emit(TeamUpdatedState()),
