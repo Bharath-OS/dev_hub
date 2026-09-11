@@ -1,5 +1,5 @@
 abstract class TeamEntity {
-  final String id;
+  final int id;
   final String workspaceId;
   final String orgName;
   final String name;
@@ -9,7 +9,6 @@ abstract class TeamEntity {
   final String permission;
   final int memberCount;
   final int repoCount;
-  final int githubTeamId;
   final String githubTeamSlug;
   final String githubRepoName;
   final String githubRepoFullName;
@@ -23,7 +22,6 @@ abstract class TeamEntity {
     required this.name,
     required this.description,
     required this.avatarUrl,
-    required this.githubTeamId,
     required this.githubTeamSlug,
     required this.githubRepoName,
     required this.githubRepoFullName,

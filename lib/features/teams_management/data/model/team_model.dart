@@ -8,7 +8,6 @@ class TeamModel extends TeamEntity {
     required super.name,
     required super.description,
     required super.avatarUrl,
-    required super.githubTeamId,
     required super.githubTeamSlug,
     required super.githubRepoName,
     required super.githubRepoFullName,
@@ -24,7 +23,7 @@ class TeamModel extends TeamEntity {
 
   TeamModel.fromMap(Map<String, dynamic> map)
     : super(
-        id: map['team id'] ?? '',
+        id: map['team id'] ?? map['id'] ?? 0,
         workspaceId: map['workspace id'] ?? '',
         name: map['name'] ?? map['team name'] ?? '',
         orgName: map['organization']?['login'] ?? map['org name'] ?? '',
@@ -34,7 +33,6 @@ class TeamModel extends TeamEntity {
         permission: map['permission'] ?? '',
         memberCount: map['members_count'] ?? map['members count'] ?? 0,
         repoCount: map['repos_count'] ?? map['repos count'] ?? 0,
-        githubTeamId: map['id'] ?? map['github team id'] ?? 0,
         githubTeamSlug: map['slug'] ?? map['team slug'] ?? '',
         githubRepoName: map['linked repo name'] ?? '',
         githubRepoFullName: map['linked repo full name'] ?? '',
@@ -56,7 +54,6 @@ class TeamModel extends TeamEntity {
       'permission': permission,
       'members count': memberCount,
       'repos count': repoCount,
-      'github team id': githubTeamId,
       'team slug': githubTeamSlug,
       'linked repo name': githubRepoName,
       'linked repo full name': githubRepoFullName,
@@ -68,7 +65,7 @@ class TeamModel extends TeamEntity {
   }
 
   TeamModel copyWith({
-    String? id,
+    int? id,
     String? workspaceId,
     String? orgName,
     String? name,
@@ -94,7 +91,6 @@ class TeamModel extends TeamEntity {
       name: name ?? this.name,
       description: description ?? this.description,
       avatarUrl: avatarUrl ?? this.avatarUrl,
-      githubTeamId: githubTeamId ?? this.githubTeamId,
       githubTeamSlug: githubTeamSlug ?? this.githubTeamSlug,
       githubRepoName: githubRepoName ?? this.githubRepoName,
       githubRepoFullName: githubRepoFullName ?? this.githubRepoFullName,
