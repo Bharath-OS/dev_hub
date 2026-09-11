@@ -104,6 +104,74 @@ class WorkspaceTeamCard extends StatelessWidget {
                   ],
                 ),
               ),
+              PopupMenuButton<String>(
+                icon: const Icon(
+                  Icons.more_vert,
+                  size: 16,
+                  color: AppColors.mutedTextColor,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                color: AppColors.white,
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: AppRadius.smBorderRadius,
+                  side: const BorderSide(color: AppColors.border),
+                ),
+                onSelected: (option) {
+                  if (option == 'edit') {
+                    // TODO: Implement edit team functionality
+                  } else if (option == 'delete') {
+                    // TODO: Implement delete team functionality
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    height: 36,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.edit_outlined,
+                          size: 14,
+                          color: AppColors.headingTextColor,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Edit',
+                          style: AppTextStyles.caption.copyWith(
+                            fontSize: 12,
+                            color: AppColors.headingTextColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    height: 36,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.delete_outline,
+                          size: 14,
+                          color: AppColors.error,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Delete',
+                          style: AppTextStyles.caption.copyWith(
+                            fontSize: 12,
+                            color: AppColors.error,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           Column(
