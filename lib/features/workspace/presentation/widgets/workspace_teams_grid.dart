@@ -1,5 +1,9 @@
+import 'package:dev_hub/core/utils/show_alert_dialog.dart';
+import 'package:dev_hub/features/teams_management/bloc/teams_bloc.dart';
+import 'package:dev_hub/features/teams_management/bloc/watch_teams_bloc/watch_team_bloc.dart';
 import 'package:dev_hub/features/teams_management/domain/entity/team_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_text_styles.dart';
@@ -118,11 +122,25 @@ class WorkspaceTeamCard extends StatelessWidget {
                   borderRadius: AppRadius.smBorderRadius,
                   side: const BorderSide(color: AppColors.border),
                 ),
-                onSelected: (option) {
+                onSelected: (option) async {
                   if (option == 'edit') {
-                    // TODO: Implement edit team functionality
+                    // context.read<WatchTeamBloc>().add(UpdateTeamEvent(originalTeamEntity: team))
                   } else if (option == 'delete') {
-                    // TODO: Implement delete team functionality
+                    final shouldDelete = await showAlertDialog(
+                      context: context,
+                      title: 'Delete Team',
+                      description: "Do you really want to delete the team?",
+                    );
+                    if (shouldDelete != null && shouldDelete) {
+                      context.read<TeamsBloc>().add(
+                        DeleteTeamEvent(
+                          orgName: team.orgName,
+                          teamSlug: team.githubTeamSlug,
+                          workspaceId: team.workspaceId,
+                          teamId: team.id
+                        ),
+                      );
+                    }
                   }
                 },
                 itemBuilder: (context) => [

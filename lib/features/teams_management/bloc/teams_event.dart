@@ -37,10 +37,12 @@ final class CreateTeamEvent extends TeamsEvent {
 final class DeleteTeamEvent extends TeamsEvent {
   final String orgName;
   final String teamSlug;
-  const DeleteTeamEvent({required this.orgName, required this.teamSlug});
+  final String workspaceId;
+  final int teamId;
+  const DeleteTeamEvent({required this.orgName, required this.teamSlug, required this.workspaceId, required this.teamId});
 
   @override
-  List<Object?> get props => [orgName, teamSlug];
+  List<Object?> get props => [orgName, teamSlug, workspaceId,teamId];
 }
 
 final class UpdateTeamEvent extends TeamsEvent {

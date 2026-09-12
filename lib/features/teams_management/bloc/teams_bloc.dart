@@ -44,7 +44,12 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
       emit(LoadingState());
       try {
         final result = await _deleteTeamUseCase.call(
-          TeamParams(orgName: event.orgName, githubTeamSlug: event.teamSlug),
+          TeamParams(
+            orgName: event.orgName,
+            githubTeamSlug: event.teamSlug,
+            workspaceId: event.workspaceId,
+            id: event.teamId
+          ),
         );
         result.fold(
           (failure) => emit(TeamFailure(failure.message)),
@@ -82,7 +87,10 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
         githubTeamSlug: event.teamSlug,
         originalTeamEntity: event.originalTeamEntity,
       );
-      final didTeamDataChanged = _checkForUpdates(event.originalTeamEntity, teamParams);
+      final didTeamDataChanged = _checkForUpdates(
+        event.originalTeamEntity,
+        teamParams,
+      );
       if (didTeamDataChanged) {
         emit(TeamFailure('No changes detected.'));
         return;

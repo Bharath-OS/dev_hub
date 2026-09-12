@@ -8,7 +8,7 @@ abstract interface class TeamsRemoteDataSource {
 
   Future<void> deleteTeam({
     required String workspaceId,
-    required String teamId,
+    required int teamId,
   });
 
   Future<Stream<List<TeamEntity>>> getTeams(String workspaceId);
@@ -55,12 +55,12 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
   @override
   Future<void> deleteTeam({
     required String workspaceId,
-    required String teamId,
+    required int teamId,
   }) async {
     return await _remoteDatabaseService.delete(
       FirestoreParams(
         collectionPath: 'Workspaces/$workspaceId/$_teamCollectionName',
-        id: teamId,
+        id: teamId.toString(),
       ),
     );
   }

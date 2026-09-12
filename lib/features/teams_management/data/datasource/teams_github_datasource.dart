@@ -97,7 +97,7 @@ class TeamsGitHubDataSourceImpl implements TeamsGitHubDataSource {
       ),
     );
     final response = await _apiClient.delete(params);
-    response.fold((failure) => throw failure, (_) {});
+    response.fold((failure) => throw failure, (response)=>(_){});
   }
 
   @override

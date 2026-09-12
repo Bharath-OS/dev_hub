@@ -1,7 +1,7 @@
 import 'package:dev_hub/features/teams_management/domain/entity/team_entity.dart';
 
 class TeamParams {
-  final String? id;
+  final int? id;
   final String? workspaceId;
   final String? orgName;
   final String? name;

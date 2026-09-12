@@ -23,7 +23,7 @@ class TeamModel extends TeamEntity {
 
   TeamModel.fromMap(Map<String, dynamic> map)
     : super(
-        id: map['team id'] ?? map['id'] ?? 0,
+        id: map['id'] ?? 0,
         workspaceId: map['workspace id'] ?? '',
         name: map['name'] ?? map['team name'] ?? '',
         orgName: map['organization']?['login'] ?? map['org name'] ?? '',
@@ -44,7 +44,7 @@ class TeamModel extends TeamEntity {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'team id': id,
+      'id': id,
       'workspace id': workspaceId,
       'team name': name,
       'org name': orgName,

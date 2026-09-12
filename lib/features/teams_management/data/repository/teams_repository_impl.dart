@@ -6,6 +6,7 @@ import 'package:dev_hub/features/teams_management/data/model/team_model.dart';
 import 'package:dev_hub/features/teams_management/domain/entity/team_entity.dart';
 import 'package:dev_hub/features/teams_management/domain/repository/teams_repository_interface.dart';
 import 'package:dev_hub/features/teams_management/params/team_params.dart';
+import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 
 class TeamsRepositoryImpl implements TeamsRepositoryInterface {
@@ -34,7 +35,6 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
         // Inject workspaceId and use GitHub ID as document ID
         final teamWithWorkspace = teamModel.copyWith(
           workspaceId: teamParams.workspaceId,
-          id: teamModel.id,
           githubRepoFullName: teamParams.githubRepoFullName,
           githubRepoName: teamParams.githubRepoFullName!.split('/').last,
         );
@@ -52,6 +52,10 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
       await _gitHubDataSource.deleteTeam(
         orgName: teamParams.orgName!,
         teamSlug: teamParams.githubTeamSlug!,
+      );
+      await _remoteDataSource.deleteTeam(
+        workspaceId: teamParams.workspaceId!,
+        teamId: teamParams.id!,
       );
       return right("Team deleted successfully");
     } catch (e) {
