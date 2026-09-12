@@ -46,9 +46,9 @@ class TeamModel extends TeamEntity {
     return <String, dynamic>{
       'id': id,
       'workspace id': workspaceId,
-      'team name': name,
+      'name': name,
       'org name': orgName,
-      'team description': description,
+      'description': description,
       'avatar url': avatarUrl,
       'privacy': privacy,
       'permission': permission,

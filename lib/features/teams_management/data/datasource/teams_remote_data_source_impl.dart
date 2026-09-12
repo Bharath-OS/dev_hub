@@ -72,8 +72,6 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
     required int teamId,
     required Map<String, dynamic> data,
   }) async {
-    data['team name'] = data['name'];
-    data.remove('name');
     await _remoteDatabaseService.update(
       FirestoreParams(
         collectionPath: 'Workspaces/$workspaceId/$_teamCollectionName',
