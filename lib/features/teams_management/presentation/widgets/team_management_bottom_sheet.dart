@@ -214,8 +214,11 @@ class _TeamsManagementBottomSheetState
               final isLoading = state is LoadingState;
 
               return ListenableBuilder(
-                listenable: Listenable.merge([_teamNameController,_teamDescriptionController]),
-                builder: (context,child) {
+                listenable: Listenable.merge([
+                  _teamNameController,
+                  _teamDescriptionController,
+                ]),
+                builder: (context, child) {
                   final isEnabled = _canSubmit();
 
                   return ElevatedButton(
@@ -249,11 +252,10 @@ class _TeamsManagementBottomSheetState
                               context.read<TeamsBloc>().add(
                                 UpdateTeamEvent(
                                   originalTeamEntity: widget.team!,
-                                  teamName: _teamNameController.text.trim(),
-                                  teamDescription:
-                                      _teamDescriptionController.text.trim().isEmpty
+                                  teamName: name,
+                                  teamDescription: description.isEmpty
                                       ? null
-                                      : _teamDescriptionController.text.trim(),
+                                      : description,
                                   orgName: widget.orgName,
                                   teamSlug: widget.team!.githubTeamSlug,
                                 ),
@@ -266,7 +268,9 @@ class _TeamsManagementBottomSheetState
                                   repoFullName: widget.repoFullName,
                                   workspaceId: widget.workspaceId,
                                   description:
-                                      _teamDescriptionController.text.trim().isEmpty
+                                      _teamDescriptionController.text
+                                          .trim()
+                                          .isEmpty
                                       ? null
                                       : _teamDescriptionController.text.trim(),
                                 ),
