@@ -2,6 +2,8 @@ import 'package:dev_hub/core/utils/show_alert_dialog.dart';
 import 'package:dev_hub/features/teams_management/bloc/teams_bloc.dart';
 import 'package:dev_hub/features/teams_management/bloc/watch_teams_bloc/watch_team_bloc.dart';
 import 'package:dev_hub/features/teams_management/domain/entity/team_entity.dart';
+import 'package:dev_hub/features/teams_management/presentation/widgets/team_management_bottom_sheet.dart';
+import 'package:dev_hub/shared/presentation/widgets/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -124,7 +126,18 @@ class WorkspaceTeamCard extends StatelessWidget {
                 ),
                 onSelected: (option) async {
                   if (option == 'edit') {
-                    // context.read<WatchTeamBloc>().add(UpdateTeamEvent(originalTeamEntity: team))
+                    await CustomBottomSheet.show(
+                      context: context,
+                      child: TeamManagementBottomSheet(
+                        title: 'Update Team',
+                        description: "Edit the team details.",
+                        orgName: team.orgName,
+                        workspaceId: team.workspaceId,
+                        repoFullName: team.githubRepoFullName,
+                        isEditing: true,
+                        team: team,
+                      ),
+                    );
                   } else if (option == 'delete') {
                     final shouldDelete = await showAlertDialog(
                       context: context,
@@ -137,7 +150,7 @@ class WorkspaceTeamCard extends StatelessWidget {
                           orgName: team.orgName,
                           teamSlug: team.githubTeamSlug,
                           workspaceId: team.workspaceId,
-                          teamId: team.id
+                          teamId: team.id,
                         ),
                       );
                     }
