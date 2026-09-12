@@ -34,14 +34,4 @@ class ApiEndpoints {
     required String ownerNameWithRepoName,
     required String username,
   }) => '/repos/$ownerNameWithRepoName/collaborators/$username';
-
-  String createTeamEndpoint({required String orgName})=> '/orgs/$orgName/teams';
-
-  String updateTeamEndpoint({required String orgName, required String teamSlug}) => '/orgs/$orgName/teams/$teamSlug';
-
-  String deleteATeamEndpoint({required String orgName, required String teamSlug})=>'/orgs/$orgName/teams/$teamSlug';
-
-  String getAllTeamsInOrgEndpoint({required String orgName}) => '/orgs/$orgName/teams';
-
-  String getASpecificTeamEndpoint({required String orgName, required String teamSlug}) => '/orgs/$orgName/teams/$teamSlug';
 }
