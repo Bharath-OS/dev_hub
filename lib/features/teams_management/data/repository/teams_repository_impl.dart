@@ -88,9 +88,10 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
         data: dataMap,
       );
       final response = ApiResponseValidator.validate(result);
-      return response.fold((failure) => left(failure), (response) async {
-        final updatedTeam = TeamModel.fromMap(response.data);
-        dataMap['team slug'] = response.data['slug'];
+      return response.fold((failure) => left(failure), (gitHubResponse) async {
+        if(gitHubResponse.data['slug'] != null){
+          dataMap['team slug'] = gitHubResponse.data['slug'];
+        }
         await _remoteDataSource.updateTeam(
           workspaceId: params.originalTeamEntity!.workspaceId,
           teamId: params.originalTeamEntity!.id,
