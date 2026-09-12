@@ -27,7 +27,7 @@ class WorkspaceQuickActionsGrid extends StatelessWidget {
                   "Create a new team inside this workspace and connect it with a repository.",
               orgName: workspace.githubOrgLogin,
               workspaceId: workspace.id,
-              repoFullName: workspace.repositoryName,
+              repoFullName: workspace.repositoryName, isEditing: false,
             ),
           );
         },
