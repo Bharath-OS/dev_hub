@@ -15,7 +15,7 @@ class WatchTeamBloc extends Bloc<WatchTeamEvent, WatchTeamState> {
     on<WatchAllTeamsEvent>((event, emit) async {
       emit(TeamsLoadingState());
       final result = await _getTeamsUseCase.call(event.workspaceId);
-      result.fold((failure) => emit(WatchTeamsFailure(failure.message)), (
+      await result.fold((failure) async => emit(WatchTeamsFailure(failure.message)), (
         stream,
       ) async {
         await emit.forEach<List<TeamEntity>>(

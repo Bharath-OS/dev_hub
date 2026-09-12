@@ -61,37 +61,39 @@ class TeamsBloc extends Bloc<TeamsEvent, TeamsState> {
     });
 
     bool _checkForUpdates(
-      TeamEntity originalTeamEntity,
-      TeamParams teamUpdates,
+      TeamParams teamParams,
     ) {
       //In future, decided to add more fields for editing.
       Map<String, dynamic> map = {
-        if (originalTeamEntity.name != teamUpdates.name)
-          "name": teamUpdates.name,
-        if (originalTeamEntity.description != teamUpdates.description)
-          "description": teamUpdates.description,
-        if (originalTeamEntity.privacy != teamUpdates.privacy!.name)
-          "privacy": teamUpdates.privacy,
-        if (originalTeamEntity.permission != teamUpdates.permission!.name)
-          "permission": teamUpdates.permission!.name,
+        if (teamParams.originalTeamEntity!.name != teamParams.name)
+          "name": teamParams.name,
+        if (teamParams.originalTeamEntity!.description != teamParams.description)
+          "description": teamParams.description,
+        // if (teamParams.originalTeamEntity!.privacy != teamParams.privacy!.name)
+        //   "privacy": teamParams.privacy,
+        // if (teamParams.originalTeamEntity!.permission != teamParams.permission!.name)
+        //   "permission": teamParams.permission!.name,
       };
-      return map.isEmpty;
+      return map.isNotEmpty;
     }
 
     //updating team event
     on<UpdateTeamEvent>((event, emit) async {
       final teamParams = TeamParams(
-        name: event.teamName,
-        description: event.teamDescription,
-        orgName: event.orgName,
-        githubTeamSlug: event.teamSlug,
+        id: event.originalTeamEntity.id,
+        workspaceId: event.originalTeamEntity.workspaceId,
+        name: event.teamName ?? event.originalTeamEntity.name,
+        description: event.teamDescription ?? event.originalTeamEntity.description,
+        orgName: event.orgName ?? event.originalTeamEntity.orgName,
+        githubTeamSlug: event.teamSlug ?? event.originalTeamEntity.githubTeamSlug,
         originalTeamEntity: event.originalTeamEntity,
+        privacy: event.privacy,
+        permission: event.permission,
       );
       final didTeamDataChanged = _checkForUpdates(
-        event.originalTeamEntity,
         teamParams,
       );
-      if (didTeamDataChanged) {
+      if (!didTeamDataChanged) {
         emit(TeamFailure('No changes detected.'));
         return;
       }
