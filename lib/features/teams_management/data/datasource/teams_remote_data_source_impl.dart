@@ -6,14 +6,15 @@ import 'package:dev_hub/shared/data/datasources/remote/firestore_service.dart';
 abstract interface class TeamsRemoteDataSource {
   Future<TeamModel> createTeam(TeamModel team);
 
-  Future<void> deleteTeam({
-    required String workspaceId,
-    required int teamId,
-  });
+  Future<void> deleteTeam({required String workspaceId, required int teamId});
 
   Future<Stream<List<TeamEntity>>> getTeams(String workspaceId);
 
-  Future<void> updateTeam(TeamModel team);
+  Future<void> updateTeam({
+    required String workspaceId,
+    required int teamId,
+    required Map<String, dynamic> data,
+  });
 }
 
 class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
@@ -66,12 +67,18 @@ class TeamsRemoteDataSourceImpl implements TeamsRemoteDataSource {
   }
 
   @override
-  Future<void> updateTeam(TeamModel team) async {
+  Future<void> updateTeam({
+    required String workspaceId,
+    required int teamId,
+    required Map<String, dynamic> data,
+  }) async {
+    data['team name'] = data['name'];
+    data.remove('name');
     await _remoteDatabaseService.update(
       FirestoreParams(
-        collectionPath: 'Workspaces/${team.workspaceId}/$_teamCollectionName',
-        id: team.id.toString(),
-        data: team.toMap(),
+        collectionPath: 'Workspaces/$workspaceId/$_teamCollectionName',
+        id: teamId.toString(),
+        data: data,
       ),
     );
   }

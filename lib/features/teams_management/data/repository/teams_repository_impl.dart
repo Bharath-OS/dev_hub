@@ -88,16 +88,14 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
         data: dataMap,
       );
       final response = ApiResponseValidator.validate(result);
-      return response.fold((failure) => left(failure), (apiResponse) async {
-        final team = TeamModel.fromMap(apiResponse.data);
-        final teamData = team.copyWith(
-          orgName: params.orgName,
-          githubRepoFullName: params.githubRepoFullName,
-          githubRepoName: params.githubRepoName,
-          workspaceId: params.workspaceId,
-          avatarUrl: params.avatarUrl,
+      return response.fold((failure) => left(failure), (response) async {
+        final updatedTeam = TeamModel.fromMap(response.data);
+        dataMap['team slug'] = response.data['slug'];
+        await _remoteDataSource.updateTeam(
+          workspaceId: params.originalTeamEntity!.workspaceId,
+          teamId: params.originalTeamEntity!.id,
+          data: dataMap,
         );
-        await _remoteDataSource.updateTeam(teamData);
         return right(null);
       });
     } catch (e) {
@@ -111,12 +109,17 @@ class TeamsRepositoryImpl implements TeamsRepositoryInterface {
   ) {
     //In future, decided to add more fields for editing.
     Map<String, dynamic> map = {
-      if (originalTeamEntity.name != teamUpdates.name) "name": teamUpdates.name,
-      if (originalTeamEntity.description != teamUpdates.description)
+      if (teamUpdates.name != null &&
+          originalTeamEntity.name != teamUpdates.name)
+        "name": teamUpdates.name,
+      if (teamUpdates.description != null &&
+          originalTeamEntity.description != teamUpdates.description)
         "description": teamUpdates.description,
-      if (originalTeamEntity.privacy != teamUpdates.privacy!.name)
-        "privacy": teamUpdates.privacy,
-      if (originalTeamEntity.permission != teamUpdates.permission!.name)
+      if (teamUpdates.privacy != null &&
+          originalTeamEntity.privacy != teamUpdates.privacy!.name)
+        "privacy": teamUpdates.privacy!.name,
+      if (teamUpdates.permission != null &&
+          originalTeamEntity.permission != teamUpdates.permission!.name)
         "permission": teamUpdates.permission!.name,
     };
     return map;
